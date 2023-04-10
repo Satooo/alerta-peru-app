@@ -18,6 +18,7 @@ export default function HomePage(){
             <div style={{position:"absolute",top:"0",zIndex:2,width:"80%",textAlign:"center",backgroundColor:"white",padding:"20px",borderBottomLeftRadius:"20px",borderBottomRightRadius:"20px",filter:"drop-shadow(1px 0px 5px gray)"}}>
             <nav class="navbar navbar-expand-lg bg-transparent-body-tertiary">
                 <div class="container-fluid" >
+                    <img src={require("../../icons/alerta-peru-logo.png")} style={{width:"30px",marginRight:"10px"}}/>
                     <a class="navbar-brand" href="#">Alerta<b>Perú</b></a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -74,7 +75,9 @@ export default function HomePage(){
     return(
         <div className="d-flex flex-row align-items-center" style={{position:"absolute",zIndex:"2",right:(showSideBar)?"0":"-330px",top:"150px",}}>
             <div style={{backgroundColor:"#1976d2",padding:"10px",borderTopLeftRadius:"20px",borderBottomLeftRadius:"20px",filter:"drop-shadow(2px 1px 5px gray)"}}> 
-                <button style={{border:"none",backgroundColor:"transparent",color:"white"}} onClick={()=>{setShowSideBar(!showSideBar)}}>
+                <button style={{border:"none",backgroundColor:"transparent",color:"white"}} onClick={()=>{
+                    setShowSideBar(!showSideBar)
+                    }}>
                     {(showSideBar)?">":"<"}
                 </button>
             </div>
