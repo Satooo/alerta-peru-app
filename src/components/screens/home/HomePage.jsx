@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import GoogleMapReact from 'google-map-react';
 
 
 export default function HomePage(){
+    const [showSideBar, setShowSideBar]=useState(true)
   const defaultProps = {
     center: {
       lat: -12.142500,
@@ -43,7 +44,7 @@ export default function HomePage(){
                     </ul>
                     <form class="d-flex" role="search">
                         <input class="form-control me-2" type="search" placeholder="Búsqueda" aria-label="Search"/>
-                        <button class="btn btn-outline-success" type="submit">Buscar</button>
+                        <button class="btn btn-outline-primary" type="submit">Buscar</button>
                     </form>
                     </div>
                 </div>
@@ -71,13 +72,20 @@ export default function HomePage(){
   }
   const sideMenu = ()=>{
     return(
-        <div className="d-flex flex-column justify-content-center" style={{position:"absolute",zIndex:"2",backgroundColor:"white",right:"0",top:"150px",filter:"drop-shadow(2px 1px 5px gray)",borderTopLeftRadius:"20px",borderBottomLeftRadius:"20px",padding:"20px",maxWidth:"500px"}}>
-            <b style={{width:"100%",textAlign:"center",marginBottom:"20px"}}>
-                Incidentes recientes
-                <img src={require("../../icons/next.png")} style={{width:"20px",height:"20px",marginLeft:"10px"}}/>
-            </b>
-            {incidentMinimized()}
-            {incidentMinimized()}
+        <div className="d-flex flex-row align-items-center" style={{position:"absolute",zIndex:"2",right:(showSideBar)?"0":"-330px",top:"150px",}}>
+            <div style={{backgroundColor:"#1976d2",padding:"10px",borderTopLeftRadius:"20px",borderBottomLeftRadius:"20px",filter:"drop-shadow(2px 1px 5px gray)"}}> 
+                <button style={{border:"none",backgroundColor:"transparent",color:"white"}} onClick={()=>{setShowSideBar(!showSideBar)}}>
+                    {(showSideBar)?">":"<"}
+                </button>
+            </div>
+            <div className="d-flex flex-column justify-content-center" style={{backgroundColor:"white",filter:"drop-shadow(2px 1px 5px gray)",borderTopLeftRadius:"20px",borderBottomLeftRadius:"20px",padding:"20px",maxWidth:"500px"}}>
+                <b style={{width:"100%",textAlign:"center",marginBottom:"20px"}}>
+                    Incidentes recientes
+                    <img src={require("../../icons/next.png")} style={{width:"20px",height:"20px",marginLeft:"10px"}}/>
+                </b>
+                {incidentMinimized()}
+                {incidentMinimized()}
+            </div>
         </div>
     )
   }
@@ -91,17 +99,17 @@ export default function HomePage(){
                 </div>
                 <div className="d-flex flex-column justify-content-center align-items-center w-100">
                     <div style={{backgroundColor:"white",marginTop:"-50px",padding:"20px",borderRadius:"100px"}}>
-                    <button className="d-flex flex-column justify-content-center align-items-center" style={{backgroundColor:"#ffebee",borderRadius:"100px",height:"50px",width:"50px",color:"#c62828",fontSize:"20px",border:"none"}}><b>+</b></button>
+                    <button className="d-flex flex-column justify-content-center align-items-center" style={{backgroundColor:"#ffebee",borderRadius:"100px",height:"50px",width:"50px",color:"#c62828",fontSize:"20px",border:"none"}} id="addIncidente"><b>+</b></button>
                     </div>
                     Añadir incidente
                 </div>
                 <div className="d-flex flex-row justify-content-center align-items-center w-100">
                     <img src={require("../../icons/filter.png")} style={{width:"20px",marginRight:"10px"}}/>
                     <div className="d-flex flex-row justify-content-between" style={{backgroundColor:"#eeeeee",borderRadius:"20px",width:"100%"}}>
-                        <button style={{padding:"15px",borderTopLeftRadius:"20px",borderBottomLeftRadius:"20px",border:"none",textAlign:"center",width:"100%",borderRight:"1px solid lightgray"}}> Robo </button>
-                        <button style={{border:"none",padding:"15px",textAlign:"center",width:"100%",borderRight:"1px solid lightgray"}}>Pérdida</button>
-                        <button style={{border:"none",padding:"15px",textAlign:"center",width:"100%",borderRight:"1px solid lightgray"}}>Acoso</button>
-                        <button style={{padding:"10px",borderTopRightRadius:"20px",borderBottomRightRadius:"20px",border:"none",textAlign:"center",width:"100%"}}>...</button>
+                        <button style={{padding:"15px",borderTopLeftRadius:"20px",borderBottomLeftRadius:"20px",border:"none",textAlign:"center",width:"100%",borderRight:"1px solid lightgray"}} id="filter"> Robo </button>
+                        <button style={{border:"none",padding:"15px",textAlign:"center",width:"100%",borderRight:"1px solid lightgray"}} id="filter">Pérdida</button>
+                        <button style={{border:"none",padding:"15px",textAlign:"center",width:"100%",borderRight:"1px solid lightgray"}} id="filter">Acoso</button>
+                        <button style={{padding:"10px",borderTopRightRadius:"20px",borderBottomRightRadius:"20px",border:"none",textAlign:"center",width:"100%"}} id="filter">...</button>
                     </div>
                 </div>
             </div>
