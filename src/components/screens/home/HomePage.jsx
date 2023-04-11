@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import GoogleMapReact from 'google-map-react';
-
+//hola
 
 export default function HomePage(){
     const [showSideBar, setShowSideBar]=useState(true)
