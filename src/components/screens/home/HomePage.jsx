@@ -83,7 +83,7 @@ export default function HomePage(){
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Dropdown
                         </a>
-                        <ul class="dropdown-menu">
+                        <ul class="dropdown-menu slideDown">
                             <li><a class="dropdown-item" href="#">Action</a></li>
                             <li><a class="dropdown-item" href="#">Another action</a></li>
                             <li><hr class="dropdown-divider"/></li>
@@ -94,16 +94,16 @@ export default function HomePage(){
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Usuario <img src={require("../../images/fotolinkedin.png")} style={{width:"30px",borderRadius:"100px",marginLeft:"10px"}}/>
                         </a>
-                        <ul class="dropdown-menu">
+                        <ul class="dropdown-menu slideDown">
                             <li><a class="dropdown-item" href="#">Ver Perfil</a></li>
                             <li><hr class="dropdown-divider"/></li>
-                            <li><a class="dropdown-item" href="#">Log off</a></li>
+                            <li><a class="dropdown-item" href="/login">Log off</a></li>
                         </ul>
                         </li>
                     </ul>
                     <form class="d-flex" role="search">
-                        <input class="form-control me-2" type="search" placeholder="Búsqueda" aria-label="Search"/>
-                        <button class="btn btn-outline-primary" type="submit">Buscar</button>
+                        <input class="form-control me-2" type="search" placeholder="Búsqueda" aria-label="Search" style={{borderRadius:"20px"}}/>
+                        <button class="btn btn-outline-primary" type="submit" style={{borderRadius:"20px"}}>Buscar</button>
                     </form>
                     </div>
                 </div>
@@ -152,17 +152,17 @@ export default function HomePage(){
   }
   const bottomMenu=()=>{
     return (
-        <div className="d-flex flex-row justify-content-center align-items-center">
-            <div className="d-flex flex-row justify-content-between" style={{position:"absolute",bottom:"0",zIndex:2,width:"80%",minWidth:"800px !important",textAlign:"center",backgroundColor:"white",padding:"20px",borderTopLeftRadius:"20px",borderTopRightRadius:"20px",filter:"drop-shadow(1px 0px 5px gray)"}}>
+        <div className="d-flex flex-row justify-content-center align-items-center" >
+            <div className="d-flex flex-row justify-content-between slideUp" style={{position:"absolute",bottom:"0",zIndex:2,width:"80%",textAlign:"center",backgroundColor:"white",padding:"20px",borderTopLeftRadius:"20px",borderTopRightRadius:"20px",filter:"drop-shadow(1px 0px 5px gray)"}}>
                 <div className="d-flex flex-row justify-content-center align-items-center w-100">
                     <img src={require("../../icons/location.png")} style={{width:"20px",marginRight:"20px"}}/> 
                     <span style={{backgroundColor:"#eeeeee",padding:"10px",borderRadius:"20px",textAlign:"start",width:"100%",height:"70px"}}> {address}</span>
                 </div>
                 <div className="d-flex flex-column justify-content-center align-items-center w-100">
                     <div style={{backgroundColor:"white",marginTop:"-50px",padding:"20px",borderRadius:"100px"}}>
-                    <button className="d-flex flex-column justify-content-center align-items-center" style={{backgroundColor:"#ffcdd2",borderRadius:"100px",height:"50px",width:"50px",color:"#c62828",fontSize:"20px",border:"none"}} id="addIncidente"><b>+</b></button>
+                    <button className="d-flex flex-column justify-content-center align-items-center" style={{backgroundColor:"#ffcdd2",borderRadius:"100px",height:"70px",width:"70px",color:"#c62828",fontSize:"20px",border:"none",fontSize:"30px"}} id="addIncidente"><b>+</b></button>
                     </div>
-                    <span style={{color:"gray"}}>Añadir incidente</span>
+                    <span>Añadir incidente</span>
                 </div>
                 <div className="d-flex flex-row justify-content-center align-items-center w-100">
                     <img src={require("../../icons/filter.png")} style={{width:"20px",marginRight:"20px"}}/>
@@ -195,7 +195,7 @@ export default function HomePage(){
 
   return (
     // Important! Always set the container height explicitly
-    <div style={{ height: '100vh', width: '100%' }}>
+    <div style={{ height: '100vh', width: '100%'}}>
         {topMenu()}
         {bottomMenu()}
         {sideMenu()}

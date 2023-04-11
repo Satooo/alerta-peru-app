@@ -32,4 +32,16 @@ font-family: 'Raleway', sans-serif;
   animation: slideInRight;
   animation-duration: 3s;
 }
+#loginCard{
+  animation: fadeIn;
+  animation-duration: 2s;
+}
+.slideDown{
+  animation: slideInDown;
+  animation-duration: 0.5s;
+}
+.slideUp{
+  animation: slideInUp;
+  animation-duration: 3s;
+}
 

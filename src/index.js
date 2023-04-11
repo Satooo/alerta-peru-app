@@ -9,10 +9,11 @@ import HomePage from './components/screens/home/HomePage';
 import "bootstrap/dist/js/bootstrap.bundle";
 import "bootstrap/dist/css/bootstrap.css";
 import 'animate.css';
+import Base from './components/Base';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-    <HomePage/>
+    <Base/>
 );
 
 // If you want to start measuring performance in your app, pass a function
