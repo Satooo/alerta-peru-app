@@ -5,6 +5,7 @@ import Geocode from "react-geocode";
 import DateTimePicker from 'react-datetime-picker';
 import ImageUploading from 'react-images-uploading';
 import { createPopper } from '@popperjs/core';
+import HeaderTopMenu from "../common/HeaderTopMap";
 
 export default function HomePage(){
     const [showSideBar, setShowSideBar]=useState(true)
@@ -78,61 +79,9 @@ export default function HomePage(){
     console.log(currentLat)
   },[currentLat])
 
-  const TopMenu=props=>{
-    return (
-        <div className="d-flex flex-row justify-content-center align-items-center">
-            <div style={{position:"absolute",top:"0",zIndex:2,width:"80%",textAlign:"center",backgroundColor:"white",padding:"20px",borderBottomLeftRadius:"20px",borderBottomRightRadius:"20px",filter:"drop-shadow(1px 0px 5px gray)"}}>
-            <nav class="navbar navbar-expand-lg bg-transparent-body-tertiary">
-                <div class="container-fluid" >
-                    <img src={require("../../icons/alerta-peru-logo.png")} style={{width:"30px",marginRight:"10px"}}/>
-                    <a class="navbar-brand" href="#">Alerta<b>Perú</b></a>
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                    </button>
-                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">Home</a>
-                        </li>
-                        <li class="nav-item">
-                        <a class="nav-link" href="#">Link</a>
-                        </li>
-                        <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Dropdown
-                        </a>
-                        <ul class="dropdown-menu slideDown">
-                            <li><a class="dropdown-item" href="#">Action</a></li>
-                            <li><a class="dropdown-item" href="#">Another action</a></li>
-                            <li><hr class="dropdown-divider"/></li>
-                            <li><a class="dropdown-item" href="#">Something else here</a></li>
-                        </ul>
-                        </li>
-                        <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" >
-                            Usuario <img src={require("../../images/fotolinkedin.png")} style={{width:"30px",borderRadius:"100px",marginLeft:"10px"}}/>
-                        </a>
-                        <ul class="dropdown-menu slideDown">
-                            <li><a class="dropdown-item" href="/perfil">Ver Perfil</a></li>
-                            <li><hr class="dropdown-divider"/></li>
-                            <li><a class="dropdown-item" href="/login">Log off</a></li>
-                        </ul>
-                        </li>
-                    </ul>
-                    <form class="d-flex" role="search">
-                        <input class="form-control me-2" type="search" placeholder="Búsqueda" aria-label="Search" style={{borderRadius:"20px"}}/>
-                        <button class="btn btn-outline-primary" type="submit" style={{borderRadius:"20px"}}>Buscar</button>
-                    </form>
-                    </div>
-                </div>
-                </nav>
-            </div>
-        </div>
-    )
-  }
   const incidentMinimized=()=>{
     return(
-        <div className="mt-3 mb-3 d-flex flex-row w-100">
+        <div className="mt-3 mb-3 d-flex flex-row" style={{width:"90%",marginRight:"auto",marginLeft:"auto"}}>
                 <div>
                     <img src={require("../../images/robbery.jpg")} style={{height:"100px",width:"100px",borderRadius:"20px",objectFit:"cover",marginBottom:"1px"}}/>
                     <p className="mr-2 mt-2">
@@ -143,7 +92,7 @@ export default function HomePage(){
                     <b>Robo agravado</b>
                     <p style={{textAlign:"justify"}}>orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</p>
                     <div className="w-100 d-flex flex-row justify-content-end">
-                      <a href="/lista-incidentes"><button className="btn btn-primary">Ver más</button></a>
+                      <a href="/lista-incidentes"><button className="btn btn-primary rounded-pill">Ver más</button></a>
                     </div>
                 </div>
             </div>
@@ -468,7 +417,7 @@ export default function HomePage(){
           
         </GoogleMapReact>
         <div style={{ height: '100vh', width: '100%',zIndex:"2"}}>
-        <TopMenu/>
+        <HeaderTopMenu/>
         <BottomMenu setFilter={setFilter}/>
         <SideMenu/>
       </div>
