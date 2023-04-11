@@ -10,14 +10,26 @@ body {
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  font-family: 'PT Sans', sans-serif;
+font-family: 'Raleway', sans-serif;
 }
 
 #addIncidente:hover{
   filter:drop-shadow(2px 1px 10px #ef9a9a);
+  background-color: #f44336 !important;  
+  color:white !important;
+  animation: pulse;
+  animation-duration: 1s;
 }
 #filter:hover{
   background-color: lightgray;
+  background-color: #f44336;
+  color:white;
+  animation: pulse;
+  animation-duration: 1s;
+}
+#sideMenu{
+  animation: slideInRight;
+  animation-duration: 3s;
 }
 

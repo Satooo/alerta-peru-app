@@ -8,6 +8,7 @@ import SimpleMap from './components/screens/home/HomePage';
 import HomePage from './components/screens/home/HomePage';
 import "bootstrap/dist/js/bootstrap.bundle";
 import "bootstrap/dist/css/bootstrap.css";
+import 'animate.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
