@@ -1,11 +1,7 @@
 import React from "react";
 import { useEffect, useState } from "react";
 import GoogleMapReact from 'google-map-react';
-<<<<<<< HEAD
 import Geocode from "react-geocode";
-=======
-//hola
->>>>>>> 5c595d987f34ab2f5d239e71ff6160ad5bf516fe
 
 export default function HomePage(){
     const [showSideBar, setShowSideBar]=useState(true)
