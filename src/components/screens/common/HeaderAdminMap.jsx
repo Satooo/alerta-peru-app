@@ -1,5 +1,5 @@
 import React from "react"
-export default function HeaderTopMenu(){
+export default function HeaderAdminMap(){
     return (
         <div className="d-flex flex-row justify-content-center align-items-center">
             <div style={{position:"absolute",top:"0",zIndex:2,width:"80%",textAlign:"center",backgroundColor:"white",padding:"20px",borderBottomLeftRadius:"20px",borderBottomRightRadius:"20px",filter:"drop-shadow(1px 0px 5px gray)"}}>
@@ -35,7 +35,7 @@ export default function HeaderTopMenu(){
                         </a>
                         <ul class="dropdown-menu slideDown">
                             <li><a class="dropdown-item" href="/perfil">Ver Perfil</a></li>
-                            <li><a class="dropdown-item" href="/dashboard">Modo admin</a></li>
+                            <li><a class="dropdown-item" href="/">Modo user</a></li>
                             <li><hr class="dropdown-divider"/></li>
                             <li><a class="dropdown-item" href="/login">Log off</a></li>
                         </ul>

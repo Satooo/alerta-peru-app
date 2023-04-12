@@ -1,9 +1,8 @@
-import React from "react"
-export default function HeaderTopMenu(){
+import React from "react";
+export default function HeaderAdmin(){
     return (
-        <div className="d-flex flex-row justify-content-center align-items-center">
-            <div style={{position:"absolute",top:"0",zIndex:2,width:"80%",textAlign:"center",backgroundColor:"white",padding:"20px",borderBottomLeftRadius:"20px",borderBottomRightRadius:"20px",filter:"drop-shadow(1px 0px 5px gray)"}}>
-            <nav class="navbar navbar-expand-lg bg-transparent-body-tertiary">
+        <div className="d-flex flex-row justify-content-center align-items-center w-100 bg-light mb-4" >
+            <nav class="navbar navbar-expand-lg bg-transparent-body-tertiary" style={{width:"80%",padding:"25px"}}>
                 <div class="container-fluid" >
                     <img src={require("../../icons/alerta-peru-logo.png")} style={{width:"30px",marginRight:"10px"}}/>
                     <a class="navbar-brand" href="#">Alerta<b>Perú</b></a>
@@ -13,7 +12,7 @@ export default function HeaderTopMenu(){
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">Home</a>
+                        <a class="nav-link active" aria-current="page" href="/">Home</a>
                         </li>
                         <li class="nav-item">
                         <a class="nav-link" href="/lista-incidentes">Incidentes</a>
@@ -35,7 +34,7 @@ export default function HeaderTopMenu(){
                         </a>
                         <ul class="dropdown-menu slideDown">
                             <li><a class="dropdown-item" href="/perfil">Ver Perfil</a></li>
-                            <li><a class="dropdown-item" href="/dashboard">Modo admin</a></li>
+                            <li><a class="dropdown-item" href="/">Modo user</a></li>
                             <li><hr class="dropdown-divider"/></li>
                             <li><a class="dropdown-item" href="/login">Log off</a></li>
                         </ul>
@@ -49,6 +48,5 @@ export default function HeaderTopMenu(){
                 </div>
                 </nav>
             </div>
-        </div>
     )
 }

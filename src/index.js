@@ -7,13 +7,14 @@ import Home from './components/screens/home/HomePage';
 import SimpleMap from './components/screens/home/HomePage';
 import HomePage from './components/screens/home/HomePage';
 import { createPopper } from '@popperjs/core';
-import "bootstrap/dist/js/bootstrap.bundle.min.js";
+import "bootstrap/dist/js/bootstrap.js";
 import "bootstrap/dist/css/bootstrap.css";
 import 'animate.css';
 import Base from './components/Base';
 import 'react-datetime-picker/dist/DateTimePicker.css';
 import 'react-calendar/dist/Calendar.css';
 import 'react-clock/dist/Clock.css';
+
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

@@ -36,6 +36,7 @@ export default function Perfil(){
                             <p style={{marginTop:"10px"}}><i>0 Reportes</i></p>
                             <p><i>0 Aportes</i></p>
                         </div>
+                        <button className="mt-3 btn btn-primary w-100 rounded-pill">Editar perfil</button>
                     </div>
                     <div className="col-lg-10 d-flex flex-column justify-content-center" style={{backgroundColor:"#eeeeee",borderRadius:"20px",padding:"20px"}}>
                     <div class="input-group mb-3">
@@ -69,7 +70,7 @@ export default function Perfil(){
                     </div>
                 </div>
                 <div>
-                    <p className="mt-5" style={{backgroundColor:"#1976d2",padding:"10px",borderTopLeftRadius:"20px",borderTopRightRadius:"20px",width:"300px",marginBottom:"0px",color:"white",textAlign:"center"}}><b>Incidentes con tu participación</b></p>
+                    <p className="mt-5" style={{backgroundColor:"#e3f2fd",padding:"10px",borderTopLeftRadius:"20px",borderTopRightRadius:"20px",width:"300px",marginBottom:"0px",color:"black",textAlign:"center"}}><b>Incidentes con tu participación</b></p>
                     <div style={{borderTop:"1px solid #1976d2",marginTop:"0px"}}>
                         {Array(20).fill(0).map((_,index)=>{
                         return (

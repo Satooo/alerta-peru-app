@@ -7,6 +7,9 @@ import ImageUploading from 'react-images-uploading';
 import { createPopper } from '@popperjs/core';
 import HeaderTopMenu from "../common/HeaderTopMap";
 
+import Popover from "react-bootstrap/Popover"
+import OverlayTrigger from "react-bootstrap/OverlayTrigger"
+
 export default function HomePage(){
     const [showSideBar, setShowSideBar]=useState(true)
     const [currentLat,setCurrentLat]=useState("-12.142500")
@@ -16,6 +19,8 @@ export default function HomePage(){
     const [tipoIncidente,setTipoIncidente]=useState("")
     const [descripcionIncidente,setDescripcionIncidente]=useState("")
     const [value, onChangeDate] = useState(new Date());
+
+    const [click,setClick]=useState(false)
 
     const [images, setImages] = React.useState([]);
     const maxNumber = 4;
@@ -150,15 +155,27 @@ export default function HomePage(){
   }
 
    const Marker = props => {
-    return <div className="SuperAwesomePin d-flex flex-column" style={{minWidth:"100px",marginTop:"-60px"}}>
+    return (
+      <OverlayTrigger trigger="hover" placement="right" overlay={(!props.miMark)?(
+        <Popover id="popoverMap">
+        <p><b>Nombre incidente</b> </p>
+        <p style={{color:"gray"}}><i>Publicado por Andrés Sato</i></p>
+        <p>{props.fecha}</p>
+      </Popover>):(<p></p>)
+      }>
+    
+    <div className="SuperAwesomePin d-flex flex-column" style={{minWidth:"100px",marginTop:"-60px"}}>
         <span style={{backgroundColor:(props.miMark)?"#1976d2":"#f44336",padding:"10px",color:"white",borderTopRightRadius:"10px",borderTopLeftRadius:"10px"}}>
             <img src={require("../../icons/location.png")} style={{width:"15px",filter:"invert(100%)",marginRight:"2px",display:(props.miMark)?"inline block":"none"}}/><b>{props.text}</b>
         </span>
         <span style={{backgroundColor:(props.miMark)?"#1976d2":"#f44336",padding:"0px 0px 10px 10px",color:"white",borderBottomRightRadius:"10px"}}>
-            {props.fecha}
+            {props.fecha}<button id="markerButton" style={{display:(props.miMark)?"none":"block"}}>Ver más</button>
         </span>
         <div style={{width:"0",height:"0",borderLeft:"20px solid transparent;",borderRight:"30px solid transparent",borderTop:(props.miMark)?"20px solid #1976d2":"20px solid #f44336"}}></div>
     </div>
+     
+    </OverlayTrigger>
+    )
   }
 
   function FilterTipo() {
@@ -298,7 +315,7 @@ export default function HomePage(){
             <div class="modal-body">
               <b style={{marginRight:"10px"}}>Tipo de incidente</b>
               <div class="btn-group dropend mb-3">
-              <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+              <button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" style={{backgroundColor:"#eeeeee",color:"black"}}>
                 {(tipoIncidente=="")?"Seleccionar tipo":tipoIncidente}
               </button>
                 <ul class="dropdown-menu">
@@ -346,12 +363,12 @@ export default function HomePage(){
                         style={isDragging ? { color: 'red' } : undefined}
                         onClick={onImageUpload}
                         {...dragProps}
-                        className="btn btn-primary mt-3 mb-3"
+                        className="btn btn-dark mt-3 mb-3"
                       >
                         Agregar o arrastrar aquí
                       </button>
                       &nbsp;
-                      <button onClick={onImageRemoveAll} className="btn btn-secondary mt-3 mb-3">Eliminar todo</button>
+                      <button onClick={onImageRemoveAll} className="btn btn-light mt-3 mb-3">Eliminar todo</button>
                       {imageList.map((image, index) => (
                         <div key={index} className="image-item">
                           <img src={image['data_url']} alt="" width="100" />
@@ -387,7 +404,6 @@ export default function HomePage(){
   useEffect(()=>{
     console.log(filter)
   },[filter])
-  
 
   return (
     // Important! Always set the container height explicitly
@@ -400,14 +416,15 @@ export default function HomePage(){
           yesIWantToUseGoogleMapApiInternals
           onClick={(e)=>
               {
+                if(!click){
                   setCurrentLat(e.lat)
                   setCurrentLng(e.lng)
+                }
               }
-              
           }
           options={OPTIONS}
         >
-          <Marker lat={-12.138500} lng={-77.016126} text="Robo" fecha="10/04 03:55 pm"/>
+          <Marker lat={-12.138500} lng={-77.016126} text="Robo" fecha="10/04 03:55 pm" onClick={()=>{console.log("hola")}}/>
           <Marker lat={-12.140500} lng={-77.015126} text="Acoso" fecha="10/04 04:55 pm"/>
           <Marker lat={-12.138800} lng={-77.000526} text="Pérdido" fecha="10/04 04:25 pm"/>
           <Marker lat={-12.148800} lng={-77.000526} text="Pérdido" fecha="10/04 04:25 pm"/>
