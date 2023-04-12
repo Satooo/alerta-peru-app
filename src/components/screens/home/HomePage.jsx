@@ -139,7 +139,7 @@ export default function HomePage(){
                     <div style={{backgroundColor:"white",marginTop:"-50px",padding:"20px",borderRadius:"100px"}}>
                     <button className="d-flex flex-column justify-content-center align-items-center" style={{backgroundColor:"#ffcdd2",borderRadius:"100px",height:"70px",width:"70px",color:"#c62828",fontSize:"20px",border:"none",fontSize:"30px"}} id="addIncidente" data-bs-toggle="modal" data-bs-target="#AgregarIncidente"><b>+</b></button>
                     </div>
-                    <span>Añadir incidente</span>
+                    <span className="d-flex flex-row align-items-center"><img src={require("../../icons/alert.png")}  style={{width:"20px",marginRight:"10px"}}/> Añadir incidente</span>
                 </div>
                 <div className="d-flex flex-row justify-content-center align-items-center w-100">
                     <img src={require("../../icons/filter.png")} style={{width:"20px",marginRight:"20px"}}/>
