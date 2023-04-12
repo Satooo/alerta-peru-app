@@ -5,6 +5,7 @@ import Login from "./screens/login/Login"
 import ListaIncidentes from "./screens/listaIncidentes/ListaIncidentes"
 import Perfil from "./screens/perfil/Perfil"
 import Dashboard from "./screens/dashboard/Dashboard"
+import IncidenteScreen from "./screens/incidenteScreen/IncidenteScreen"
 
 export default function Base(){
     return (
@@ -15,6 +16,7 @@ export default function Base(){
             <Route path="/lista-incidentes" element={<ListaIncidentes/>}/>
             <Route path="/perfil" element={<Perfil/>}/>
             <Route path="/dashboard" element={<Dashboard/>}/>
+            <Route path="/incidente" element={<IncidenteScreen/>}/>
         </Routes>
         </BrowserRouter>
     )

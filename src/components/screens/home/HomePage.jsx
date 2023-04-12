@@ -97,7 +97,7 @@ export default function HomePage(){
                     <b>Robo agravado</b>
                     <p style={{textAlign:"justify"}}>orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</p>
                     <div className="w-100 d-flex flex-row justify-content-end">
-                      <a href="/lista-incidentes"><button className="btn btn-primary rounded-pill">Ver más</button></a>
+                      <a href="/incidente"><button className="btn btn-primary rounded-pill">Ver más</button></a>
                     </div>
                 </div>
             </div>
@@ -131,7 +131,7 @@ export default function HomePage(){
             <div className="d-flex flex-row justify-content-between" style={{position:"absolute",bottom:"0",zIndex:2,width:"80%",textAlign:"center",backgroundColor:"white",padding:"20px",borderTopLeftRadius:"20px",borderTopRightRadius:"20px",filter:"drop-shadow(1px 0px 5px gray)"}} id="bottomMenu">
                 <div className="d-flex flex-row justify-content-center align-items-center w-100">
                     <img src={require("../../icons/location.png")} style={{width:"20px",marginRight:"20px"}}/> 
-                    <button type="button" class="btn" style={{backgroundColor:"#eeeeee",padding:"10px",borderRadius:"20px",textAlign:"start",width:"100%",height:"70px"}} data-bs-toggle="modal" data-bs-target="#direccionInfo">
+                    <button type="button" class="btn" style={{backgroundColor:"#eeeeee",padding:"10px",borderRadius:"20px",textAlign:"start",width:"100%",height:"70px",overflow:"scroll"}} data-bs-toggle="modal" data-bs-target="#direccionInfo">
                       {address}
                     </button>
                 </div>
@@ -139,7 +139,7 @@ export default function HomePage(){
                     <div style={{backgroundColor:"white",marginTop:"-50px",padding:"20px",borderRadius:"100px"}}>
                     <button className="d-flex flex-column justify-content-center align-items-center" style={{backgroundColor:"#ffcdd2",borderRadius:"100px",height:"70px",width:"70px",color:"#c62828",fontSize:"20px",border:"none",fontSize:"30px"}} id="addIncidente" data-bs-toggle="modal" data-bs-target="#AgregarIncidente"><b>+</b></button>
                     </div>
-                    <span className="d-flex flex-row align-items-center"><img src={require("../../icons/alert.png")}  style={{width:"20px",marginRight:"10px"}}/> Añadir incidente</span>
+                    <span className="d-flex flex-row align-items-center"><img src={require("../../icons/alert.png")}  style={{width:"20px",marginRight:"10px"}}/> <b>Añadir incidente</b></span>
                 </div>
                 <div className="d-flex flex-row justify-content-center align-items-center w-100">
                     <img src={require("../../icons/filter.png")} style={{width:"20px",marginRight:"20px"}}/>
@@ -332,7 +332,11 @@ export default function HomePage(){
               <button style={{backgroundColor:"#f5f5f5",padding:"10px",borderRadius:"20px",marginTop:"10px",textAlign:"left",border:"none"}} data-bs-dismiss="modal">{address}</button>
               </div>
               <div class="input-group mt-3">
-                <span class="input-group-text">Descripción</span>
+                <span class="input-group-text">Titulo de incidente</span>
+                <input type="text" class="form-control" placeholder="... " aria-label="Titulodeincidente" aria-describedby="basic-addon1"></input>
+              </div>
+              <div class="input-group mt-3">
+                <span class="input-group-text">Descripción breve</span>
                 <textarea class="form-control" aria-label="With textarea"></textarea>
               </div>
               <div className="mt-3 mb-3 w-100 d-flex flex-row justify-content-between" >

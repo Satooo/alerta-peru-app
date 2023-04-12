@@ -16,9 +16,16 @@ export default function ListaIncidentes(){
                     <div className="w-100" style={{padding:"20px"}}>
                         <h3>Robo agravado</h3>
                         <p className="mt-3"><span class="badge text-bg-dark">Robo</span><i className="m-2">10/03/2023 13:05</i></p>
+                        <div className="d-flex flex-column mb-3">
+                                <span style={{width:"100%",padding:"5px",fontSize:"12px",textAlign:"start"}}>Publicado por</span>
+                                <div>
+                                    <img src={require("../../images/fotolinkedin.png")} style={{width:"20px",borderRadius:"100px"}}/>
+                                    <b style={{width:"100%",padding:"5px",marginTop:"-5px",textAlign:"start"}}>Andrés Sato</b>
+                                </div>
+                            </div>
                         <p style={{textAlign:"justify"}}>orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</p>
                         <div className="w-100 d-flex flex-row justify-content-end">
-                          <a href="/lista-incidentes"><button className="btn btn-primary rounded-pill">Ver más</button></a>
+                          <a href="/incidente"><button className="btn btn-primary rounded-pill">Ver más</button></a>
                         </div>
                     </div>
                 </div>
@@ -37,7 +44,7 @@ export default function ListaIncidentes(){
                     <img src={require("../../images/loginBackground.jpg")} class="d-block w-100" alt="..." />
                     <div class="carousel-caption d-none d-md-block" style={{color:"white"}}>
                         <h5>Nombre de incidente 1</h5>
-                        <p><i>03/04 3:00pm</i></p>
+                        <p><span class="badge rounded-pill bg-light text-dark" style={{marginRight:"20px"}}>Tipo</span><i>03/04 3:00pm</i></p>
                         <div className="row w-100">
                             <div className="col-lg-3">
                                 <div style={{backgroundColor:"#263238",padding:"10px",borderRadius:"20px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
@@ -58,8 +65,8 @@ export default function ListaIncidentes(){
                     <div class="carousel-item">
                     <img src={require("../../images/robbery.jpg")}  class="d-block w-100" alt="..."/>
                     <div class="carousel-caption d-none d-md-block" style={{color:"white"}}>
-                        <h5>Nombre de incidente 1</h5>
-                        <p><i>03/04 3:00pm</i></p>
+                        <h5>Nombre de incidente 2</h5>
+                        <p><span class="badge rounded-pill bg-light text-dark" style={{marginRight:"20px"}}>Tipo</span><i>03/04 3:00pm</i></p>
                         <div className="row w-100">
                             <div className="col-lg-3">
                                 <div style={{backgroundColor:"#263238",padding:"10px",borderRadius:"20px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
@@ -80,8 +87,8 @@ export default function ListaIncidentes(){
                     <div class="carousel-item">
                     <img src={require("../../images/loginBackground.jpg")} class="d-block w-100" alt="..."/>
                     <div class="carousel-caption d-none d-md-block" style={{color:"white"}}>
-                        <h5>Nombre de incidente 1</h5>
-                        <p><i>03/04 3:00pm</i></p>
+                        <h5>Nombre de incidente 3</h5>
+                        <p><span class="badge rounded-pill bg-light text-dark" style={{marginRight:"20px"}}>Tipo</span><i>03/04 3:00pm</i></p>
                         <div className="row w-100">
                             <div className="col-lg-3">
                                 <div style={{backgroundColor:"#263238",padding:"10px",borderRadius:"20px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>

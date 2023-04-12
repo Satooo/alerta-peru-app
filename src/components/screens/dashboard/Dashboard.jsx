@@ -14,6 +14,7 @@ import HeaderAdmin from "../common/HeaderAdmin";
 
 export default function Dashboard(){
     const [seccion,setSeccion]=useState("pendientes")
+    const [filter,setFilter]=useState("")
     const incidentMinimized=()=>{
         return(
             <div className="mt-3 mb-3 d-flex flex-row w-80" style={{borderRadius:"20px"}} id="incidentCard">
@@ -209,12 +210,31 @@ export default function Dashboard(){
                 </div>
         )
     }
+    function filterSection(){
+        return(
+            <div className="w-100">
+                <div class="btn-group">
+                <button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" style={{backgroundColor:"#eeeeee"}}>
+                    <img src={require("../../icons/filter.png")} style={{width:"20px",marginRight:"20px"}}/>Filter
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="#">Action</a></li>
+                    <li><a class="dropdown-item" href="#">Another action</a></li>
+                    <li><a class="dropdown-item" href="#">Something else here</a></li>
+                    <li><hr class="dropdown-divider"/></li>
+                    <li><a class="dropdown-item" href="#">Separated link</a></li>
+                </ul>
+                </div>
+            </div>
+        )
+    }
     return (
         <div className="container-fluid d-flex flex-column no-padding" style={{height:"auto",width:"100%",minWidth:"1200px",minHeight:"100vh",backgroundColor:"#eeeeee"}}>
             <HeaderAdmin/>
             <div className="container bg-light d-flex flex-column align-items-center justify-content-center" style={{borderRadius:"20px",paddingTop:"20px"}}>
                 <TopIncidentes/>
                 {Secciones()}
+                {filterSection()}
                 {Array(20).fill(0).map((_,index)=>{
                     return (
                         incidentMinimized()
