@@ -26,12 +26,12 @@ export default function Dashboard(){
                         <p className="mt-3"><span class="badge text-bg-dark">Robo</span><i className="m-2">10/03/2023 13:05</i></p>
                         <p style={{textAlign:"justify"}}>orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</p>
                         <div className="w-100 d-flex flex-row justify-content-end">
-                          <a href="/lista-incidentes"><button className="btn btn-primary rounded-pill">Ver más</button></a>
+                          <a href="/incidente"><button className="btn btn-primary rounded-pill">Ver más</button></a>
                         </div>
                         <div className="d-flex flex-row justify-content-end mt-3">
                             <button className="btn btn-danger" style={{borderRadius:"0px",borderTopLeftRadius:"20px",borderBottomLeftRadius:"20px"}}>Eliminar</button>
-                            <button className="btn btn-warning" style={{borderRadius:"0px"}}>Solicitar evidencia</button>
-                            <button className="btn btn-success" style={{borderRadius:"0px",borderTopRightRadius:"20px",borderBottomRightRadius:"20px"}}>Validar</button>
+                            <button className="btn btn-warning" style={{borderRadius:"0px"}} data-bs-toggle="modal" data-bs-target="#exampleModal">Solicitar evidencia</button>
+                            <a href="/incidente-admin"><button className="btn btn-success" style={{borderRadius:"0px",borderTopRightRadius:"20px",borderBottomRightRadius:"20px"}}>Validar</button></a>
                           </div>
                     </div>
                 </div>
@@ -228,6 +228,28 @@ export default function Dashboard(){
             </div>
         )
     }
+    function solicitarEvidencia(){
+        return <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Solicitud de evidencia</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="input-group mt-3 mb-3">
+                                <span class="input-group-text"><b>Descripción de evidencia</b></span>
+                                <textarea class="form-control" aria-label="With textarea"></textarea>
+                            </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-primary">Enviar</button>
+                    </div>
+                    </div>
+                </div>
+                </div>
+    }
     return (
         <div className="container-fluid d-flex flex-column no-padding" style={{height:"auto",width:"100%",minWidth:"1200px",minHeight:"100vh",backgroundColor:"#eeeeee"}}>
             <HeaderAdmin/>
@@ -241,6 +263,7 @@ export default function Dashboard(){
                     )
                 })}
             </div>
+            {solicitarEvidencia()}
         </div>
     )
 

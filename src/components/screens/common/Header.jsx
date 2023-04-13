@@ -10,7 +10,7 @@ export default function Header(){
                     <span class="navbar-toggler-icon"></span>
                     </button>
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 d-flex align-items-center">
                         <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="/">Home</a>
                         </li>
@@ -21,7 +21,7 @@ export default function Header(){
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Casos
                         </a>
-                        <ul class="dropdown-menu slideDown">
+                        <ul class="dropdown-menu slideDown p-2">
                             <li><a class="dropdown-item" href="#">Action</a></li>
                             <li><a class="dropdown-item" href="#">Another action</a></li>
                             <li><hr class="dropdown-divider"/></li>
@@ -30,10 +30,27 @@ export default function Header(){
                         </li>
                         <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" >
-                            Usuario <img src={require("../../images/fotolinkedin.png")} style={{width:"30px",borderRadius:"100px",marginLeft:"10px"}}/>
+                            Usuario 
+                            <button type="button" class="btn btn-primary position-relative" style={{backgroundColor:"transparent",border:"transparent"}}>
+                            <img src={require("../../images/fotolinkedin.png")} style={{width:"30px",borderRadius:"100px",marginLeft:"10px"}}/>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                99+
+                                <span class="visually-hidden">unread messages</span>
+                            </span>
+                            </button>
                         </a>
-                        <ul class="dropdown-menu slideDown">
+                        <ul class="dropdown-menu slideDown p-2">
+                            <li><a class="dropdown-item" href="/perfil"><button type="button" class="btn btn-light position-relative" style={{backgroundColor:"transparent",border:"none"}}>
+                                Notificaciones
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                        99+
+                                        <span class="visually-hidden">unread messages</span>
+                                    </span>
+                                </button></a>
+                            </li>
+                            <li><hr class="dropdown-divider"/></li>
                             <li><a class="dropdown-item" href="/perfil">Ver Perfil</a></li>
+                            <li><a class="dropdown-item" href="/dashboard">Modo admin</a></li>
                             <li><hr class="dropdown-divider"/></li>
                             <li><a class="dropdown-item" href="/login">Log off</a></li>
                         </ul>
