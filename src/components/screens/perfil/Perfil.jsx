@@ -4,6 +4,8 @@ import { useState } from "react";
 import Header from "../common/Header";
 
 export default function Perfil(){
+    sessionStorage.setItem("incidente","");
+    
     const [value, onChangeDate] = useState(new Date());
 
       const incidentMinimized=()=>{

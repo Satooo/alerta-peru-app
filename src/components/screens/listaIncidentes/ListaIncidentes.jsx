@@ -1,12 +1,43 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Header from "../common/Header";
 
 import Popover from "react-bootstrap/Popover"
 import OverlayTrigger from "react-bootstrap/OverlayTrigger"
 import Button from "react-bootstrap/Button"
 
-export default function ListaIncidentes(){
+import { getDatabase, ref, child, set, get, onValue } from "firebase/database";
 
+export default function ListaIncidentes(props){
+
+    const db = props.db
+
+    let user = sessionStorage.getItem("loggedUser");
+    sessionStorage.setItem("incidente","");
+
+    const [incidentes,setIncidentes]=useState({});
+
+    function getIncidentes(){
+        const dbRef = ref(db);
+        get(child(dbRef, `posts/`)).then((snapshot) => {
+          if (snapshot.exists()) {
+            console.log(snapshot.val());
+            setIncidentes(snapshot.val())
+          } else {
+            console.log("No data available");
+          }
+        }).catch((error) => {
+          console.error(error);
+        });
+      }
+
+    useEffect(()=>{
+        getIncidentes()
+    },[])
+
+    useEffect(()=>{
+        console.log(incidentes)
+        
+    },[incidentes])
       const incidentMinimized=()=>{
         return(
             <div className="mt-3 mb-3 d-flex flex-row w-80" style={{borderRadius:"20px"}} id="incidentCard">
@@ -31,6 +62,49 @@ export default function ListaIncidentes(){
                 </div>
         )
       }
+      const incidentCard=(titulo,descripcion,tipo,user,fecha)=>{
+        return(
+            <div className="mt-3 mb-3 d-flex flex-row w-100" style={{borderRadius:"20px"}} id="incidentCard">
+                    <div>
+                        <img src={require("../../images/robbery.jpg")} style={{height:"300px",width:"300px",borderRadius:"20px",objectFit:"cover",marginBottom:"1px"}}/>
+                    </div>
+                    <div style={{padding:"20px",width:"100%"}}>
+                        <h3 className="w-100">{titulo}</h3>
+                        <p className="mt-3"><span class="badge text-bg-dark">{tipo}</span><i className="m-2">{fecha}</i></p>
+                        <div className="d-flex flex-column mb-3">
+                                <span style={{width:"100%",padding:"5px",fontSize:"12px",textAlign:"start"}}>Publicado por</span>
+                                <div>
+                                    <img src={require("../../images/fotolinkedin.png")} style={{width:"20px",borderRadius:"100px"}}/>
+                                    <b style={{width:"100%",padding:"5px",marginTop:"-5px",textAlign:"start"}}>{user}</b>
+                                </div>
+                            </div>
+                        <p style={{textAlign:"justify"}}>{descripcion}</p>
+                        <div className="w-100 d-flex flex-row justify-content-end">
+                          <a href="/incidente"><button className="btn btn-primary rounded-pill" onClick={()=>{
+                            sessionStorage.setItem("incidente",titulo)
+                          }}>Ver más</button></a>
+                        </div>
+                    </div>
+                </div>
+        )
+      }
+    function showIncidentes(){
+        if(Object.keys(incidentes).length>0){
+            let incidentesKeys=Object.keys(incidentes)
+            console.log(incidentesKeys.length)
+            let incidentesDisplay = Array(incidentesKeys.length).fill(0).map((_,index)=>{
+                console.log(incidentes[incidentesKeys[index]].descripcion)
+                if(incidentes[incidentesKeys[index]].descripcionCompleta.length>0){
+                    return (
+                        incidentCard(incidentes[incidentesKeys[index]].titulo,incidentes[incidentesKeys[index]].descripcion,incidentes[incidentesKeys[index]].tipo,incidentes[incidentesKeys[index]].user,incidentes[incidentesKeys[index]].fecha,incidentes[incidentesKeys[index]].descripcionCompleta)
+                    )
+                }
+                
+            })
+            return incidentesDisplay
+        }
+        
+    }
     const TopIncidentes=()=>{
         return(
             <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
@@ -123,6 +197,7 @@ export default function ListaIncidentes(){
             <Header/>
             <div className="container bg-light d-flex flex-column align-items-center justify-content-center" style={{borderRadius:"20px",paddingTop:"20px"}}>
                 <TopIncidentes/>
+                {showIncidentes()}
                 {Array(20).fill(0).map((_,index)=>{
                     return (
                         incidentMinimized()

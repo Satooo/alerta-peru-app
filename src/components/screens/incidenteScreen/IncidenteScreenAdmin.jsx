@@ -5,6 +5,8 @@ import Geocode from "react-geocode";
 import HeaderAdmin from "../common/HeaderAdmin";
 
 export default function IncidenteScreenAdmin(){
+  sessionStorage.setItem("incidente","");
+  
     const [address,setAddress]=useState("");
     const defaultProps = {
         center: {
@@ -64,7 +66,7 @@ export default function IncidenteScreenAdmin(){
             <span style={{backgroundColor:(props.miMark)?"#1976d2":"#f44336",padding:"0px 0px 10px 10px",color:"white",borderBottomRightRadius:"10px"}}>
                 {props.fecha}<button id="markerButton" style={{display:(props.miMark)?"none":"block"}}>Ver más</button>
             </span>
-            <div style={{width:"0",height:"0",borderLeft:"20px solid transparent;",borderRight:"30px solid transparent",borderTop:(props.miMark)?"20px solid #1976d2":"20px solid #f44336"}}></div>
+            <div style={{width:"0",height:"0",borderLeft:"0px solid transparent",borderRight:"15px solid transparent",borderTop:(props.miMark)?"10px solid #1976d2":"10px solid #f44336"}}></div>
         </div>
          
         )

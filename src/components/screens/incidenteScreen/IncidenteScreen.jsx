@@ -3,8 +3,25 @@ import Header from "../common/Header";
 import GoogleMapReact from 'google-map-react';
 import Geocode from "react-geocode";
 
-export default function IncidenteScreen(){
+import { getDatabase, ref, child, set, get, onValue } from "firebase/database";
+
+
+export default function IncidenteScreen(props){
+  let user = sessionStorage.getItem("loggedUser")
+  let incidente = sessionStorage.getItem("incidente")
+
     const [address,setAddress]=useState("");
+    const [lat,setLat]=useState("");
+    const [lng,setLng]=useState("");
+    const [titulo,setTitulo]=useState("");
+    const [descripcion,setDescripcion]=useState("");
+    const [tipo,setTipo]=useState("");
+    const [fecha,setFecha]=useState("");
+    const [autor,setAutor]=useState("");
+    const [descripcionComp,setDescripcionComp]=useState("")
+
+    const db = props.db
+
     const defaultProps = {
         center: {
           lat: -12.138500,
@@ -19,10 +36,37 @@ export default function IncidenteScreen(){
         disableDefaultUI: true
       }
 
+      function getIncidenteData(titulo){
+        const dbRef = ref(db);
+        get(child(dbRef, `posts/`+titulo)).then((snapshot) => {
+          if (snapshot.exists()) {
+            console.log(snapshot.val());
+            setAutor(snapshot.val().user)
+            setTitulo(snapshot.val().titulo);
+            setDescripcion(snapshot.val().descripcion);
+            setFecha(snapshot.val().fecha)
+            setTipo(snapshot.val().tipo);
+            setDescripcionComp(snapshot.val().descripcionCompleta);
+          } else {
+            console.log("No data available");
+          }
+        }).catch((error) => {
+          console.error(error);
+        });
+      }
+
+
+      useEffect(()=>{
+        
+        if(incidente.length>0){
+          getIncidenteData(incidente)
+        }
+      },[])
+
       Geocode.setApiKey("AIzaSyDj9I51Cd1WrcAGKgGmi7m9y7GztW0mtcI");
   Geocode.setLanguage("en");
   Geocode.setLocationType("ROOFTOP");
-
+      
       useEffect(()=>{
         Geocode.fromLatLng("-12.138500"," -77.016126").then(
             (response) => {
@@ -53,6 +97,36 @@ export default function IncidenteScreen(){
           );
       },[])
 
+      useEffect(()=>{
+        Geocode.fromLatLng(lat,lng).then(
+          (response) => {
+            const address = response.results[0].formatted_address;
+            let city, state, country;
+            for (let i = 0; i < response.results[0].address_components.length; i++) {
+              for (let j = 0; j < response.results[0].address_components[i].types.length; j++) {
+                switch (response.results[0].address_components[i].types[j]) {
+                  case "locality":
+                    city = response.results[0].address_components[i].long_name;
+                    break;
+                  case "administrative_area_level_1":
+                    state = response.results[0].address_components[i].long_name;
+                    break;
+                  case "country":
+                    country = response.results[0].address_components[i].long_name;
+                    break;
+                }
+              }
+            }
+            console.log(city, state, country);
+            console.log(address);
+            setAddress(address)
+          },
+          (error) => {
+            console.error(error);
+          }
+        );
+      },[lat,lng])
+
       const Marker = props => {
         return (
         
@@ -63,7 +137,7 @@ export default function IncidenteScreen(){
             <span style={{backgroundColor:(props.miMark)?"#1976d2":"#f44336",padding:"0px 0px 10px 10px",color:"white",borderBottomRightRadius:"10px"}}>
                 {props.fecha}<button id="markerButton" style={{display:(props.miMark)?"none":"block"}}>Ver más</button>
             </span>
-            <div style={{width:"0",height:"0",borderLeft:"20px solid transparent;",borderRight:"30px solid transparent",borderTop:(props.miMark)?"20px solid #1976d2":"20px solid #f44336"}}></div>
+            <div style={{width:"0",height:"0",borderLeft:"0px solid transparent",borderRight:"15px solid transparent",borderTop:(props.miMark)?"10px solid #1976d2":"10px solid #f44336"}}></div>
         </div>
          
         )
@@ -76,10 +150,10 @@ export default function IncidenteScreen(){
                 <div style={{position:"relative",textAlign:"center",width:"100%"}}>
                     <img src={require("../../images/loginBackground.jpg")} style={{width:"100%",maxHeight:"300px",objectFit:"cover",borderTopRightRadius:"20px",borderTopLeftRadius:"20px",filter:"brightness(0.5)"}}/>
                     <div style={{position:"absolute",top:"30%",width:"100%",color:"white"}}>
-                        <h1>Nombre incidente x</h1>
+                        <h1>{(titulo!="")?titulo:"Nombre incidente x"}</h1>
                         <div className="mt-3">
-                            <p><span>Fecha de incidente: 12/04 3:00pm</span></p>
-                            <p><span>Tipo de incidente: <span class="badge rounded-pill bg-light text-dark" style={{marginRight:"20px"}}>Tipo</span></span></p>
+                            <p><span>Fecha de incidente: {(fecha!="")?fecha:"12/04 3:00pm"}</span></p>
+                            <p><span>Tipo de incidente: <span class="badge rounded-pill bg-light text-dark" style={{marginRight:"20px"}}>{(tipo!="")?tipo:"Tipo"}</span></span></p>
                         </div>
                     </div>
                 </div>
@@ -89,7 +163,7 @@ export default function IncidenteScreen(){
                                     <img src={require("../../images/fotolinkedin.png")} style={{width:"50px",borderRadius:"100px",marginRight:"10px"}}/>
                                     <div className="d-flex flex-column w-100" style={{color:"black"}}>
                                         <span style={{width:"100%",padding:"5px",fontSize:"12px",textAlign:"start"}}>Publicado por</span>
-                                        <b style={{width:"100%",padding:"5px",marginTop:"-5px",textAlign:"start"}}>Andrés Sato</b>
+                                        <b style={{width:"100%",padding:"5px",marginTop:"-5px",textAlign:"start"}}>{(autor!="")?autor:"Andrés Sato"}</b>
                                     </div>
                                     
                         </div>
@@ -115,11 +189,11 @@ export default function IncidenteScreen(){
                             <div data-bs-spy="scroll" data-bs-target="#navbar-example3" data-bs-offset="0" tabindex="0">
                             <h4 id="item-1">Información general</h4>
                             <p style={{backgroundColor:"#eeeeee",padding:"10px",borderRadius:"20px"}}>
-                            There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. .
+                            {(descripcion!="")?descripcion:"There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. ."}
                             </p>
                             <h5 id="item-1-1">Descripción</h5>
                             <p style={{backgroundColor:"#eeeeee",padding:"10px",borderRadius:"20px"}}>
-                            There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with a handful of model sentence structures, to generate Lorem Ipsum which looks reasonable. The generated Lorem Ipsum is therefore always free from repetition, injected humour, or non-characteristic words etc.
+                            {(descripcionComp!="")?descripcionComp:"There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with a handful of model sentence structures, to generate Lorem Ipsum which looks reasonable. The generated Lorem Ipsum is therefore always free from repetition, injected humour, or non-characteristic words etc."}
                             </p>
                             <h5 id="item-1-2">Ubicación</h5>
                             <p style={{backgroundColor:"#eeeeee",padding:"10px",borderRadius:"20px"}}>

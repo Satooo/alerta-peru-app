@@ -1,7 +1,26 @@
 import React from "react"
+import { useNavigate } from "react-router-dom";
 import GoogleMapReact from 'google-map-react';
+import { useState,useEffect } from "react";
 
-export default function Login(){
+
+import { getDatabase, ref, child, set, get, onValue } from "firebase/database";
+
+export default function Login(props){
+    const db = props.db
+
+    sessionStorage.setItem("incidente","");
+
+    const [screen,setScreen]=useState(1)
+    const [cantidadUsers,setCantidadUsers]=useState(0)
+    const [user,setUser]=useState("")
+    const [pass,setPass]=useState("")
+    const [mail,setMail]=useState("")
+
+    const [loginSuccess,setLoginSuccess]=useState(false)
+
+    const navigate = useNavigate();
+
     const defaultProps = {
         center: {
           lat: -12.142500,
@@ -25,8 +44,121 @@ export default function Login(){
             <span style={{backgroundColor:(props.miMark)?"#1976d2":"#f44336",padding:"0px 0px 10px 10px",color:"white",borderBottomRightRadius:"10px"}}>
                 {props.fecha}
             </span>
-            <div style={{width:"0",height:"0",borderLeft:"20px solid transparent;",borderRight:"30px solid transparent",borderTop:(props.miMark)?"20px solid #1976d2":"20px solid #f44336"}}></div>
+            <div style={{width:"0",height:"0",borderLeft:"0px solid transparent",borderRight:"15px solid transparent",borderTop:(props.miMark)?"10px solid #1976d2":"10px solid #f44336"}}></div>
         </div>
+      }
+
+      function writeUserData(name, password) {
+      
+        set(ref(db, 'users/' + name), {
+          username: name,
+          password : password
+        });
+      }
+  
+      function getCantidadUsers(){
+        const dbRef = ref(db);
+        get(child(dbRef, `users/`)).then((snapshot) => {
+          if (snapshot.exists()) {
+            console.log(Object.keys(snapshot.val()).length);
+            setCantidadUsers(Object.keys(snapshot.val()).length)
+          } else {
+            console.log("No data available");
+          }
+        }).catch((error) => {
+          console.error(error);
+        });
+      }
+
+      function getLogin(user,password){
+        const dbRef = ref(db);
+        get(child(dbRef, `users/`+user)).then((snapshot) => {
+          if (snapshot.exists()) {
+            console.log(snapshot.val().password);
+            if(password==snapshot.val().password){
+                console.log("success")
+                setLoginSuccess(true)
+                window.location.pathname="/"
+            }else{
+                console.log("fail")
+                setLoginSuccess(false)
+            }
+          } else {
+            console.log("No data available");
+          }
+        }).catch((error) => {
+          console.error(error);
+        });
+      }
+  
+      useEffect(()=>{
+        console.log(getCantidadUsers())
+      },[])
+
+      function signUp(){
+        return(
+            <div className="card" style={{width: "30rem",borderRadius:"20px",border:"none",overflow:"hidden",filter:"drop-shadow(2px 0px 20px gray)",display:(screen==2)?"block":"none"}} id="loginCard">
+                        <span style={{marginBottom:"-100px",zIndex:"1",color:"white",marginLeft:"30px",marginTop:"50px",display:"flex",alignItems:"center"}}>
+                            <img src={require("../../icons/alerta-peru-logo.png")} style={{width:"40px",marginRight:"10px",filter:"brightness(0%) invert(100%) "}}/>
+                            <span style={{fontSize:"30px"}}>Alerta<b>Perú</b></span>
+                        </span>
+                        <img src={require("../../images/loginBackground.jpg")} class="card-img-top" alt="..." style={{height:"300px",zIndex:"0"}}/>
+                        <div className="card-body">
+                                <h5 className="card-title">
+                                
+                                </h5>
+                                <h6 className="card-subtitle mb-2 text-body-secondary">Bienvenido</h6>
+                                <p className="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                                <input type="text" className="form-control mb-3" placeholder="Usuario" aria-label="Username" aria-describedby="basic-addon1" style={{backgroundColor:"#eeeeee",borderRadius:"20px"}} onChange={(e)=>{
+                                    setUser(e.target.value)
+                                }}/>
+                                <input type="text" className="form-control mb-3" placeholder="Contraseña" aria-label="Username" aria-describedby="basic-addon1" style={{backgroundColor:"#eeeeee",borderRadius:"20px"}} onChange={(e)=>{
+                                    setPass(e.target.value)
+                                }}/>
+                                <button href="#" class="btn bg-transparent"  onClick={()=>{
+                                    setScreen(1)
+                                    }}>Cancelar</button>
+                                <a href="/"><button href="#" class="btn btn-primary" style={{borderRadius:"20px"}} onClick={()=>{
+                                    setScreen(1)
+                                    writeUserData(user,pass)
+                                    getCantidadUsers()
+                                }}>Crear cuenta</button></a>
+                        </div>
+                    </div>
+        )
+      }
+      function signIn(){
+        return(
+            <div className="card" style={{width: "30rem",borderRadius:"20px",border:"none",overflow:"hidden",filter:"drop-shadow(2px 0px 20px gray)",display:(screen==1)?"block":"none"}} id="loginCard">
+                        <span style={{marginBottom:"-100px",zIndex:"1",color:"white",marginLeft:"30px",marginTop:"50px",display:"flex",alignItems:"center"}}>
+                            <img src={require("../../icons/alerta-peru-logo.png")} style={{width:"40px",marginRight:"10px",filter:"brightness(0%) invert(100%) "}}/>
+                            <span style={{fontSize:"30px"}}>Alerta<b>Perú</b></span>
+                        </span>
+                        <img src={require("../../images/loginBackground.jpg")} class="card-img-top" alt="..." style={{height:"300px",zIndex:"0"}}/>
+                        <div className="card-body">
+                                <h5 className="card-title">
+                                
+                                </h5>
+                                <h6 className="card-subtitle mb-2 text-body-secondary">Bienvenido</h6>
+                                <p className="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                                <input type="text" className="form-control mb-3" placeholder="Usuario" aria-label="Username" aria-describedby="basic-addon1" style={{backgroundColor:"#eeeeee",borderRadius:"20px"}} onChange={(e)=>{
+                                    setUser(e.target.value)
+                                }}/>
+                                <input type="text" className="form-control mb-3" placeholder="Contraseña" aria-label="Username" aria-describedby="basic-addon1" style={{backgroundColor:"#eeeeee",borderRadius:"20px"}} onChange={(e)=>{
+                                    setPass(e.target.value)
+                                }}/>
+                                <button href="#" class="btn bg-transparent" onClick={()=>{
+                                    setScreen(2)
+                                    setUser("")
+                                    setPass("")
+                                    }}>Sign up</button>
+                                <button href="#" class="btn btn-primary" style={{borderRadius:"20px"}} onClick={()=>{
+                                    sessionStorage.setItem("loggedUser", user);
+                                    getLogin(user,pass)
+                                }}>Log in</button>
+                        </div>
+                    </div>
+        )
       }
 
     return (
@@ -49,24 +181,8 @@ export default function Login(){
                 </GoogleMapReact>
             </div>
             <div style={{width:"100%",height:"100vh",backgroundColor:"transparent",zIndex:"2",position:"absolute"}} className="d-flex justify-content-center align-items-center" >
-                    <div className="card" style={{width: "30rem",borderRadius:"20px",border:"none",overflow:"hidden",filter:"drop-shadow(2px 0px 20px gray)"}} id="loginCard">
-                        <span style={{marginBottom:"-100px",zIndex:"1",color:"white",marginLeft:"30px",marginTop:"50px",display:"flex",alignItems:"center"}}>
-                            <img src={require("../../icons/alerta-peru-logo.png")} style={{width:"40px",marginRight:"10px",filter:"brightness(0%) invert(100%) "}}/>
-                            <span style={{fontSize:"30px"}}>Alerta<b>Perú</b></span>
-                        </span>
-                        <img src={require("../../images/loginBackground.jpg")} class="card-img-top" alt="..." style={{height:"300px",zIndex:"0"}}/>
-                        <div className="card-body">
-                                <h5 className="card-title">
-                                
-                                </h5>
-                                <h6 className="card-subtitle mb-2 text-body-secondary">Bienvenido</h6>
-                                <p className="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                                <input type="text" className="form-control mb-3" placeholder="Usuario" aria-label="Username" aria-describedby="basic-addon1" style={{backgroundColor:"#eeeeee",borderRadius:"20px"}}/>
-                                <input type="text" className="form-control mb-3" placeholder="Contraseña" aria-label="Username" aria-describedby="basic-addon1" style={{backgroundColor:"#eeeeee",borderRadius:"20px"}}/>
-                                <button href="#" class="btn bg-transparent">Sign up</button>
-                                <a href="/"><button href="#" class="btn btn-primary" style={{borderRadius:"20px"}}>Log in</button></a>
-                        </div>
-                    </div>
+                    {signUp()}
+                    {signIn()}
                 </div>
             
             

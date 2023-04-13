@@ -15,6 +15,8 @@ import HeaderAdmin from "../common/HeaderAdmin";
 export default function Dashboard(){
     const [seccion,setSeccion]=useState("pendientes")
     const [filter,setFilter]=useState("")
+    sessionStorage.setItem("incidente","");
+    
     const incidentMinimized=()=>{
         return(
             <div className="mt-3 mb-3 d-flex flex-row w-80" style={{borderRadius:"20px"}} id="incidentCard">

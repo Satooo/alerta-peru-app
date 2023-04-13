@@ -4,12 +4,69 @@ import Header from "../common/Header"
 import ImageUploading from 'react-images-uploading';
 import DateTimePicker from 'react-datetime-picker';
 
+import { getDatabase, ref, child, set, get, onValue } from "firebase/database";
 
-export default function AgregarIncidente(){
+
+export default function AgregarIncidente(props){
+    let incidente = sessionStorage.getItem("incidente");
+    const db = props.db
     const [address,setAddress]=useState("Ramón Ribeyro 998, Barranco");
     const [value, onChangeDate] = useState(new Date());
     const [images, setImages] = React.useState([]);
     const maxNumber = 4;
+
+    const [lat,setLat]=useState("");
+    const [lng,setLng]=useState("");
+    const [titulo,setTitulo]=useState("");
+    const [descripcion,setDescripcion]=useState("");
+    const [tipo,setTipo]=useState("");
+    const [fecha,setFecha]=useState("");
+    const [autor,setAutor]=useState("");
+    const [descripcionComp,setDescripcionComp]=useState("");
+    const [lugar,setLugar]=useState("")
+
+    function getIncidenteData(titulo){
+      const dbRef = ref(db);
+      get(child(dbRef, `posts/`+titulo)).then((snapshot) => {
+        if (snapshot.exists()) {
+          console.log(titulo)
+          console.log(snapshot.val());
+          setAutor(snapshot.val().user)
+          setTitulo(snapshot.val().titulo);
+          setDescripcion(snapshot.val().descripcion);
+          setFecha(snapshot.val().fecha);
+          setTipo(snapshot.val().tipo);
+          setLat(snapshot.val().lat);
+          setLng(snapshot.val().lng);
+          setLugar(snapshot.val().lugar);
+        } else {
+          console.log("No data available");
+        }
+      }).catch((error) => {
+        console.error(error);
+      });
+    }
+
+    function writeIncidente(titulo, descripcionComp) {
+      
+      set(ref(db, 'posts/' + titulo), {
+        user: autor,
+        titulo: titulo,
+        descripcion : descripcion,
+        tipo:tipo,
+        lugar: lugar,
+        fecha: fecha,
+        lat:lat,
+        lng:lng,
+        descripcionCompleta: descripcionComp
+      });
+    }
+
+    useEffect(()=>{
+      getIncidenteData(incidente);
+      console.log(incidente)
+    },[])
+
     const onChangeImage = (imageList, addUpdateIndex) => {
         // data for submit
         console.log(imageList, addUpdateIndex);
@@ -74,11 +131,11 @@ export default function AgregarIncidente(){
               </div>
               <div class="input-group mt-3">
                 <span class="input-group-text"><b>Titulo de incidente</b></span>
-                <input type="text" class="form-control" placeholder="... " aria-label="Titulodeincidente" aria-describedby="basic-addon1"></input>
+                <input type="text" class="form-control" aria-label="Titulodeincidente" aria-describedby="basic-addon1" placeholder={(titulo!="")?titulo:""}></input>
               </div>
               <div class="input-group mt-3">
                 <span class="input-group-text"><b>Descripción breve</b></span>
-                <textarea class="form-control" aria-label="With textarea"></textarea>
+                <textarea class="form-control" aria-label="With textarea" placeholder={(descripcion!="")?descripcion:""}></textarea>
               </div>
               <div className="mt-3 w-100 d-flex flex-row justify-content-between" >
                 <b>Tiempo del incidente</b>
@@ -90,7 +147,7 @@ export default function AgregarIncidente(){
         return(
             <div class="input-group mt-3">
                 <span class="input-group-text"><b>Descripción del incidente</b></span>
-                <textarea class="form-control" aria-label="With textarea">..</textarea>
+                <textarea class="form-control" aria-label="With textarea" onChange={(e)=>{setDescripcionComp(e.target.value)}}>..</textarea>
               </div>
         )
     }
@@ -99,8 +156,16 @@ export default function AgregarIncidente(){
             <Header/>
             <div className="container bg-light d-flex flex-column align-items-center justify-content-center" style={{borderRadius:"20px",padding:"20px"}}>
                 <div className="w-100 d-flex justify-content-between">
-                    <a href="/"><button className="btn btn-secondary rounded-pill">Atrás</button></a>
-                    <a href="/incidente"><button className="btn btn-primary rounded-pill">Siguiente</button></a>
+                    <a href="/"><button className="btn btn-secondary rounded-pill" onClick={()=>{
+                      db.ref(`posts/${titulo}`).remove()
+                      sessionStorage.setItem("incidente","")
+                    }}>Atrás</button></a>
+                    <a href="/incidente"><button className="btn btn-primary rounded-pill" onClick={()=>{
+                      if(descripcionComp!=""){
+                        writeIncidente(titulo,descripcionComp);
+                        sessionStorage.setItem("incidente",titulo);
+                      }
+                    }}>Siguiente</button></a>
                 </div>
                 {datosPreloaded()}
                 {description()}

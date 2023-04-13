@@ -10,13 +10,21 @@ import HeaderTopMenu from "../common/HeaderTopMap";
 import Popover from "react-bootstrap/Popover"
 import OverlayTrigger from "react-bootstrap/OverlayTrigger"
 
-export default function HomePage(){
+import { getDatabase, ref, child, set, get, onValue } from "firebase/database";
+
+export default function HomePage(props){
+    const db = props.db
+
+    let user = sessionStorage.getItem("loggedUser");
+    sessionStorage.setItem("incidente","");
+
     const [showSideBar, setShowSideBar]=useState(true)
     const [currentLat,setCurrentLat]=useState("-12.142500")
     const [currentLng,setCurrentLng]=useState("-77.006126")
     const [address,setAddress]=useState("")
     const [filter,setFilter]=useState("")
     const [tipoIncidente,setTipoIncidente]=useState("")
+    const [titulo,setTitulo]=useState("");
     const [descripcionIncidente,setDescripcionIncidente]=useState("")
     const [value, onChangeDate] = useState(new Date());
 
@@ -24,6 +32,43 @@ export default function HomePage(){
 
     const [images, setImages] = React.useState([]);
     const maxNumber = 4;
+
+    function writeIncidente(name, titulo, descripcion, tipo, lugar, fecha,lat,lng) {
+      
+      set(ref(db, 'posts/' + titulo), {
+        user: name,
+        titulo: titulo,
+        descripcion : descripcion,
+        tipo:tipo,
+        lugar: lugar,
+        fecha: fecha,
+        lat:lat,
+        lng:lng
+      });
+    }
+
+    function getData(userId){
+      const dbRef = ref(db);
+      get(child(dbRef, `posts/`)).then((snapshot) => {
+        if (snapshot.exists()) {
+          console.log(snapshot.val());
+        } else {
+          console.log("No data available");
+        }
+      }).catch((error) => {
+        console.error(error);
+      });
+    }
+    
+
+    useEffect(()=>{
+      console.log(getData("1"))
+      console.log(props.user)
+    },[])
+
+    useEffect(()=>{
+      console.log(value)
+    },[value])
 
 
     const onChangeImage = (imageList, addUpdateIndex) => {
@@ -131,7 +176,7 @@ export default function HomePage(){
             <div className="d-flex flex-row justify-content-between" style={{position:"absolute",bottom:"0",zIndex:2,width:"80%",textAlign:"center",backgroundColor:"white",padding:"20px",borderTopLeftRadius:"20px",borderTopRightRadius:"20px",filter:"drop-shadow(1px 0px 5px gray)"}} id="bottomMenu">
                 <div className="d-flex flex-row justify-content-center align-items-center w-100">
                     <img src={require("../../icons/location.png")} style={{width:"20px",marginRight:"20px"}}/> 
-                    <button type="button" class="btn" style={{backgroundColor:"#eeeeee",padding:"10px",borderRadius:"20px",textAlign:"start",width:"100%",height:"70px",overflow:"scroll"}} data-bs-toggle="modal" data-bs-target="#direccionInfo">
+                    <button type="button" className="btn" style={{backgroundColor:"#eeeeee",padding:"10px",borderRadius:"20px",textAlign:"start",width:"100%",height:"70px",overflow:"scroll"}} data-bs-toggle="modal" data-bs-target="#direccionInfo">
                       {address}
                     </button>
                 </div>
@@ -146,7 +191,9 @@ export default function HomePage(){
                     <div className="d-flex flex-row justify-content-between" style={{backgroundColor:"#eeeeee",borderRadius:"20px",width:"100%"}}>
                         <button style={{padding:"15px",borderTopLeftRadius:"20px",borderBottomLeftRadius:"20px",border:"none",textAlign:"center",width:"100%",borderRight:"1px solid lightgray"}} id="filter" data-bs-toggle="modal" data-bs-target="#TipoModal" onClick={()=>{props.setFilter("tipo")}}> Tipo </button>
                         <button style={{border:"none",padding:"15px",textAlign:"center",width:"100%",borderRight:"1px solid lightgray"}} id="filter" data-bs-toggle="modal" data-bs-target="#FechaModal" onClick={()=>{props.setFilter("fecha")}}>Fecha</button>
-                        <button style={{padding:"10px",borderTopRightRadius:"20px",borderBottomRightRadius:"20px",border:"none",textAlign:"center",width:"100%",border:"none"}} id="filter" data-bs-toggle="modal" data-bs-target="#FrecuenciaModal" onClick={()=>{props.setFilter("frecuencia")}}>Frecuencia</button>
+                        <button style={{padding:"10px",borderTopRightRadius:"20px",borderBottomRightRadius:"20px",border:"none",textAlign:"center",width:"100%",border:"none"}} id="filter" data-bs-toggle="modal" data-bs-target="#FrecuenciaModal" onClick={()=>{
+                          props.setFilter("frecuencia")
+                          }}>Frecuencia</button>
                     </div>
                 </div>
             </div>
@@ -156,7 +203,7 @@ export default function HomePage(){
 
    const Marker = props => {
     return (
-      <OverlayTrigger trigger="hover" placement="right" overlay={(!props.miMark)?(
+      <OverlayTrigger trigger="focus" placement="right" overlay={(!props.miMark)?(
         <Popover id="popoverMap">
         <p><b>Nombre incidente</b> </p>
         <p style={{color:"gray"}}><i>Publicado por Andrés Sato</i></p>
@@ -171,7 +218,7 @@ export default function HomePage(){
         <span style={{backgroundColor:(props.miMark)?"#1976d2":"#f44336",padding:"0px 0px 10px 10px",color:"white",borderBottomRightRadius:"10px"}}>
             {props.fecha}<button id="markerButton" style={{display:(props.miMark)?"none":"block"}}>Ver más</button>
         </span>
-        <div style={{width:"0",height:"0",borderLeft:"20px solid transparent;",borderRight:"30px solid transparent",borderTop:(props.miMark)?"20px solid #1976d2":"20px solid #f44336"}}></div>
+        <div style={{width:"0",height:"0",borderLeft:"0px solid transparent",borderRight:"15px solid transparent",borderTop:(props.miMark)?"10px solid #1976d2":"10px solid #f44336"}}></div>
     </div>
      
     </OverlayTrigger>
@@ -180,29 +227,29 @@ export default function HomePage(){
 
   function FilterTipo() {
     return(
-      <div class="modal fade" id="TipoModal" tabindex="-1" aria-labelledby="TipoModalAria" aria-hidden="true" >
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h1 class="modal-title fs-5" id="exampleModalLabel">Tipo</h1>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      <div className="modal fade" id="TipoModal" tabIndex="-1" aria-labelledby="TipoModalAria" aria-hidden="true" >
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h1 className="modal-title fs-5" id="exampleModalLabel">Tipo</h1>
+              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
+            <div className="modal-body">
               <div className="row">
                   {
                     Array(10).fill(0).map((_,index)=>{
                       return (
-                        <div className="col-lg-4 d-flex flex-row justify-content-center">
+                      <div className="col-lg-4 d-flex flex-row justify-content-center">
                         <button className="btn mt-2" style={{backgroundColor:"#f5f5f5",borderRadius:"20px"}}>Robo</button>
-                    </div>
+                      </div>
                       )
                     })
                   }
               </div>
             </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-              <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onClick={()=>{
+            <div className="modal-footer">
+              <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+              <button type="button" className="btn btn-primary" data-bs-dismiss="modal" onClick={()=>{
                 setFilter("fecha")
               }}>Aceptar</button>
             </div>
@@ -214,14 +261,14 @@ export default function HomePage(){
 
   function FilterFecha() {
     return(
-      <div class="modal fade" id="FechaModal" tabindex="-1" aria-labelledby="FechaModalAria" aria-hidden="true" >
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h1 class="modal-title fs-5" id="exampleModalLabel">Fecha</h1>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      <div className="modal fade" id="FechaModal" tabindex="-1" aria-labelledby="FechaModalAria" aria-hidden="true" >
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h1 className="modal-title fs-5" id="exampleModalLabel">Fecha</h1>
+              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
+            <div className="modal-body">
               <div>
               <b>Incidentes cerca a: </b>
               <p style={{backgroundColor:"#f5f5f5",padding:"10px",borderRadius:"20px",marginTop:"10px"}}>{address}</p>
@@ -231,9 +278,9 @@ export default function HomePage(){
                 <DateTimePicker onChange={onChangeDate} value={value} />
               </div>
             </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-              <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onClick={()=>{
+            <div className="modal-footer">
+              <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+              <button type="button" className="btn btn-primary" data-bs-dismiss="modal" onClick={()=>{
                 setFilter("fecha")
               }}>Aceptar</button>
             </div>
@@ -245,14 +292,14 @@ export default function HomePage(){
 
   function FilterFrecuencia(){
     return(
-      <div class="modal fade" id="FrecuenciaModal" tabindex="-1" aria-labelledby="FrecuenciaModalAria" aria-hidden="true" >
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h1 class="modal-title fs-5" id="exampleModalLabel">Frecuencia</h1>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      <div className="modal fade" id="FrecuenciaModal" tabindex="-1" aria-labelledby="FrecuenciaModalAria" aria-hidden="true" >
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h1 className="modal-title fs-5" id="exampleModalLabel">Frecuencia</h1>
+              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
+            <div className="modal-body">
               <b>Lugar con mayor frecuencia de:</b>
               <div className="row mt-3">
                   {
@@ -266,9 +313,9 @@ export default function HomePage(){
                   }
               </div>
             </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-              <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onClick={()=>{
+            <div className="modal-footer">
+              <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+              <button type="button" className="btn btn-primary" data-bs-dismiss="modal" onClick={()=>{
                 setFilter("fecha")
               }}>Aceptar</button>
             </div>
@@ -280,21 +327,21 @@ export default function HomePage(){
 
   function direccionInfo() {
     return(
-      <div class="modal fade" id="direccionInfo" tabindex="-1" aria-labelledby="direccionInfoAria" aria-hidden="true" >
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h1 class="modal-title fs-5" id="exampleModalLabel">Cambiar dirección</h1>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      <div className="modal fade" id="direccionInfo" tabindex="-1" aria-labelledby="direccionInfoAria" aria-hidden="true" >
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h1 className="modal-title fs-5" id="exampleModalLabel">Cambiar dirección</h1>
+              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
+            <div className="modal-body">
               <div>
                 <p>Si desea cambiar de dirección puede hacer click en la dirección deseada. Esta señalizada por un marcador azúl con el nombre "Mi posición".</p>
                 <p style={{padding:"10px",backgroundColor:"#f5f5f5",borderRadius:"20px"}}>La dirección señalizada en el mapa es <b>{address}</b></p>
               </div>
             </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onClick={()=>{
+            <div className="modal-footer">
+              <button type="button" className="btn btn-primary" data-bs-dismiss="modal" onClick={()=>{
               }}>Aceptar</button>
             </div>
           </div>
@@ -305,39 +352,39 @@ export default function HomePage(){
 
   function AgregarIncidente() {
     return(
-      <div class="modal fade" id="AgregarIncidente" tabindex="-1" aria-labelledby="AgregarIncidenteAria" aria-hidden="true" >
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h1 class="modal-title fs-5" id="exampleModalLabel">Agregar incidencia</h1>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      <div className="modal fade" id="AgregarIncidente" tabindex="-1" aria-labelledby="AgregarIncidenteAria" aria-hidden="true" >
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h1 className="modal-title fs-5" id="exampleModalLabel">Agregar incidencia</h1>
+              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
+            <div className="modal-body">
               <b style={{marginRight:"10px"}}>Tipo de incidente</b>
-              <div class="btn-group dropend mb-3">
-              <button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" style={{backgroundColor:"#eeeeee",color:"black"}}>
+              <div className="btn-group dropend mb-3">
+              <button type="button" className="btn dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false" style={{backgroundColor:"#eeeeee",color:"black"}}>
                 {(tipoIncidente=="")?"Seleccionar tipo":tipoIncidente}
               </button>
-                <ul class="dropdown-menu">
-                <li><a class="dropdown-item" onClick={()=>{setTipoIncidente("Robo")}}>Robo</a></li>
-                <li><a class="dropdown-item" onClick={()=>{setTipoIncidente("Crimen")}}>Crimen</a></li>
-                <li><a class="dropdown-item" onClick={()=>{setTipoIncidente("Acoso")}}>Acoso</a></li>
-                <li><a class="dropdown-item" onClick={()=>{setTipoIncidente("Pérdida")}}>Pérdida</a></li>
-                <li><hr class="dropdown-divider"/></li>
-                <li><a class="dropdown-item">Otro</a></li>
+                <ul className="dropdown-menu">
+                <li><a className="dropdown-item" onClick={()=>{setTipoIncidente("Robo")}}>Robo</a></li>
+                <li><a className="dropdown-item" onClick={()=>{setTipoIncidente("Crimen")}}>Crimen</a></li>
+                <li><a className="dropdown-item" onClick={()=>{setTipoIncidente("Acoso")}}>Acoso</a></li>
+                <li><a className="dropdown-item" onClick={()=>{setTipoIncidente("Pérdida")}}>Pérdida</a></li>
+                <li><hr className="dropdown-divider"/></li>
+                <li><a className="dropdown-item">Otro</a></li>
                 </ul>
               </div>
               <div>
               <b>Lugar de incidente: </b>
               <button style={{backgroundColor:"#f5f5f5",padding:"10px",borderRadius:"20px",marginTop:"10px",textAlign:"left",border:"none"}} data-bs-dismiss="modal">{address}</button>
               </div>
-              <div class="input-group mt-3">
-                <span class="input-group-text"><b>Titulo de incidente</b></span>
-                <input type="text" class="form-control" placeholder="... " aria-label="Titulodeincidente" aria-describedby="basic-addon1"></input>
+              <div className="input-group mt-3">
+                <span className="input-group-text"><b>Titulo de incidente</b></span>
+                <input type="text" className="form-control" placeholder="... " aria-label="Titulodeincidente" aria-describedby="basic-addon1" onChange={(e)=>{setTitulo(e.target.value)}}></input>
               </div>
-              <div class="input-group mt-3">
-                <span class="input-group-text"><b>Descripción breve</b></span>
-                <textarea class="form-control" aria-label="With textarea"></textarea>
+              <div className="input-group mt-3">
+                <span className="input-group-text"><b>Descripción breve</b></span>
+                <textarea className="form-control" aria-label="With textarea" onChange={(e)=>{setDescripcionIncidente(e.target.value)}}></textarea>
               </div>
               <div className="mt-3 mb-3 w-100 d-flex flex-row justify-content-between" >
                 <b>Tiempo del incidente</b>
@@ -347,13 +394,19 @@ export default function HomePage(){
 
 
             </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onClick={()=>{
+            <div className="modal-footer">
+              <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={()=>{
                 setTipoIncidente("")
                 onChangeDate(new Date())
+                setTitulo("")
+                setDescripcionIncidente("")
                 onChangeImage([])
                 }}>Cancelar</button>
-              <a href="/agregar"><button type="button" class="btn btn-primary" data-bs-dismiss="modal" onClick={()=>{
+              <a href="/agregar"><button type="button" className="btn btn-primary" data-bs-dismiss="modal" onClick={()=>{
+                if(tipoIncidente!="" && value!="" && titulo!="" && descripcionIncidente!="" ){
+                  writeIncidente(user,titulo,descripcionIncidente,tipoIncidente,address,value.toString(),currentLat,currentLng)
+                  sessionStorage.setItem("incidente",titulo)
+                }
               }}>Continuar</button></a>
             </div>
           </div>
@@ -396,7 +449,7 @@ export default function HomePage(){
           
         </GoogleMapReact>
         <div style={{ height: '100vh', width: '100%',zIndex:"2"}}>
-        <HeaderTopMenu/>
+        <HeaderTopMenu setUser={props.setUser}/>
         <BottomMenu setFilter={setFilter}/>
         <SideMenu/>
       </div>
