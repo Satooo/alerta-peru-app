@@ -19,6 +19,7 @@ export default function IncidenteScreen(props){
     const [fecha,setFecha]=useState("");
     const [autor,setAutor]=useState("");
     const [descripcionComp,setDescripcionComp]=useState("")
+    const [lugar,setLugar]=useState("")
 
     const db = props.db
 
@@ -47,6 +48,7 @@ export default function IncidenteScreen(props){
             setFecha(snapshot.val().fecha)
             setTipo(snapshot.val().tipo);
             setDescripcionComp(snapshot.val().descripcionCompleta);
+            setLugar(snapshot.val().lugar);
           } else {
             console.log("No data available");
           }
@@ -197,7 +199,7 @@ export default function IncidenteScreen(props){
                             </p>
                             <h5 id="item-1-2">Ubicación</h5>
                             <p style={{backgroundColor:"#eeeeee",padding:"10px",borderRadius:"20px"}}>
-                                {address}
+                                {(lugar!="")?lugar:address}
                             </p>
                             <div style={{height:"300px",width:"800px"}}>
                                 <GoogleMapReact
@@ -207,12 +209,7 @@ export default function IncidenteScreen(props){
                                 yesIWantToUseGoogleMapApiInternals
                                 options={OPTIONS}
                                 >
-                                <Marker lat={-12.138500} lng={-77.016126} text="Robo" fecha="10/04 03:55 pm" onClick={()=>{console.log("hola")}}/>
-                                <Marker lat={-12.140500} lng={-77.015126} text="Acoso" fecha="10/04 04:55 pm"/>
-                                <Marker lat={-12.138800} lng={-77.000526} text="Pérdido" fecha="10/04 04:25 pm"/>
-                                <Marker lat={-12.148800} lng={-77.000526} text="Pérdido" fecha="10/04 04:25 pm"/>
-                                <Marker lat={-12.138800} lng={-77.020126} text="Pérdido" fecha="10/04 04:25 pm"/>
-                                <Marker lat={-12.138800} lng={-77.020126} text="Pérdido" fecha="10/04 04:25 pm"/>
+                                <Marker lat={(lat!="")?lat:-12.138500} lng={(lng!="")?lng:-77.016126} text={(tipo!="")?tipo:"incidente"} fecha="10/04 03:55 pm" onClick={()=>{console.log("hola")}}/>
                                 
                                 </GoogleMapReact>
                             </div>

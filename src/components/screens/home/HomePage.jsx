@@ -43,7 +43,8 @@ export default function HomePage(props){
         lugar: lugar,
         fecha: fecha,
         lat:lat,
-        lng:lng
+        lng:lng,
+        descripcionCompleta:""
       });
     }
 
