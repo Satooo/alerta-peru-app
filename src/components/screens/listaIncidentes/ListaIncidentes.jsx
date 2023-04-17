@@ -63,6 +63,7 @@ export default function ListaIncidentes(props){
         )
       }
       const incidentCard=(titulo,descripcion,tipo,user,fecha)=>{
+        const fechaDisplay = `${new Date(fecha).toLocaleDateString()} ${new Date(fecha).toLocaleTimeString()}`
         return(
             <div className="mt-3 mb-3 d-flex flex-row w-100" style={{borderRadius:"20px"}} id="incidentCard">
                     <div>
@@ -70,7 +71,7 @@ export default function ListaIncidentes(props){
                     </div>
                     <div style={{padding:"20px",width:"100%"}}>
                         <h3 className="w-100">{titulo}</h3>
-                        <p className="mt-3"><span class="badge text-bg-dark">{tipo}</span><i className="m-2">{fecha}</i></p>
+                        <p className="mt-3"><span class="badge text-bg-dark">{tipo}</span><i className="m-2">{fechaDisplay}</i></p>
                         <div className="d-flex flex-column mb-3">
                                 <span style={{width:"100%",padding:"5px",fontSize:"12px",textAlign:"start"}}>Publicado por</span>
                                 <div>
@@ -90,13 +91,23 @@ export default function ListaIncidentes(props){
       }
     function showIncidentes(){
         if(Object.keys(incidentes).length>0){
+            const sorted= []
+            Object.keys(incidentes).forEach((incidente)=>{
+                sorted.push({
+                    key: incidente,
+                    value: new Date(incidentes[incidente].fecha)
+                })
+            })
+            sorted.sort((a, b) => b.value - a.value)
+            console.log(sorted)
+            
             let incidentesKeys=Object.keys(incidentes)
-            console.log(incidentesKeys.length)
             let incidentesDisplay = Array(incidentesKeys.length).fill(0).map((_,index)=>{
-                console.log(incidentes[incidentesKeys[index]].descripcion)
-                if(incidentes[incidentesKeys[index]].descripcionCompleta.length>0){
+                let i = sorted[index].key
+                console.log(incidentes[i].descripcion)
+                if(incidentes[i].descripcionCompleta.length>0){
                     return (
-                        incidentCard(incidentes[incidentesKeys[index]].titulo,incidentes[incidentesKeys[index]].descripcion,incidentes[incidentesKeys[index]].tipo,incidentes[incidentesKeys[index]].user,incidentes[incidentesKeys[index]].fecha,incidentes[incidentesKeys[index]].descripcionCompleta)
+                        incidentCard(incidentes[i].titulo,incidentes[i].descripcion,incidentes[i].tipo,incidentes[i].user,incidentes[i].fecha,incidentes[i].descripcionCompleta)
                     )
                 }
                 
@@ -198,7 +209,7 @@ export default function ListaIncidentes(props){
             <div className="container bg-light d-flex flex-column align-items-center justify-content-center" style={{borderRadius:"20px",paddingTop:"20px"}}>
                 <TopIncidentes/>
                 {showIncidentes()}
-                {Array(20).fill(0).map((_,index)=>{
+                {Array(3).fill(0).map((_,index)=>{
                     return (
                         incidentMinimized()
                     )

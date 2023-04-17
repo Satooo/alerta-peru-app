@@ -5,14 +5,22 @@ import Geocode from "react-geocode";
 
 import { getDatabase, ref, child, set, get, onValue } from "firebase/database";
 
+import {
+  ref as storageRef,
+  uploadBytes,
+  getDownloadURL,
+  listAll,
+  list,
+} from "firebase/storage";
+
 
 export default function IncidenteScreen(props){
   let user = sessionStorage.getItem("loggedUser")
   let incidente = sessionStorage.getItem("incidente")
 
     const [address,setAddress]=useState("");
-    const [lat,setLat]=useState("");
-    const [lng,setLng]=useState("");
+    const [lat,setLat]=useState(-12.138500);
+    const [lng,setLng]=useState(-77.016126);
     const [titulo,setTitulo]=useState("");
     const [descripcion,setDescripcion]=useState("");
     const [tipo,setTipo]=useState("");
@@ -20,22 +28,62 @@ export default function IncidenteScreen(props){
     const [autor,setAutor]=useState("");
     const [descripcionComp,setDescripcionComp]=useState("")
     const [lugar,setLugar]=useState("")
+    const [ev1,setEv1]=useState("")
+    const [ev2,setEv2]=useState("")
+    const [ev3,setEv3]=useState("")
+    const [hora,setHora]=useState("")
+    const [defaultProps,setDefaultProps]=useState(
+      {
+        center: {
+          lat:-12.138500,
+          lng:-77.016126
+        },
+        zoom: 13
+      }
+    )
+    
+
+    const [imageUrls, setImageUrls] = useState([]);
+    
+
+    useEffect(() => {
+      const imagesListRef = storageRef(props.storage, `images/${titulo}/`);
+      console.log(imagesListRef);
+      listAll(imagesListRef).then((response) => {
+        response.items.forEach((item) => {
+          getDownloadURL(item).then((url) => {
+            setImageUrls((prev) => [...prev, url]);
+          });
+        });
+      });
+    }, [titulo]);
 
     const db = props.db
 
-    const defaultProps = {
-        center: {
-          lat: -12.138500,
-          lng: -77.016126
-        },
-        zoom: 16
-      };
     
       const OPTIONS = {
-        minZoom: 16,
+        minZoom: 13,
         maxZoom: 20,
         disableDefaultUI: true
       }
+
+      useEffect(()=>{
+        console.log(lat)
+        console.log(lng)
+        setDefaultProps(
+          {
+            center: {
+              lat:Number(lat),
+              lng:Number(lng)
+            },
+            zoom: 13
+          }
+        )
+      },[lat,lng])
+
+      useEffect(()=>{
+        console.log(defaultProps.center)
+      },[defaultProps])
 
       function getIncidenteData(titulo){
         const dbRef = ref(db);
@@ -45,10 +93,16 @@ export default function IncidenteScreen(props){
             setAutor(snapshot.val().user)
             setTitulo(snapshot.val().titulo);
             setDescripcion(snapshot.val().descripcion);
-            setFecha(snapshot.val().fecha)
+            const fechaDisplay = `${new Date(snapshot.val().fecha).toLocaleDateString()} ${new Date(snapshot.val().fecha).toLocaleTimeString()}`
+            setFecha(fechaDisplay)
             setTipo(snapshot.val().tipo);
             setDescripcionComp(snapshot.val().descripcionCompleta);
             setLugar(snapshot.val().lugar);
+            setLat(snapshot.val().lat);
+            setLng(snapshot.val().lng)
+            setEv1(snapshot.val().evidencia1);
+            setEv2(snapshot.val().evidencia2);
+            setEv3(snapshot.val().evidencia3);
           } else {
             console.log("No data available");
           }
@@ -137,7 +191,8 @@ export default function IncidenteScreen(props){
                 <img src={require("../../icons/location.png")} style={{width:"15px",filter:"invert(100%)",marginRight:"2px",display:(props.miMark)?"inline block":"none"}}/><b>{props.text}</b>
             </span>
             <span style={{backgroundColor:(props.miMark)?"#1976d2":"#f44336",padding:"0px 0px 10px 10px",color:"white",borderBottomRightRadius:"10px"}}>
-                {props.fecha}<button id="markerButton" style={{display:(props.miMark)?"none":"block"}}>Ver más</button>
+                {props.fecha}
+                <a href={`https://www.google.com/maps/place/${lat},${lng}/@${lat},${lng},12z`} target="_blank" style={{textDecoration:"none"}}><button id="markerButton" style={{display:(props.miMark)?"none":"block"}}>Ver más</button></a>
             </span>
             <div style={{width:"0",height:"0",borderLeft:"0px solid transparent",borderRight:"15px solid transparent",borderTop:(props.miMark)?"10px solid #1976d2":"10px solid #f44336"}}></div>
         </div>
@@ -209,7 +264,7 @@ export default function IncidenteScreen(props){
                                 yesIWantToUseGoogleMapApiInternals
                                 options={OPTIONS}
                                 >
-                                <Marker lat={(lat!="")?lat:-12.138500} lng={(lng!="")?lng:-77.016126} text={(tipo!="")?tipo:"incidente"} fecha="10/04 03:55 pm" onClick={()=>{console.log("hola")}}/>
+                                <Marker lat={(lat!="")?lat:"-12.138500"} lng={(lng!="")?lng:"-77.016126"} text="Sucedió aquí" fecha="10/04 03:55 pm" onClick={()=>{console.log("hola")}}/>
                                 
                                 </GoogleMapReact>
                             </div>
@@ -217,6 +272,29 @@ export default function IncidenteScreen(props){
                             <p style={{backgroundColor:"#eeeeee",padding:"10px",borderRadius:"20px"}}> No hay Involucrados encontrados..</p>
                             <h4 id="item-2">Evidencia</h4>
                             <p style={{backgroundColor:"#eeeeee",padding:"10px",borderRadius:"20px"}}> No hay aportes de evidencia encontrada..</p>
+                            <div className="d-flex flex-column justify-content-center align-items-center">
+                            {imageUrls.map((url,index) => {
+                              if (index==0){
+                                return <div className="w-100">
+                                  <img src={url} style={{height:"300px",borderRadius:"20px",marginBottom:"20px"}} />
+                                  <p style={{backgroundColor:"#eeeeee",padding:"10px",borderRadius:"20px"}}>{ev1}</p>
+                                </div>     
+                              }else if(index==1){
+                                return <div className="w-100">
+                                  <img src={url} style={{height:"300px",borderRadius:"20px",marginBottom:"20px"}} />
+                                  <p style={{backgroundColor:"#eeeeee",padding:"10px",borderRadius:"20px"}}>{ev2}</p>
+                                </div>  
+                              }else if(index==2){
+                                return <div className="w-100">
+                                  <img src={url} style={{height:"300px",borderRadius:"20px",marginBottom:"20px"}} />
+                                  <p style={{backgroundColor:"#eeeeee",padding:"10px",borderRadius:"20px"}}>{ev3}</p>
+                                </div>  
+                              }
+                              console.log(index)
+                                                      
+                            })
+                            }
+                            </div>
                             <h4 id="item-3">Validación</h4>
                             <p style={{backgroundColor:"#eeeeee",padding:"10px",borderRadius:"20px"}}> Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
                             <h5 id="item-3-1">Evidencia de usuarios</h5>

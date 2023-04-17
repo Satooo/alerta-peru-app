@@ -18,6 +18,9 @@ export default function HomePage(props){
     let user = sessionStorage.getItem("loggedUser");
     sessionStorage.setItem("incidente","");
 
+    const [incidentes,setIncidentes]=useState({});
+    const [sortedIncident,setSortedIncident]=useState([])
+
     const [showSideBar, setShowSideBar]=useState(true)
     const [currentLat,setCurrentLat]=useState("-12.142500")
     const [currentLng,setCurrentLng]=useState("-77.006126")
@@ -44,7 +47,10 @@ export default function HomePage(props){
         fecha: fecha,
         lat:lat,
         lng:lng,
-        descripcionCompleta:""
+        descripcionCompleta:"",
+        evidencia1:"",
+        evidencia2:"",
+        evidencia3:""
       });
     }
 
@@ -60,7 +66,37 @@ export default function HomePage(props){
         console.error(error);
       });
     }
+
+    function getIncidentes(){
+      const dbRef = ref(db);
+      get(child(dbRef, `posts/`)).then((snapshot) => {
+        if (snapshot.exists()) {
+          console.log(snapshot.val());
+          setIncidentes(snapshot.val());
+        } else {
+          console.log("No data available");
+        }
+      }).catch((error) => {
+        console.error(error);
+      });
+    }
     
+    useEffect(()=>{
+      getIncidentes()
+    },[])
+
+    useEffect(()=>{
+      const sorted= []
+            Object.keys(incidentes).forEach((incidente)=>{
+                sorted.push({
+                    key: incidente,
+                    value: new Date(incidentes[incidente].fecha)
+                })
+            })
+            sorted.sort((a, b) => b.value - a.value)
+            setSortedIncident(sorted)
+            console.log(sortedIncident)
+    },[incidentes])
 
     useEffect(()=>{
       console.log(getData("1"))
@@ -130,20 +166,24 @@ export default function HomePage(props){
     console.log(currentLat)
   },[currentLat])
 
-  const incidentMinimized=()=>{
+  function incidentMinimized(titulo,fecha,descripcion){
+    let shortDescription = String(descripcion).substring(0,20)+"...";
+    let fechaCorta= `${new Date(fecha).toLocaleDateString()} ${new Date(fecha).toLocaleTimeString()}`
     return(
         <div className="mt-3 mb-3 d-flex flex-row" style={{width:"90%",marginRight:"auto",marginLeft:"auto"}}>
                 <div>
                     <img src={require("../../images/robbery.jpg")} style={{height:"100px",width:"100px",borderRadius:"20px",objectFit:"cover",marginBottom:"1px"}}/>
                     <p className="mr-2 mt-2">
-                        <i>10/03/2023 13:05</i>
+                        <i>{fechaCorta}</i>
                     </p>
                 </div>
                 <div className="w-75 mr-2">
-                    <b>Robo agravado</b>
-                    <p style={{textAlign:"justify"}}>orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</p>
+                    <b>{titulo}</b>
+                    <p style={{textAlign:"justify"}}>{shortDescription}</p>
                     <div className="w-100 d-flex flex-row justify-content-end">
-                      <a href="/incidente"><button className="btn btn-primary rounded-pill">Ver más</button></a>
+                      <a href="/incidente"><button className="btn btn-primary rounded-pill" onClick={()=>{
+                        sessionStorage.setItem("incidente",titulo)
+                      }}>Ver más</button></a>
                     </div>
                 </div>
             </div>
@@ -151,7 +191,7 @@ export default function HomePage(props){
   }
   const SideMenu = props =>{
     return(
-        <div className="d-flex flex-row align-items-center" style={{position:"absolute",zIndex:"2",right:(showSideBar)?"0":"-330px",top:"150px"}} >
+        <div className="d-flex flex-row align-items-center justify-content-center" style={{position:"absolute",zIndex:"2",right:(showSideBar)?"0":"-330px",top:"150px"}} >
             <div style={{backgroundColor:"#1976d2",padding:"10px",borderTopLeftRadius:"20px",borderBottomLeftRadius:"20px",filter:"drop-shadow(2px 1px 5px gray)"}} > 
                 <button style={{border:"none",backgroundColor:"transparent",color:"white"}} onClick={()=>{
                     setShowSideBar(!showSideBar)
@@ -159,13 +199,15 @@ export default function HomePage(props){
                     {(showSideBar)?">":"<"}
                 </button>
             </div>
-            <div className="d-flex flex-column justify-content-center" style={{backgroundColor:"white",filter:"drop-shadow(2px 1px 5px gray)",borderTopLeftRadius:"20px",borderBottomLeftRadius:"20px",padding:"20px",maxWidth:"500px"}}>
+            <div className="d-flex flex-column justify-content-center" style={{backgroundColor:"white",filter:"drop-shadow(2px 1px 5px gray)",borderTopLeftRadius:"20px",borderBottomLeftRadius:"20px",padding:"20px",minWidth:"400px"}}>
                 <b style={{width:"100%",textAlign:"center",marginBottom:"20px"}}>
                     Incidentes recientes
                     <a href="/lista-incidentes"><img src={require("../../icons/next.png")} style={{width:"20px",height:"20px",marginLeft:"10px"}}/></a>
                 </b>
-                {incidentMinimized()}
-                {incidentMinimized()}
+                {(sortedIncident.length==0)?<p style={{width:"100%",textAlign:"center"}}>No hay incidentes recientes</p>:Array(2).fill(0).map((_,index)=>{
+                  let i = sortedIncident[index].key
+                  return incidentMinimized(incidentes[i].titulo,incidentes[i].fecha,incidentes[i].descripcion)
+                })}
             </div>
         </div>
     )
@@ -204,7 +246,7 @@ export default function HomePage(props){
 
    const Marker = props => {
     return (
-      <OverlayTrigger trigger="focus" placement="right" overlay={(!props.miMark)?(
+      <OverlayTrigger trigger="hover" placement="right" overlay={(!props.miMark)?(
         <Popover id="popoverMap">
         <p><b>Nombre incidente</b> </p>
         <p style={{color:"gray"}}><i>Publicado por Andrés Sato</i></p>

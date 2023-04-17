@@ -2,6 +2,8 @@ import React from "react"
 import { useNavigate } from "react-router-dom";
 import GoogleMapReact from 'google-map-react';
 import { useState,useEffect } from "react";
+import DatePicker from "react-datepicker";
+
 
 
 import { getDatabase, ref, child, set, get, onValue } from "firebase/database";
@@ -16,6 +18,11 @@ export default function Login(props){
     const [user,setUser]=useState("")
     const [pass,setPass]=useState("")
     const [mail,setMail]=useState("")
+    const [nombres,setNombres]=useState("")
+    const [apellidos,setApellidos]=useState("")
+    const [id,setId]=useState("")
+    const [num,setNum]=useState("")
+    const [startDate, setStartDate] = useState(new Date());
 
     const [loginSuccess,setLoginSuccess]=useState(false)
 
@@ -52,9 +59,18 @@ export default function Login(props){
       
         set(ref(db, 'users/' + name), {
           username: name,
-          password : password
+          password : password,
+          id: id,
+          nombres: nombres,
+          apellidos: apellidos,
+          fechaNacimiento: startDate.toLocaleDateString(),
+          celular: num
         });
       }
+
+      useEffect(()=>{
+        console.log(startDate.toLocaleDateString())
+      },[startDate])
   
       function getCantidadUsers(){
         const dbRef = ref(db);
@@ -112,17 +128,35 @@ export default function Login(props){
                                 <input type="text" className="form-control mb-3" placeholder="Usuario" aria-label="Username" aria-describedby="basic-addon1" style={{backgroundColor:"#eeeeee",borderRadius:"20px"}} onChange={(e)=>{
                                     setUser(e.target.value)
                                 }}/>
-                                <input type="text" className="form-control mb-3" placeholder="Contraseña" aria-label="Username" aria-describedby="basic-addon1" style={{backgroundColor:"#eeeeee",borderRadius:"20px"}} onChange={(e)=>{
+                                <input type="text" className="form-control mb-3" placeholder="Contraseña" aria-label="Contraseña" aria-describedby="basic-addon1" style={{backgroundColor:"#eeeeee",borderRadius:"20px"}} onChange={(e)=>{
                                     setPass(e.target.value)
                                 }}/>
+                                <input type="text" className="form-control mb-3" placeholder="ID" aria-label="ID" aria-describedby="basic-addon1" style={{backgroundColor:"#eeeeee",borderRadius:"20px"}} onChange={(e)=>{
+                                    setId(e.target.value)
+                                }}/>
+                                <div className="d-flex">
+                                    <input type="text" className="form-control mb-3 me-3" placeholder="Nombres" aria-label="Nombres" aria-describedby="basic-addon1" style={{backgroundColor:"#eeeeee",borderRadius:"20px"}} onChange={(e)=>{
+                                        setNombres(e.target.value)
+                                    }}/>
+                                    <input type="text" className="form-control mb-3" placeholder="Apellidos" aria-label="Apellidos" aria-describedby="basic-addon1" style={{backgroundColor:"#eeeeee",borderRadius:"20px"}} onChange={(e)=>{
+                                        setApellidos(e.target.value)
+                                    }}/>
+                                </div>
+                                <input type="text" className="form-control mb-3" placeholder="# Celular (Opcional)" aria-label="Celular" aria-describedby="basic-addon1" style={{backgroundColor:"#eeeeee",borderRadius:"20px"}} onChange={(e)=>{
+                                    setNum(e.target.value)
+                                }}/>
+                                <div className="d-flex flex-row w-100 justify-content-between align-items-center p-2 mb-3" style={{borderRadius:"10px",backgroundColor:"#eeeeee"}}>
+                                    <span className="w-100">Fecha de nacimiento</span>
+                                    <DatePicker selected={startDate} onChange={(date) => setStartDate(date)} />
+                                </div>
                                 <button href="#" class="btn bg-transparent"  onClick={()=>{
                                     setScreen(1)
                                     }}>Cancelar</button>
-                                <a href="/"><button href="#" class="btn btn-primary" style={{borderRadius:"20px"}} onClick={()=>{
+                                <button href="#" class="btn btn-primary" style={{borderRadius:"20px"}} onClick={()=>{
                                     setScreen(1)
                                     writeUserData(user,pass)
                                     getCantidadUsers()
-                                }}>Crear cuenta</button></a>
+                                }}>Crear cuenta</button>
                         </div>
                     </div>
         )

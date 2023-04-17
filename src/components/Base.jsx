@@ -10,6 +10,7 @@ import AgregarIncidente from "./screens/agregarIncidente/agregarIncidente"
 import IncidenteScreenAdmin from "./screens/incidenteScreen/IncidenteScreenAdmin"
 import { initializeApp } from "firebase/app";
 import { getDatabase } from "firebase/database";
+import { getStorage } from "firebase/storage";
 import {getFirestore} from "firebase/firestore"
 import { getAnalytics } from "firebase/analytics";
 import {getAuth, onAuthStateChanged} from 'firebase/auth';
@@ -30,6 +31,7 @@ export default function Base(){
     databaseURL:"https://alertaperuapp-403c9-default-rtdb.firebaseio.com/"
   };
     const app = initializeApp(firebaseConfig);
+    const storage = getStorage(app,"gs://alertaperuapp-403c9.appspot.com");
     const analytics = getAnalytics(app);
     //const auth = getAuth(app)
     const db = getDatabase(app);
@@ -52,10 +54,10 @@ export default function Base(){
             <Route path="/" element={<HomePage db={db} />}/>
             <Route path="/login" element={<Login db={db} />}/>
             <Route path="/lista-incidentes" element={<ListaIncidentes db={db}/>}/>
-            <Route path="/perfil" element={<Perfil/>}/>
+            <Route path="/perfil" element={<Perfil db={db}/>}/>
             <Route path="/dashboard" element={<Dashboard/>}/>
-            <Route path="/incidente" element={<IncidenteScreen db={db}/>}/>
-            <Route path="/agregar" element={<AgregarIncidente db={db}/>}/>
+            <Route path="/incidente" element={<IncidenteScreen db={db} storage={storage}/>}/>
+            <Route path="/agregar" element={<AgregarIncidente db={db} storage={storage}/>}/>
             <Route path="/incidente-admin" element={<IncidenteScreenAdmin/>}/>
         </Routes>
         </BrowserRouter>

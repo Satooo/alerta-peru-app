@@ -53,7 +53,9 @@ export default function HeaderTopMenu(props){
                             <li><a className="dropdown-item" href="/perfil">Ver Perfil</a></li>
                             <li><a className="dropdown-item" href="/dashboard">Modo admin</a></li>
                             <li><hr className="dropdown-divider"/></li>
-                            <li><a className="dropdown-item" href="/login" onClick={()=>{}}>Log off</a></li>
+                            <li><a className="dropdown-item" href="/login" onClick={()=>{
+                                sessionStorage.setItem("loggedUser", "");
+                            }}>Log off</a></li>
                         </ul>
                         </li>
                     </ul>

@@ -6,6 +6,8 @@ import DateTimePicker from 'react-datetime-picker';
 
 import { getDatabase, ref, child, set, get, onValue } from "firebase/database";
 
+import { getStorage,ref as storageRef, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+
 
 export default function AgregarIncidente(props){
     let incidente = sessionStorage.getItem("incidente");
@@ -13,7 +15,9 @@ export default function AgregarIncidente(props){
     const [address,setAddress]=useState("Ramón Ribeyro 998, Barranco");
     const [value, onChangeDate] = useState(new Date());
     const [images, setImages] = React.useState([]);
-    const maxNumber = 4;
+    const [file,setFile]=React.useState(null);
+    const [uploadCompletion,setUploadCompletion]=useState(0);
+    const maxNumber = 3;
 
     const [lat,setLat]=useState("");
     const [lng,setLng]=useState("");
@@ -24,6 +28,65 @@ export default function AgregarIncidente(props){
     const [autor,setAutor]=useState("");
     const [descripcionComp,setDescripcionComp]=useState("");
     const [lugar,setLugar]=useState("")
+    const [ev1, setEv1]=useState("")
+    const [ev2, setEv2]=useState("")
+    const [ev3, setEv3]=useState("")
+
+
+    
+
+    const metadata = {
+      contentType: 'image/jpeg'
+    };
+    function uploadImage(file, title, num, metadata){
+      const imagesRef = storageRef(props.storage, `images/${title}/${num}.png`);
+      const uploadTask = uploadBytesResumable(imagesRef, file, metadata);
+
+      // Listen for state changes, errors, and completion of the upload.
+      uploadTask.on('state_changed',
+      (snapshot) => {
+        // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        console.log('Upload is ' + progress + '% done');
+        setUploadCompletion(progress);
+        switch (snapshot.state) {
+          case 'paused':
+            console.log('Upload is paused');
+            break;
+          case 'running':
+            console.log('Upload is running');
+            break;
+        }
+      }, 
+      (error) => {
+        // A full list of error codes is available at
+        // https://firebase.google.com/docs/storage/web/handle-errors
+        switch (error.code) {
+          case 'storage/unauthorized':
+            // User doesn't have permission to access the object
+            break;
+          case 'storage/canceled':
+            // User canceled the upload
+            break;
+
+          // ...
+
+          case 'storage/unknown':
+            // Unknown error occurred, inspect error.serverResponse
+            break;
+        }
+      }, 
+      () => {
+        // Upload completed successfully, now we can get the download URL
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          console.log('File available at', downloadURL);
+          window.location.pathname="/incidente"
+        });
+      }
+      );
+    }
+    
+    
 
     function getIncidenteData(titulo){
       const dbRef = ref(db);
@@ -58,7 +121,10 @@ export default function AgregarIncidente(props){
         fecha: fecha,
         lat:lat,
         lng:lng,
-        descripcionCompleta: descripcionComp
+        descripcionCompleta: descripcionComp,
+        evidencia1:ev1,
+        evidencia2:ev2,
+        evidencia3:ev3
       });
     }
 
@@ -66,6 +132,10 @@ export default function AgregarIncidente(props){
       getIncidenteData(incidente);
       console.log(incidente)
     },[])
+
+    useEffect(()=>{
+      console.log(file)
+    },[file])
 
     const onChangeImage = (imageList, addUpdateIndex) => {
         // data for submit
@@ -110,7 +180,15 @@ export default function AgregarIncidente(props){
                           <div className="image-item__btn-wrapper mt-3">
                           <div class="input-group mt-3 mb-3">
                                 <span class="input-group-text"><b>Descripción de evidencia</b></span>
-                                <textarea class="form-control" aria-label="With textarea"></textarea>
+                                <textarea class="form-control" aria-label="With textarea" onChange={(e)=>{
+                                  if(index==0){
+                                    setEv1(e.target.value)
+                                  }else if(index==1){
+                                    setEv2(e.target.value)
+                                  }else if(index==2){
+                                    setEv3(e.target.value)
+                                  }
+                                }}></textarea>
                             </div>
                             <button onClick={() => onImageUpdate(index)} className="btn btn-dark">Actualizar</button>
                             <button onClick={() => onImageRemove(index)} className="btn btn-light">Quitar</button>
@@ -160,16 +238,26 @@ export default function AgregarIncidente(props){
                       db.ref(`posts/${titulo}`).remove()
                       sessionStorage.setItem("incidente","")
                     }}>Atrás</button></a>
-                    <a href="/incidente"><button className="btn btn-primary rounded-pill" onClick={()=>{
+                      <button className="btn btn-primary rounded-pill" onClick={()=>{
                       if(descripcionComp!=""){
                         writeIncidente(titulo,descripcionComp);
                         sessionStorage.setItem("incidente",titulo);
+                        console.log(images.length)
+                        if(images.length>0){
+                          images.forEach((image,index)=>{
+                            uploadImage(image.file,titulo,index, metadata);
+                          })
+                          
+                        }else{
+                          console.log(images.length)
+                        }
                       }
-                    }}>Siguiente</button></a>
+                    }}>Siguiente</button>
                 </div>
                 {datosPreloaded()}
                 {description()}
                 {evidenceUpload()}
+                <p style={{display:(uploadCompletion>0)?"block":"none"}}>Subiendo {uploadCompletion}%</p>
             </div>
         </div>
     )
