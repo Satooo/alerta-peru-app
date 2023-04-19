@@ -167,7 +167,7 @@ export default function HomePage(props){
   },[currentLat])
 
   function incidentMinimized(titulo,fecha,descripcion){
-    let shortDescription = String(descripcion).substring(0,20)+"...";
+    let shortDescription = String(descripcion).substring(0,40)+"...";
     let fechaCorta= `${new Date(fecha).toLocaleDateString()} ${new Date(fecha).toLocaleTimeString()}`
     return(
         <div className="mt-3 mb-3 d-flex flex-row" style={{width:"90%",marginRight:"auto",marginLeft:"auto"}}>

@@ -242,7 +242,6 @@ export default function AgregarIncidente(props){
                       if(descripcionComp!=""){
                         writeIncidente(titulo,descripcionComp);
                         sessionStorage.setItem("incidente",titulo);
-                        console.log(images.length)
                         if(images.length>0){
                           images.forEach((image,index)=>{
                             uploadImage(image.file,titulo,index, metadata);
@@ -250,6 +249,7 @@ export default function AgregarIncidente(props){
                           
                         }else{
                           console.log(images.length)
+                          window.location.pathname="/incidente"
                         }
                       }
                     }}>Siguiente</button>

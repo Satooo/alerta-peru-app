@@ -8,7 +8,6 @@ import Button from "react-bootstrap/Button"
 import { getDatabase, ref, child, set, get, onValue } from "firebase/database";
 
 export default function ListaIncidentes(props){
-
     const db = props.db
 
     let user = sessionStorage.getItem("loggedUser");
@@ -38,6 +37,7 @@ export default function ListaIncidentes(props){
         console.log(incidentes)
         
     },[incidentes])
+    
       const incidentMinimized=()=>{
         return(
             <div className="mt-3 mb-3 d-flex flex-row w-80" style={{borderRadius:"20px"}} id="incidentCard">

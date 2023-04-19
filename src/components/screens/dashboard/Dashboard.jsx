@@ -12,10 +12,109 @@ import OverlayTrigger from "react-bootstrap/OverlayTrigger"
 import HeaderAdminMap from "../common/HeaderAdminMap";
 import HeaderAdmin from "../common/HeaderAdmin";
 
-export default function Dashboard(){
+import { getDatabase, ref, child, set, get, onValue } from "firebase/database";
+
+export default function Dashboard(props){
+    const db = props.db
     const [seccion,setSeccion]=useState("pendientes")
     const [filter,setFilter]=useState("")
+
     sessionStorage.setItem("incidente","");
+    let user = sessionStorage.getItem("loggedUser");
+
+    const [incidentes,setIncidentes]=useState({});
+
+    function getIncidentes(){
+        const dbRef = ref(db);
+        get(child(dbRef, `posts/`)).then((snapshot) => {
+          if (snapshot.exists()) {
+            console.log(snapshot.val());
+            setIncidentes(snapshot.val())
+          } else {
+            console.log("No data available");
+          }
+        }).catch((error) => {
+          console.error(error);
+        });
+      }
+
+
+    useEffect(()=>{
+        getIncidentes()
+    },[])
+
+    useEffect(()=>{
+        console.log(incidentes)
+        
+    },[incidentes])
+
+    const incidentCard=(titulo,descripcion,tipo,user,fecha,validacion)=>{
+        const fechaDisplay = `${new Date(fecha).toLocaleDateString()} ${new Date(fecha).toLocaleTimeString()}`
+        return(
+            <div className="mt-3 mb-3 d-flex flex-row w-100" style={{borderRadius:"20px"}} id="incidentCard">
+                    <div>
+                        <img src={require("../../images/robbery.jpg")} style={{height:"300px",width:"300px",borderRadius:"20px",objectFit:"cover",marginBottom:"1px"}}/>
+                    </div>
+                    <div style={{padding:"20px",width:"100%"}}>
+                        <div className="d-flex">
+                            <h3 className="w-100">{titulo}</h3>
+                            <img src={require("../../icons/verified.png")} style={{width:"30px",height:"30px",display:(validacion=="true")?"inline-block":"none"}}/>
+                        </div>
+                        
+                        <p className="mt-3"><span class="badge text-bg-dark">{tipo}</span><i className="m-2">{fechaDisplay}</i></p>
+                        <div className="d-flex flex-column mb-3">
+                                <span style={{width:"100%",padding:"5px",fontSize:"12px",textAlign:"start"}}>Publicado por</span>
+                                <div>
+                                    <img src={require("../../images/fotolinkedin.png")} style={{width:"20px",borderRadius:"100px"}}/>
+                                    <b style={{width:"100%",padding:"5px",marginTop:"-5px",textAlign:"start"}}>{user}</b>
+                                </div>
+                            </div>
+                        <p style={{textAlign:"justify"}}>{descripcion}</p>
+                        <div className="w-100 d-flex flex-row justify-content-end">
+                          <a href="/incidente"><button className="btn btn-primary rounded-pill" onClick={()=>{
+                            sessionStorage.setItem("incidente",titulo)
+                          }}>Ver más</button></a>
+                        </div>
+                        <div className="d-flex flex-row justify-content-end mt-3">
+                            <button className="btn btn-danger" style={{borderRadius:"0px",borderTopLeftRadius:"20px",borderBottomLeftRadius:"20px"}}>Eliminar</button>
+                            <button className="btn btn-warning" style={{borderRadius:"0px"}} data-bs-toggle="modal" data-bs-target="#exampleModal">Solicitar evidencia</button>
+                            <a href="/incidente-admin"><button className="btn btn-success" style={{borderRadius:"0px",borderTopRightRadius:"20px",borderBottomRightRadius:"20px"}} onClick={()=>{
+                                sessionStorage.setItem("incidente",titulo)
+                            }}>Validar</button></a>
+                        </div>
+                    </div>
+                </div>
+        )
+      }
+    function showIncidentes(){
+        if(Object.keys(incidentes).length>0){
+            const sorted= []
+            Object.keys(incidentes).forEach((incidente)=>{
+                sorted.push({
+                    key: incidente,
+                    value: new Date(incidentes[incidente].fecha)
+                })
+            })
+            sorted.sort((a, b) => b.value - a.value)
+            console.log(sorted)
+            
+            let incidentesKeys=Object.keys(incidentes)
+            let incidentesDisplay = Array(incidentesKeys.length).fill(0).map((_,index)=>{
+                let i = sorted[index].key
+                console.log(incidentes[i].descripcion)
+                if(incidentes[i].descripcionCompleta.length>0){
+                    return (
+                        incidentCard(incidentes[i].titulo,incidentes[i].descripcion,incidentes[i].tipo,incidentes[i].user,incidentes[i].fecha,incidentes[i].validacion)
+                    )
+                }
+                
+            })
+            return incidentesDisplay
+        }
+        
+    }
+
+
     
     const incidentMinimized=()=>{
         return(
@@ -34,7 +133,7 @@ export default function Dashboard(){
                             <button className="btn btn-danger" style={{borderRadius:"0px",borderTopLeftRadius:"20px",borderBottomLeftRadius:"20px"}}>Eliminar</button>
                             <button className="btn btn-warning" style={{borderRadius:"0px"}} data-bs-toggle="modal" data-bs-target="#exampleModal">Solicitar evidencia</button>
                             <a href="/incidente-admin"><button className="btn btn-success" style={{borderRadius:"0px",borderTopRightRadius:"20px",borderBottomRightRadius:"20px"}}>Validar</button></a>
-                          </div>
+                        </div>
                     </div>
                 </div>
         )
@@ -259,7 +358,8 @@ export default function Dashboard(){
                 <TopIncidentes/>
                 {Secciones()}
                 {filterSection()}
-                {Array(20).fill(0).map((_,index)=>{
+                {showIncidentes()}
+                {Array(3).fill(0).map((_,index)=>{
                     return (
                         incidentMinimized()
                     )

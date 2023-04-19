@@ -3,31 +3,160 @@ import Header from "../common/Header";
 import GoogleMapReact from 'google-map-react';
 import Geocode from "react-geocode";
 import HeaderAdmin from "../common/HeaderAdmin";
+import { getDatabase, ref, child, set, get, onValue } from "firebase/database";
 
-export default function IncidenteScreenAdmin(){
-  sessionStorage.setItem("incidente","");
-  
+import {
+  ref as storageRef,
+  uploadBytes,
+  getDownloadURL,
+  listAll,
+  list,
+} from "firebase/storage";
+
+export default function IncidenteScreenAdmin(props){
+  let user = sessionStorage.getItem("loggedUser")
+  let incidente = sessionStorage.getItem("incidente")
+
     const [address,setAddress]=useState("");
-    const defaultProps = {
+    const [lat,setLat]=useState(-12.138500);
+    const [lng,setLng]=useState(-77.016126);
+    const [titulo,setTitulo]=useState("");
+    const [descripcion,setDescripcion]=useState("");
+    const [tipo,setTipo]=useState("");
+    const [fecha,setFecha]=useState("");
+    const [autor,setAutor]=useState("");
+    const [descripcionComp,setDescripcionComp]=useState("")
+    const [lugar,setLugar]=useState("")
+    const [ev1,setEv1]=useState("")
+    const [ev2,setEv2]=useState("")
+    const [ev3,setEv3]=useState("")
+    const [hora,setHora]=useState("")
+    const [validacion,setValidacion]=useState("")
+    const [fechaShow,setFechaShow]=useState("")
+    const [defaultProps,setDefaultProps]=useState(
+      {
         center: {
-          lat: -12.138500,
-          lng: -77.016126
+          lat:-12.138500,
+          lng:-77.016126
         },
-        zoom: 16
-      };
-    
-      const OPTIONS = {
-        minZoom: 16,
-        maxZoom: 20,
-        disableDefaultUI: true
+        zoom: 13
       }
+    )
+    const [comentariosAdmin,setComentariosAdmin]=useState("")
+    const [mensajeValidacion,setMensajeValidaciion]=useState("")
+    const [faltaEvidencia,setFaltaEvidencia]=useState("")
 
+    
     Geocode.setApiKey("AIzaSyDj9I51Cd1WrcAGKgGmi7m9y7GztW0mtcI");
     Geocode.setLanguage("en");
     Geocode.setLocationType("ROOFTOP");
 
+    const [imageUrls, setImageUrls] = useState([]);
+    
+
+    useEffect(() => {
+      const imagesListRef = storageRef(props.storage, `images/${titulo}/`);
+      console.log(imagesListRef);
+      listAll(imagesListRef).then((response) => {
+        response.items.forEach((item) => {
+          getDownloadURL(item).then((url) => {
+            setImageUrls((prev) => [...prev, url]);
+          });
+        });
+      });
+    }, [titulo]);
+
+    const db = props.db
+
+    
+      const OPTIONS = {
+        minZoom: 13,
+        maxZoom: 20,
+        disableDefaultUI: true
+      }
+
+      function getIncidenteData(titulo){
+        const dbRef = ref(db);
+        get(child(dbRef, `posts/`+titulo)).then((snapshot) => {
+          if (snapshot.exists()) {
+            console.log(snapshot.val());
+            setAutor(snapshot.val().user)
+            setTitulo(snapshot.val().titulo);
+            setDescripcion(snapshot.val().descripcion);
+            const fechaDisplay = `${new Date(snapshot.val().fecha).toLocaleDateString()} ${new Date(snapshot.val().fecha).toLocaleTimeString()}`
+            setFechaShow(fechaDisplay)
+            setFecha(snapshot.val().fecha)
+            setTipo(snapshot.val().tipo);
+            setDescripcionComp(snapshot.val().descripcionCompleta);
+            setLugar(snapshot.val().lugar);
+            setLat(snapshot.val().lat);
+            setLng(snapshot.val().lng)
+            setEv1(snapshot.val().evidencia1);
+            setEv2(snapshot.val().evidencia2);
+            setEv3(snapshot.val().evidencia3);
+            if(snapshot.val().validacion==undefined || snapshot.val().validacion==null){
+              console.log("no hay validacion")
+            }else{
+              console.log(snapshot.val().validacion)
+              setValidacion(snapshot.val().validacion)
+            }
+
+            if(snapshot.val().faltaEvidencia==undefined || snapshot.val().faltaEvidencia==null){
+              console.log("no hay evidencia")
+            }else{
+              setFaltaEvidencia(snapshot.val().faltaEvidencia)
+            }
+
+            if(snapshot.val().comentariosAdmin==undefined || snapshot.val().comentariosAdmin==null){
+              console.log("no hay validacion")
+            }else{
+              setComentariosAdmin(snapshot.val().comentariosAdmin)
+            }
+
+            if(snapshot.val().mensajeValidacion==undefined || snapshot.val().mensajeValidacion==null){
+              console.log("no hay validacion")
+            }else{
+              setMensajeValidaciion(snapshot.val().mensajeValidacion)
+            }
+          } else {
+            console.log("No data available");
+          }
+        }).catch((error) => {
+          console.error(error);
+        });
+      }
+      function writeIncidente(titulo) {
+      
+        set(ref(db, 'posts/' + titulo), {
+          user: autor,
+          titulo: titulo,
+          descripcion : descripcion,
+          tipo:tipo,
+          lugar: lugar,
+          fecha: fecha,
+          lat:lat,
+          lng:lng,
+          descripcionCompleta: descripcionComp,
+          evidencia1:ev1,
+          evidencia2:ev2,
+          evidencia3:ev3,
+          validacion: validacion,
+          comentariosAdmin: comentariosAdmin,
+          mensajeValidacion: mensajeValidacion,
+          faltaEvidencia: faltaEvidencia
+        });
+      }
+
       useEffect(()=>{
-        Geocode.fromLatLng("-12.138500"," -77.016126").then(
+        
+        if(incidente.length>0){
+          getIncidenteData(incidente)
+        }
+      },[])
+
+
+      useEffect(()=>{
+        Geocode.fromLatLng(lat,lng).then(
             (response) => {
               const address = response.results[0].formatted_address;
               let city, state, country;
@@ -54,7 +183,7 @@ export default function IncidenteScreenAdmin(){
               console.error(error);
             }
           );
-      },[])
+      },[lat,lng])
 
       const Marker = props => {
         return (
@@ -64,7 +193,8 @@ export default function IncidenteScreenAdmin(){
                 <img src={require("../../icons/location.png")} style={{width:"15px",filter:"invert(100%)",marginRight:"2px",display:(props.miMark)?"inline block":"none"}}/><b>{props.text}</b>
             </span>
             <span style={{backgroundColor:(props.miMark)?"#1976d2":"#f44336",padding:"0px 0px 10px 10px",color:"white",borderBottomRightRadius:"10px"}}>
-                {props.fecha}<button id="markerButton" style={{display:(props.miMark)?"none":"block"}}>Ver más</button>
+                {props.fecha}
+                <a href={`https://www.google.com/maps/place/${lat},${lng}/@${lat},${lng},12z`} target="_blank" style={{textDecoration:"none"}}><button id="markerButton" style={{display:(props.miMark)?"none":"block"}}>Ver más</button></a>
             </span>
             <div style={{width:"0",height:"0",borderLeft:"0px solid transparent",borderRight:"15px solid transparent",borderTop:(props.miMark)?"10px solid #1976d2":"10px solid #f44336"}}></div>
         </div>
@@ -81,10 +211,10 @@ export default function IncidenteScreenAdmin(){
                 <div style={{position:"relative",textAlign:"center",width:"100%"}}>
                     <img src={require("../../images/loginBackground.jpg")} style={{width:"100%",maxHeight:"300px",objectFit:"cover",borderTopRightRadius:"20px",borderTopLeftRadius:"20px",filter:"brightness(0.5)"}}/>
                     <div style={{position:"absolute",top:"30%",width:"100%",color:"white"}}>
-                        <h1>Nombre incidente x</h1>
+                        <h1>{(titulo!="")?titulo:"Nombre incidente x"}</h1>
                         <div className="mt-3">
-                            <p><span>Fecha de incidente: 12/04 3:00pm</span></p>
-                            <p><span>Tipo de incidente: <span class="badge rounded-pill bg-light text-dark" style={{marginRight:"20px"}}>Tipo</span></span></p>
+                            <p><span>Fecha de incidente: {(fechaShow!="")?fechaShow:"12/04 3:00pm"}</span></p>
+                            <p><span>Tipo de incidente: <span class="badge rounded-pill bg-light text-dark" style={{marginRight:"20px"}}>{(tipo!="")?tipo:"Tipo"}</span></span></p>
                         </div>
                     </div>
                 </div>
@@ -94,7 +224,7 @@ export default function IncidenteScreenAdmin(){
                                     <img src={require("../../images/fotolinkedin.png")} style={{width:"50px",borderRadius:"100px",marginRight:"10px"}}/>
                                     <div className="d-flex flex-column w-100" style={{color:"black"}}>
                                         <span style={{width:"100%",padding:"5px",fontSize:"12px",textAlign:"start"}}>Publicado por</span>
-                                        <b style={{width:"100%",padding:"5px",marginTop:"-5px",textAlign:"start"}}>Andrés Sato</b>
+                                        <b style={{width:"100%",padding:"5px",marginTop:"-5px",textAlign:"start"}}>{(autor!="")?autor:"Andrés Sato"}</b>
                                     </div>
                                     
                         </div>
@@ -123,34 +253,41 @@ export default function IncidenteScreenAdmin(){
                             <div data-bs-spy="scroll" data-bs-target="#navbar-example3" data-bs-offset="0" tabindex="0">
                             <h4 id="item-1">Información general</h4>
                             <div class="form-check form-switch mb-3">
-                            <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault"/>
+                            <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" checked={(validacion=="true")?true:false} onChange={()=>{
+                              if(validacion==""){
+                                setValidacion("true")
+                              }else if(validacion=="true"){
+                                setValidacion("false")
+                              }else if (validacion=="false"){
+                                setValidacion("true")
+                              }else{
+                                setValidacion("true")
+                              }
+                              console.log(validacion)
+                            }
+                            }/>
                             <label class="form-check-label" for="flexSwitchCheckDefault">Es válido?</label>
                             </div>
                             <p style={{backgroundColor:"#eeeeee",padding:"10px",borderRadius:"20px"}}>
-                            There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. .
+                            {(descripcion!="")?descripcion:"There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. ."}
                             </p>
                             <h5 id="item-1-1">Descripción</h5>
                             <p style={{backgroundColor:"#eeeeee",padding:"10px",borderRadius:"20px"}}>
-                            There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with a handful of model sentence structures, to generate Lorem Ipsum which looks reasonable. The generated Lorem Ipsum is therefore always free from repetition, injected humour, or non-characteristic words etc.
+                            {(descripcionComp!="")?descripcionComp:"There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with a handful of model sentence structures, to generate Lorem Ipsum which looks reasonable. The generated Lorem Ipsum is therefore always free from repetition, injected humour, or non-characteristic words etc."}
                             </p>
                             <h5 id="item-1-2">Ubicación</h5>
                             <p style={{backgroundColor:"#eeeeee",padding:"10px",borderRadius:"20px"}}>
-                                {address}
+                            {(lugar!="")?lugar:address}
                             </p>
                             <div style={{height:"300px",width:"800px"}}>
-                                <GoogleMapReact
+                              <GoogleMapReact
                                 bootstrapURLKeys={{ key: "AIzaSyDj9I51Cd1WrcAGKgGmi7m9y7GztW0mtcI" }}
                                 defaultCenter={defaultProps.center}
                                 defaultZoom={defaultProps.zoom}
                                 yesIWantToUseGoogleMapApiInternals
                                 options={OPTIONS}
                                 >
-                                <Marker lat={-12.138500} lng={-77.016126} text="Robo" fecha="10/04 03:55 pm" onClick={()=>{console.log("hola")}}/>
-                                <Marker lat={-12.140500} lng={-77.015126} text="Acoso" fecha="10/04 04:55 pm"/>
-                                <Marker lat={-12.138800} lng={-77.000526} text="Pérdido" fecha="10/04 04:25 pm"/>
-                                <Marker lat={-12.148800} lng={-77.000526} text="Pérdido" fecha="10/04 04:25 pm"/>
-                                <Marker lat={-12.138800} lng={-77.020126} text="Pérdido" fecha="10/04 04:25 pm"/>
-                                <Marker lat={-12.138800} lng={-77.020126} text="Pérdido" fecha="10/04 04:25 pm"/>
+                                <Marker lat={(lat!="")?lat:"-12.138500"} lng={(lng!="")?lng:"-77.016126"} text="Sucedió aquí" fecha="10/04 03:55 pm" onClick={()=>{console.log("hola")}}/>
                                 
                                 </GoogleMapReact>
                             </div>
@@ -167,27 +304,76 @@ export default function IncidenteScreenAdmin(){
                                 <button className="btn btn-dark mb-3 rounded-pill">Solicitar</button>
                             </div>
                             <p style={{backgroundColor:"#eeeeee",padding:"10px",borderRadius:"20px",marginTop:"20px"}}> No hay aportes de otros usuarios..</p>
+                            {imageUrls.map((url,index) => {
+                              if (index==0){
+                                return <div className="w-100">
+                                  <img src={url} style={{height:"300px",borderRadius:"20px",marginBottom:"20px"}} />
+                                  <p style={{backgroundColor:"#eeeeee",padding:"10px",borderRadius:"20px"}}>{ev1}</p>
+                                </div>     
+                              }else if(index==1){
+                                return <div className="w-100">
+                                  <img src={url} style={{height:"300px",borderRadius:"20px",marginBottom:"20px"}} />
+                                  <p style={{backgroundColor:"#eeeeee",padding:"10px",borderRadius:"20px"}}>{ev2}</p>
+                                </div>  
+                              }else if(index==2){
+                                return <div className="w-100">
+                                  <img src={url} style={{height:"300px",borderRadius:"20px",marginBottom:"20px"}} />
+                                  <p style={{backgroundColor:"#eeeeee",padding:"10px",borderRadius:"20px"}}>{ev3}</p>
+                                </div>  
+                              }
+                              console.log(index)
+                                                      
+                            })
+                            }
                             <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault"/>
+                            <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" checked={(faltaEvidencia=="true"?true:false)} onChange={()=>{
+                              if(faltaEvidencia==""){
+                                setFaltaEvidencia("true")
+                              }else if(faltaEvidencia=="true"){
+                                setFaltaEvidencia("false")
+                              }else if (faltaEvidencia=="false"){
+                                setFaltaEvidencia("true")
+                              }else{
+                                setFaltaEvidencia("true")
+                              }
+                              console.log(faltaEvidencia)
+                            }}/>
                             <label class="form-check-label" for="flexSwitchCheckDefault">Falta evidencia?</label>
                             </div>
                             <div class="input-group mt-3 mb-3">
                                 <span class="input-group-text"><b>Comentarios</b></span>
-                                <textarea class="form-control" aria-label="With textarea"></textarea>
+                                <textarea class="form-control" aria-label="With textarea" value={comentariosAdmin} onChange={(e)=>{setComentariosAdmin(e.target.value)}}></textarea>
                             </div>
                             <h5 id="item-3-2">Comentarios de municipalidad</h5>
                             <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault"/>
+                            <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" checked={(validacion=="true")?true:false}  onChange={()=>{
+                              if(validacion==""){
+                                setValidacion("true")
+                              }else if(validacion=="true"){
+                                setValidacion("false")
+                              }else if (validacion=="false"){
+                                setValidacion("true")
+                              }else{
+                                setValidacion("true")
+                              }
+                              console.log(validacion)
+                            }
+                            }/>
                             <label class="form-check-label" for="flexSwitchCheckDefault">Es válido?</label>
                             </div>
                             <div class="input-group mt-3 mb-3">
                                 <span class="input-group-text"><b>Descripción de evidencia</b></span>
-                                <textarea class="form-control" aria-label="With textarea"></textarea>
+                                <textarea class="form-control" aria-label="With textarea" value={mensajeValidacion} onChange={(e)=>{setMensajeValidaciion(e.target.value)}}></textarea>
                             </div>
                             </div>
                             <div className="w-100 d-flex justify-content-end">
                                 <a href="/dashboard"><button className="btn btn-secondary mb-5 rounded-pill" style={{marginRight:"20px"}}>Cancelar</button></a>
-                                <button className="btn btn-primary mb-5 rounded-pill">Publicar</button>
+                                <button className="btn btn-primary mb-5 rounded-pill" onClick={
+                                  ()=>{
+                                    writeIncidente(incidente)
+                                    window.location.pathname="/dashboard"
+                                  }
+                                }>Publicar</button>
                             </div>
                             
                         </div>

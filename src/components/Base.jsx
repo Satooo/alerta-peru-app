@@ -55,10 +55,10 @@ export default function Base(){
             <Route path="/login" element={<Login db={db} />}/>
             <Route path="/lista-incidentes" element={<ListaIncidentes db={db}/>}/>
             <Route path="/perfil" element={<Perfil db={db}/>}/>
-            <Route path="/dashboard" element={<Dashboard/>}/>
+            <Route path="/dashboard" element={<Dashboard db={db}/>}/>
             <Route path="/incidente" element={<IncidenteScreen db={db} storage={storage}/>}/>
             <Route path="/agregar" element={<AgregarIncidente db={db} storage={storage}/>}/>
-            <Route path="/incidente-admin" element={<IncidenteScreenAdmin/>}/>
+            <Route path="/incidente-admin" element={<IncidenteScreenAdmin db={db} storage={storage}/>}/>
         </Routes>
         </BrowserRouter>
     )
