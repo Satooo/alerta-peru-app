@@ -51,18 +51,6 @@ export default function IncidenteScreen(props){
     const [imageUrls, setImageUrls] = useState([]);
     
 
-    /* useEffect(() => {
-      const imagesListRef = storageRef(props.storage, `images/${titulo}/`);
-      console.log(imagesListRef);
-      listAll(imagesListRef).then((response) => {
-        response.items.forEach((item) => {
-          getDownloadURL(item).then((url) => {
-            setImageUrls((prev) => [...prev, url]);
-          });
-        });
-      });
-    }, [titulo]); */
-
     useEffect(()=>{
       getImages(titulo,setImageUrls)
     },[titulo])
@@ -115,9 +103,9 @@ export default function IncidenteScreen(props){
             setEv3(newIncidente.evidencia3);
       },[newIncidente])
 
-      Geocode.setApiKey("AIzaSyDj9I51Cd1WrcAGKgGmi7m9y7GztW0mtcI");
-  Geocode.setLanguage("en");
-  Geocode.setLocationType("ROOFTOP");
+    Geocode.setApiKey("AIzaSyDj9I51Cd1WrcAGKgGmi7m9y7GztW0mtcI");
+    Geocode.setLanguage("en");
+    Geocode.setLocationType("ROOFTOP");
       
       useEffect(()=>{
         Geocode.fromLatLng("-12.138500"," -77.016126").then(
