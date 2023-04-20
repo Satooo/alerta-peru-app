@@ -13,9 +13,13 @@ import {
   list,
 } from "firebase/storage";
 
+import { getImages } from "../../imageUploadVM/imageUploadVM";
+import { getIncidente2 } from "../../../IncidenteVM/IncidenteVM";
+import { incidente } from "../../entities/incidente";
+
 export default function IncidenteScreenAdmin(props){
   let user = sessionStorage.getItem("loggedUser")
-  let incidente = sessionStorage.getItem("incidente")
+  let incidenteTitle = sessionStorage.getItem("incidente")
 
     const [address,setAddress]=useState("");
     const [lat,setLat]=useState(-12.138500);
@@ -33,6 +37,7 @@ export default function IncidenteScreenAdmin(props){
     const [hora,setHora]=useState("")
     const [validacion,setValidacion]=useState("")
     const [fechaShow,setFechaShow]=useState("")
+    const [newIncidente,setNewIncidente]=useState(new incidente)
     const [defaultProps,setDefaultProps]=useState(
       {
         center: {
@@ -52,20 +57,16 @@ export default function IncidenteScreenAdmin(props){
     Geocode.setLocationType("ROOFTOP");
 
     const [imageUrls, setImageUrls] = useState([]);
-    
 
-    useEffect(() => {
-      const imagesListRef = storageRef(props.storage, `images/${titulo}/`);
-      console.log(imagesListRef);
-      listAll(imagesListRef).then((response) => {
-        response.items.forEach((item) => {
-          getDownloadURL(item).then((url) => {
-            setImageUrls((prev) => [...prev, url]);
-          });
-        });
-      });
-    }, [titulo]);
+    useEffect(()=>{
+      getImages(titulo,setImageUrls)
+    },[titulo])
 
+    useEffect(()=>{
+      getIncidente2(setNewIncidente,incidenteTitle)
+    },[])
+   
+  
     const db = props.db
 
     
@@ -149,8 +150,8 @@ export default function IncidenteScreenAdmin(props){
 
       useEffect(()=>{
         
-        if(incidente.length>0){
-          getIncidenteData(incidente)
+        if(incidenteTitle.length>0){
+          getIncidenteData(incidenteTitle)
         }
       },[])
 
