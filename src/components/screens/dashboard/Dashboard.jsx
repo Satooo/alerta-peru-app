@@ -14,6 +14,8 @@ import HeaderAdmin from "../common/HeaderAdmin";
 
 import { getDatabase, ref, child, set, get, onValue } from "firebase/database";
 
+import { getIncidente2, getIncidentes2 } from "../../../IncidenteVM/IncidenteVM";
+
 export default function Dashboard(props){
     const db = props.db
     const [seccion,setSeccion]=useState("pendientes")
@@ -41,6 +43,7 @@ export default function Dashboard(props){
 
     useEffect(()=>{
         getIncidentes()
+        getIncidentes2(setIncidentes)
     },[])
 
     useEffect(()=>{

@@ -1,0 +1,22 @@
+class validacion extends incidente{
+    constructor(validacion,comentariosAdmin,mensajeValidacion,faltaEvidencia){
+        super(
+            user,
+            titulo,
+            descripcion,
+            tipo,
+            lugar,
+            fecha,
+            lat,
+            lng,
+            descripcionCompleta,
+            evidencia1,
+            evidencia2,
+            evidencia3
+        )
+        this.validacion=validacion,
+        this.comentariosAdmin=comentariosAdmin,
+        this.mensajeValidacion=mensajeValidacion,
+        this.faltaEvidencia=faltaEvidencia
+    }
+}

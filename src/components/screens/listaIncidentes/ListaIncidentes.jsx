@@ -7,6 +7,8 @@ import Button from "react-bootstrap/Button"
 
 import { getDatabase, ref, child, set, get, onValue } from "firebase/database";
 
+import { getIncidentes2 } from "../../../IncidenteVM/IncidenteVM";
+
 export default function ListaIncidentes(props){
     const db = props.db
 
@@ -30,7 +32,7 @@ export default function ListaIncidentes(props){
       }
 
     useEffect(()=>{
-        getIncidentes()
+        getIncidentes2(setIncidentes)
     },[])
 
     useEffect(()=>{
@@ -90,6 +92,7 @@ export default function ListaIncidentes(props){
         )
       }
     function showIncidentes(){
+        
         if(Object.keys(incidentes).length>0){
             const sorted= []
             Object.keys(incidentes).forEach((incidente)=>{
@@ -104,6 +107,7 @@ export default function ListaIncidentes(props){
             let incidentesKeys=Object.keys(incidentes)
             let incidentesDisplay = Array(incidentesKeys.length).fill(0).map((_,index)=>{
                 let i = sorted[index].key
+                console.log(i)
                 console.log(incidentes[i].descripcion)
                 if(incidentes[i].descripcionCompleta.length>0){
                     return (

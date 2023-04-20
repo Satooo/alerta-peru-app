@@ -14,6 +14,7 @@ import { getStorage } from "firebase/storage";
 import {getFirestore} from "firebase/firestore"
 import { getAnalytics } from "firebase/analytics";
 import {getAuth, onAuthStateChanged} from 'firebase/auth';
+import usuario from './entities/usuario';
 
 export default function Base(){
     // TODO: Replace the following with your app's Firebase project configuration

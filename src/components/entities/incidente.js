@@ -1,0 +1,29 @@
+export class incidente{
+    constructor(
+        user,
+        titulo,
+        descripcion,
+        tipo,
+        lugar,
+        fecha,
+        lat,
+        lng,
+        descripcionCompleta,
+        evidencia1,
+        evidencia2,
+        evidencia3)
+    {
+        this.user=user;
+        this.titulo=titulo;
+        this.descripcion=descripcion;
+        this.tipo=tipo;
+        this.lugar=lugar;
+        this.fecha=fecha;
+        this.lat=lat;
+        this.lng=lng;
+        this.descripcionCompleta=descripcionCompleta;
+        this.evidencia1=evidencia1;
+        this.evidencia2=evidencia2;
+        this.evidencia3=evidencia3;
+    }
+}

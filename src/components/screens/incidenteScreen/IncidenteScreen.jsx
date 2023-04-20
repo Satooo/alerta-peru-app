@@ -13,10 +13,14 @@ import {
   list,
 } from "firebase/storage";
 
+import { getImages } from "../../imageUploadVM/imageUploadVM";
+import { getIncidente2 } from "../../../IncidenteVM/IncidenteVM";
+import { incidente } from "../../entities/incidente";
+
 
 export default function IncidenteScreen(props){
   let user = sessionStorage.getItem("loggedUser")
-  let incidente = sessionStorage.getItem("incidente")
+  let incidenteTitle = sessionStorage.getItem("incidente")
 
     const [address,setAddress]=useState("");
     const [lat,setLat]=useState(-12.138500);
@@ -32,6 +36,7 @@ export default function IncidenteScreen(props){
     const [ev2,setEv2]=useState("")
     const [ev3,setEv3]=useState("")
     const [hora,setHora]=useState("")
+    const [newIncidente,setNewIncidente]=useState(new incidente)
     const [defaultProps,setDefaultProps]=useState(
       {
         center: {
@@ -46,7 +51,7 @@ export default function IncidenteScreen(props){
     const [imageUrls, setImageUrls] = useState([]);
     
 
-    useEffect(() => {
+    /* useEffect(() => {
       const imagesListRef = storageRef(props.storage, `images/${titulo}/`);
       console.log(imagesListRef);
       listAll(imagesListRef).then((response) => {
@@ -56,7 +61,15 @@ export default function IncidenteScreen(props){
           });
         });
       });
-    }, [titulo]);
+    }, [titulo]); */
+
+    useEffect(()=>{
+      getImages(titulo,setImageUrls)
+    },[titulo])
+
+    useEffect(()=>{
+      getIncidente2(setNewIncidente,incidenteTitle)
+    },[])
 
     const db = props.db
 
@@ -85,39 +98,22 @@ export default function IncidenteScreen(props){
         console.log(defaultProps.center)
       },[defaultProps])
 
-      function getIncidenteData(titulo){
-        const dbRef = ref(db);
-        get(child(dbRef, `posts/`+titulo)).then((snapshot) => {
-          if (snapshot.exists()) {
-            console.log(snapshot.val());
-            setAutor(snapshot.val().user)
-            setTitulo(snapshot.val().titulo);
-            setDescripcion(snapshot.val().descripcion);
-            const fechaDisplay = `${new Date(snapshot.val().fecha).toLocaleDateString()} ${new Date(snapshot.val().fecha).toLocaleTimeString()}`
-            setFecha(fechaDisplay)
-            setTipo(snapshot.val().tipo);
-            setDescripcionComp(snapshot.val().descripcionCompleta);
-            setLugar(snapshot.val().lugar);
-            setLat(snapshot.val().lat);
-            setLng(snapshot.val().lng)
-            setEv1(snapshot.val().evidencia1);
-            setEv2(snapshot.val().evidencia2);
-            setEv3(snapshot.val().evidencia3);
-          } else {
-            console.log("No data available");
-          }
-        }).catch((error) => {
-          console.error(error);
-        });
-      }
-
 
       useEffect(()=>{
-        
-        if(incidente.length>0){
-          getIncidenteData(incidente)
-        }
-      },[])
+            setAutor(newIncidente.user)
+            setTitulo(newIncidente.titulo);
+            setDescripcion(newIncidente.descripcion);
+            const fechaDisplay = `${new Date(newIncidente).toLocaleDateString()} ${new Date(newIncidente.fecha).toLocaleTimeString()}`
+            setFecha(fechaDisplay)
+            setTipo(newIncidente.tipo);
+            setDescripcionComp(newIncidente.descripcionCompleta);
+            setLugar(newIncidente.lugar);
+            setLat(newIncidente.lat);
+            setLng(newIncidente.lng)
+            setEv1(newIncidente.evidencia1);
+            setEv2(newIncidente.evidencia2);
+            setEv3(newIncidente.evidencia3);
+      },[newIncidente])
 
       Geocode.setApiKey("AIzaSyDj9I51Cd1WrcAGKgGmi7m9y7GztW0mtcI");
   Geocode.setLanguage("en");
