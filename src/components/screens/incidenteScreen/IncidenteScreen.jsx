@@ -59,8 +59,6 @@ export default function IncidenteScreen(props){
       getIncidente2(setNewIncidente,incidenteTitle)
     },[])
 
-    const db = props.db
-
     
       const OPTIONS = {
         minZoom: 13,
@@ -91,7 +89,7 @@ export default function IncidenteScreen(props){
             setAutor(newIncidente.user)
             setTitulo(newIncidente.titulo);
             setDescripcion(newIncidente.descripcion);
-            const fechaDisplay = `${new Date(newIncidente).toLocaleDateString()} ${new Date(newIncidente.fecha).toLocaleTimeString()}`
+            const fechaDisplay = `${new Date(newIncidente.fecha).toLocaleDateString()} ${new Date(newIncidente.fecha).toLocaleTimeString()}`
             setFecha(fechaDisplay)
             setTipo(newIncidente.tipo);
             setDescripcionComp(newIncidente.descripcionCompleta);
@@ -255,28 +253,29 @@ export default function IncidenteScreen(props){
                             <h5 id="item-1-3" style={{marginTop:"30px"}}>Involucrados</h5>
                             <p style={{backgroundColor:"#eeeeee",padding:"10px",borderRadius:"20px"}}> No hay Involucrados encontrados..</p>
                             <h4 id="item-2">Evidencia</h4>
-                            <p style={{backgroundColor:"#eeeeee",padding:"10px",borderRadius:"20px"}}> No hay aportes de evidencia encontrada..</p>
+                            
                             <div className="d-flex flex-column justify-content-center align-items-center">
-                            {imageUrls.map((url,index) => {
-                              if (index==0){
-                                return <div className="w-100">
-                                  <img src={url} style={{height:"300px",borderRadius:"20px",marginBottom:"20px"}} />
-                                  <p style={{backgroundColor:"#eeeeee",padding:"10px",borderRadius:"20px"}}>{ev1}</p>
-                                </div>     
-                              }else if(index==1){
-                                return <div className="w-100">
-                                  <img src={url} style={{height:"300px",borderRadius:"20px",marginBottom:"20px"}} />
-                                  <p style={{backgroundColor:"#eeeeee",padding:"10px",borderRadius:"20px"}}>{ev2}</p>
-                                </div>  
-                              }else if(index==2){
-                                return <div className="w-100">
-                                  <img src={url} style={{height:"300px",borderRadius:"20px",marginBottom:"20px"}} />
-                                  <p style={{backgroundColor:"#eeeeee",padding:"10px",borderRadius:"20px"}}>{ev3}</p>
-                                </div>  
-                              }
-                              console.log(index)
-                                                      
-                            })
+                            {
+                              (imageUrls.length>0)?imageUrls.map((url,index) => {
+                                if (index==0){
+                                  return <div className="w-100">
+                                    <img src={url} style={{height:"300px",borderRadius:"20px",marginBottom:"20px"}} />
+                                    <p style={{backgroundColor:"#eeeeee",padding:"10px",borderRadius:"20px"}}>{ev1}</p>
+                                  </div>     
+                                }else if(index==1){
+                                  return <div className="w-100">
+                                    <img src={url} style={{height:"300px",borderRadius:"20px",marginBottom:"20px"}} />
+                                    <p style={{backgroundColor:"#eeeeee",padding:"10px",borderRadius:"20px"}}>{ev2}</p>
+                                  </div>  
+                                }else if(index==2){
+                                  return <div className="w-100">
+                                    <img src={url} style={{height:"300px",borderRadius:"20px",marginBottom:"20px"}} />
+                                    <p style={{backgroundColor:"#eeeeee",padding:"10px",borderRadius:"20px"}}>{ev3}</p>
+                                  </div>  
+                                }
+                                console.log(index)
+                                                        
+                              }):(<p style={{backgroundColor:"#eeeeee",padding:"10px",borderRadius:"20px"}}> No hay aportes de evidencia encontrada..</p>)
                             }
                             </div>
                             <h4 id="item-3">Validación</h4>

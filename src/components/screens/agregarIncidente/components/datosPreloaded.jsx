@@ -6,7 +6,7 @@ export function datosPreloaded(value,onChangeDate,titulo,newIncidente){
     return <div className="w-100">
         <div>
           <b>Lugar de incidente: </b>
-          <button style={{backgroundColor:"#f5f5f5",padding:"10px",borderRadius:"20px",marginTop:"10px",textAlign:"left",border:"none"}} data-bs-dismiss="modal">{newIncidente.lugar}</button>
+          <button id="datosPreloaded-button" data-bs-dismiss="modal">{newIncidente.lugar}</button>
           </div>
           <div class="input-group mt-3">
             <span class="input-group-text"><b>Titulo de incidente</b></span>

@@ -1,0 +1,11 @@
+#dashboard-div{
+    height:auto;
+    width:100%;
+    min-width: 1200px;
+    min-height:100vh;
+    background-color:#eeeeee !important;
+}
+#dashboard-div-div{
+    border-radius:20px;
+    padding-top:20px;
+}

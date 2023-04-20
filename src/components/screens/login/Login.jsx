@@ -8,6 +8,9 @@ import DatePicker from "react-datepicker";
 
 import { getDatabase, ref, child, set, get, onValue } from "firebase/database";
 
+import { getLogin2, writeUserData2 } from "./viewmodel/LoginVM";
+import { usuario } from "../../entities/usuario";
+
 export default function Login(props){
     const db = props.db
 
@@ -54,62 +57,11 @@ export default function Login(props){
             <div style={{width:"0",height:"0",borderLeft:"0px solid transparent",borderRight:"15px solid transparent",borderTop:(props.miMark)?"10px solid #1976d2":"10px solid #f44336"}}></div>
         </div>
       }
-
-      function writeUserData(name, password) {
-      
-        set(ref(db, 'users/' + name), {
-          username: name,
-          password : password,
-          id: id,
-          nombres: nombres,
-          apellidos: apellidos,
-          fechaNacimiento: startDate.toLocaleDateString(),
-          celular: num
-        });
-      }
-
       useEffect(()=>{
-        console.log(startDate.toLocaleDateString())
-      },[startDate])
-  
-      function getCantidadUsers(){
-        const dbRef = ref(db);
-        get(child(dbRef, `users/`)).then((snapshot) => {
-          if (snapshot.exists()) {
-            console.log(Object.keys(snapshot.val()).length);
-            setCantidadUsers(Object.keys(snapshot.val()).length)
-          } else {
-            console.log("No data available");
-          }
-        }).catch((error) => {
-          console.error(error);
-        });
-      }
-
-      function getLogin(user,password){
-        const dbRef = ref(db);
-        get(child(dbRef, `users/`+user)).then((snapshot) => {
-          if (snapshot.exists()) {
-            console.log(snapshot.val().password);
-            if(password==snapshot.val().password){
-                console.log("success")
-                setLoginSuccess(true)
-                window.location.pathname="/"
-            }else{
-                console.log("fail")
-                setLoginSuccess(false)
-            }
-          } else {
-            console.log("No data available");
-          }
-        }).catch((error) => {
-          console.error(error);
-        });
-      }
-  
-      useEffect(()=>{
-        console.log(getCantidadUsers())
-      },[])
+        if(loginSuccess){
+          sessionStorage.setItem("loggedUser", user);
+        }
+      },[loginSuccess])
 
       function signUp(){
         return(
@@ -154,8 +106,17 @@ export default function Login(props){
                                     }}>Cancelar</button>
                                 <button href="#" class="btn btn-primary" style={{borderRadius:"20px"}} onClick={()=>{
                                     setScreen(1)
-                                    writeUserData(user,pass)
-                                    getCantidadUsers()
+                                    let newUsuario= new usuario(
+                                      user,
+                                      pass,
+                                      id,
+                                      nombres,
+                                      apellidos,
+                                      num,
+                                      startDate.toLocaleDateString()
+                                    )
+                                    console.log(newUsuario)
+                                    writeUserData2(newUsuario)
                                 }}>Crear cuenta</button>
                         </div>
                     </div>
@@ -187,8 +148,7 @@ export default function Login(props){
                                     setPass("")
                                     }}>Sign up</button>
                                 <button href="#" class="btn btn-primary" style={{borderRadius:"20px"}} onClick={()=>{
-                                    sessionStorage.setItem("loggedUser", user);
-                                    getLogin(user,pass)
+                                    getLogin2(user,pass,setLoginSuccess)
                                 }}>Log in</button>
                         </div>
                     </div>

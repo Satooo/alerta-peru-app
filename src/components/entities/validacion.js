@@ -1,5 +1,22 @@
-class validacion extends incidente{
-    constructor(validacion,comentariosAdmin,mensajeValidacion,faltaEvidencia){
+import { incidente } from "./incidente"
+export class incidenteValidado extends incidente{
+    constructor(user,
+        titulo,
+        descripcion,
+        tipo,
+        lugar,
+        fecha,
+        lat,
+        lng,
+        descripcionCompleta,
+        evidencia1,
+        evidencia2,
+        evidencia3,
+        validacion,
+        comentariosAdmin,
+        mensajeValidacion,
+        faltaEvidencia
+        ){
         super(
             user,
             titulo,
@@ -14,9 +31,9 @@ class validacion extends incidente{
             evidencia2,
             evidencia3
         )
-        this.validacion=validacion,
-        this.comentariosAdmin=comentariosAdmin,
-        this.mensajeValidacion=mensajeValidacion,
+        this.validacion=validacion
+        this.comentariosAdmin=comentariosAdmin
+        this.mensajeValidacion=mensajeValidacion 
         this.faltaEvidencia=faltaEvidencia
     }
 }

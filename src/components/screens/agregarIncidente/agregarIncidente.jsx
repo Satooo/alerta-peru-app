@@ -1,3 +1,4 @@
+import "./styles/agregarIncidente.css"
 import React from "react"
 import { useEffect, useState } from "react";
 import Header from "../common/Header"
@@ -74,9 +75,9 @@ export default function AgregarIncidente(props){
 
 
     return (
-        <div className="container-fluid d-flex flex-column no-padding" style={{height:"auto",width:"100%",minWidth:"1200px",minHeight:"100vh",backgroundColor:"#eeeeee"}}>
+        <div className="container-fluid d-flex flex-column no-padding" id="agregarIncidente-div">
             <Header/>
-            <div className="container bg-light d-flex flex-column align-items-center justify-content-center" style={{borderRadius:"20px",padding:"20px"}}>
+            <div className="container bg-light d-flex flex-column align-items-center justify-content-center" id="agregarIncidente-div-div">
                 <div className="w-100 d-flex justify-content-between">
                     <a href="/"><button className="btn btn-secondary rounded-pill" onClick={()=>{
                       sessionStorage.setItem("incidente","")

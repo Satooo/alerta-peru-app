@@ -4,6 +4,11 @@ import { useState } from "react";
 import Header from "../common/Header";
 import { getDatabase, ref, child, set, get, onValue } from "firebase/database";
 
+import { getPerfil2,writeUserData2 } from "../login/viewmodel/LoginVM";
+import { usuario } from "../../entities/usuario";
+
+import { participacion } from "./components/showParticipacion";
+
 export default function Perfil(props){
     sessionStorage.setItem("incidente","");
     const db = props.db
@@ -18,6 +23,7 @@ export default function Perfil(props){
     const [num,setNum]=useState("")
     const [user,setUser]=useState("")
     const [pass,setPass]=useState("")
+    const [loggedPerfil,setLoggedPerfil]=useState(new usuario)
 
     const[showPass,setShowPass]=useState(false)
     const[editMode,setEditMode]=useState(false)
@@ -26,74 +32,22 @@ export default function Perfil(props){
     useEffect(()=>{
         setLoggedUser(sessionStorage.getItem("loggedUser"));
         console.log(loggedUser)
-        
     },[])
 
     useEffect(()=>{
-        getPerfilInfo()
+        getPerfil2(loggedUser,setLoggedPerfil,setStartDate)
     },[loggedUser])
 
-    function getPerfilInfo(){
-        const dbRef = ref(db);
-        get(child(dbRef, `users/${loggedUser}`)).then((snapshot) => {
-          if (snapshot.exists()) {
-            console.log(snapshot.val())
-            setUser(snapshot.val().username)
-            setPass(snapshot.val().password)
-            setNombres(snapshot.val().nombres)
-            setApellidos(snapshot.val().apellidos)
-            setId(snapshot.val().id)
-            setNum(snapshot.val().celular)
-            let [day, month, year] = (snapshot.val().fechaNacimiento).split('/')
-            const dateObj = new Date(+year, +month - 1, +day)
-            console.log(dateObj)
-            setStartDate(dateObj)
-          } else {
-            console.log("No data available");
-          }
-        }).catch((error) => {
-          console.error(error);
-        });
-      }
+    useEffect(()=>{
+        console.log(loggedPerfil)
+        setUser(loggedPerfil.user)
+        setPass(loggedPerfil.pass)
+        setNombres(loggedPerfil.nombres)
+        setApellidos(loggedPerfil.apellidos)
+        setId(loggedPerfil.id)
+        setNum(loggedPerfil.celular)
+    },[loggedPerfil])
 
-      function writeUserData() {
-      
-        set(ref(db, 'users/' + user), {
-          username: user,
-          password : pass,
-          id: id,
-          nombres: nombres,
-          apellidos: apellidos,
-          fechaNacimiento: startDate.toLocaleDateString(),
-          celular: num
-        });
-      }
-
-      const incidentMinimized=()=>{
-        return(
-            <div className="mt-3 mb-3 d-flex flex-row w-80" style={{borderRadius:"20px"}} id="incidentCard">
-                    <div>
-                        <img src={require("../../images/robbery.jpg")} style={{height:"300px",width:"300px",borderRadius:"20px",objectFit:"cover",marginBottom:"1px"}}/>
-                    </div>
-                    <div className="w-100" style={{padding:"20px"}}>
-                        <h3>Robo agravado</h3>
-                        <p className="mt-3"><span class="badge text-bg-dark">Robo</span><i className="m-2">10/03/2023 13:05</i></p>
-                        <div className="d-flex flex-column mb-3">
-                                <span style={{width:"100%",padding:"5px",fontSize:"12px",textAlign:"start"}}>Publicado por</span>
-                                <div>
-                                    <img src={require("../../images/fotolinkedin.png")} style={{width:"20px",borderRadius:"100px"}}/>
-                                    <b style={{width:"100%",padding:"5px",marginTop:"-5px",textAlign:"start"}}>Andrés Sato</b>
-                                </div>
-                            </div>
-                        <p style={{textAlign:"justify"}}>orem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s</p>
-                        <div className="w-100 d-flex flex-row justify-content-end">
-                          <a href="/incidente"><button className="btn btn-primary rounded-pill" style={{marginRight:"20px"}}>Ver más</button></a>
-                          <a href="/"><button className="btn btn-secondary rounded-pill">Aportar evidencia</button></a>
-                        </div>
-                    </div>
-                </div>
-        )
-      }
     function profileInfo(){
         if(sessionStorage.getItem("loggedUser")!="" && sessionStorage.getItem("loggedUser")!=null){
             return <div className="row">
@@ -107,7 +61,16 @@ export default function Perfil(props){
                         <button className="mt-3 btn btn-primary w-100 rounded-pill" style={{display:(editMode)?"none":"block"}} onClick={()=>{setEditMode(true)}}>Editar perfil</button>
                         <button className="mt-3 btn btn-primary w-100 rounded-pill" style={{display:(editMode)?"block":"none"}} onClick={()=>{
                             setEditMode(false)
-                            writeUserData()
+                            let actualizarUser = new usuario(
+                                user,
+                                pass,
+                                id,
+                                nombres,
+                                apellidos,
+                                num,
+                                startDate.toLocaleDateString()
+                            )
+                            writeUserData2(actualizarUser)
                             }}>Save</button>
                         <button style={{display:(editMode)?"block":"none"}} className="mt-3 btn btn-danger w-100 rounded-pill mt-3" onClick={()=>{setEditMode(false)}}>Cancelar</button>
                     </div>
@@ -151,20 +114,7 @@ export default function Perfil(props){
         }
         
     }
-    function participacion(){
-        if(sessionStorage.getItem("loggedUser")!="" && sessionStorage.getItem("loggedUser")!=null){
-       return <div>
-                    <p className="mt-5" style={{backgroundColor:"#e3f2fd",padding:"10px",borderTopLeftRadius:"20px",borderTopRightRadius:"20px",width:"300px",marginBottom:"0px",color:"black",textAlign:"center"}}><b>Incidentes con tu participación</b></p>
-                    <div style={{borderTop:"1px solid #1976d2",marginTop:"0px"}}>
-                        {Array(20).fill(0).map((_,index)=>{
-                        return (
-                            incidentMinimized()
-                        )
-                        })}
-                    </div>
-                </div>
-        }
-    }
+    
     return(
         <div className="container-fluid d-flex flex-column no-padding" style={{height:"auto",width:"100%",minWidth:"1200px",minHeight:"100vh",backgroundColor:"#eeeeee"}}>
             <Header/>

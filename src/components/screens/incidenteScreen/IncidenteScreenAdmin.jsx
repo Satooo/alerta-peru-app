@@ -14,8 +14,9 @@ import {
 } from "firebase/storage";
 
 import { getImages } from "../../imageUploadVM/imageUploadVM";
-import { getIncidente2 } from "../../../IncidenteVM/IncidenteVM";
+import { getIncidenteAdmin2, validarIncidente } from "../../../IncidenteVM/IncidenteVM";
 import { incidente } from "../../entities/incidente";
+import { incidenteValidado } from "../../entities/validacion";
 
 export default function IncidenteScreenAdmin(props){
   let user = sessionStorage.getItem("loggedUser")
@@ -37,7 +38,7 @@ export default function IncidenteScreenAdmin(props){
     const [hora,setHora]=useState("")
     const [validacion,setValidacion]=useState("")
     const [fechaShow,setFechaShow]=useState("")
-    const [newIncidente,setNewIncidente]=useState(new incidente)
+    const [newIncidente,setNewIncidente]=useState(new incidenteValidado)
     const [defaultProps,setDefaultProps]=useState(
       {
         center: {
@@ -63,11 +64,48 @@ export default function IncidenteScreenAdmin(props){
     },[titulo])
 
     useEffect(()=>{
-      getIncidente2(setNewIncidente,incidenteTitle)
+      getIncidenteAdmin2(setNewIncidente,incidenteTitle)
     },[])
+
+    useEffect(()=>{
+      setAutor(newIncidente.user)
+      setTitulo(newIncidente.titulo);
+      setDescripcion(newIncidente.descripcion);
+      const fechaDisplay = `${new Date(newIncidente.fecha).toLocaleDateString()} ${new Date(newIncidente.fecha).toLocaleTimeString()}`
+      setFechaShow(fechaDisplay)
+      setFecha(newIncidente.fecha)
+      setTipo(newIncidente.tipo);
+      setDescripcionComp(newIncidente.descripcionCompleta);
+      setLugar(newIncidente.lugar);
+      setLat(newIncidente.lat);
+      setLng(newIncidente.lng)
+      setEv1(newIncidente.evidencia1);
+      setEv2(newIncidente.evidencia2);
+      setEv3(newIncidente.evidencia3);
+      if(newIncidente.validacion==undefined || newIncidente.validacion==""){
+        setValidacion("")
+      }else{
+        setValidacion(newIncidente.validacion);
+      }
+      if(newIncidente.comentariosAdmin==undefined || newIncidente.comentariosAdmin==""){
+        setComentariosAdmin("");
+      }else{
+        setComentariosAdmin(newIncidente.comentariosAdmin);
+      }
+      if(newIncidente.mensajeValidacion==undefined || newIncidente.mensajeValidacion==""){
+        setMensajeValidaciion("");
+      }else{
+        setMensajeValidaciion(newIncidente.mensajeValidacion);
+      }
+      if(newIncidente.faltaEvidencia==undefined || newIncidente.faltaEvidencia==""){
+        setFaltaEvidencia("");
+      }else{
+        setFaltaEvidencia(newIncidente.faltaEvidencia);
+      }
+      
+    },[newIncidente])
    
   
-    const db = props.db
 
     
       const OPTIONS = {
@@ -75,85 +113,30 @@ export default function IncidenteScreenAdmin(props){
         maxZoom: 20,
         disableDefaultUI: true
       }
-
-      function getIncidenteData(titulo){
-        const dbRef = ref(db);
-        get(child(dbRef, `posts/`+titulo)).then((snapshot) => {
-          if (snapshot.exists()) {
-            console.log(snapshot.val());
-            setAutor(snapshot.val().user)
-            setTitulo(snapshot.val().titulo);
-            setDescripcion(snapshot.val().descripcion);
-            const fechaDisplay = `${new Date(snapshot.val().fecha).toLocaleDateString()} ${new Date(snapshot.val().fecha).toLocaleTimeString()}`
-            setFechaShow(fechaDisplay)
-            setFecha(snapshot.val().fecha)
-            setTipo(snapshot.val().tipo);
-            setDescripcionComp(snapshot.val().descripcionCompleta);
-            setLugar(snapshot.val().lugar);
-            setLat(snapshot.val().lat);
-            setLng(snapshot.val().lng)
-            setEv1(snapshot.val().evidencia1);
-            setEv2(snapshot.val().evidencia2);
-            setEv3(snapshot.val().evidencia3);
-            if(snapshot.val().validacion==undefined || snapshot.val().validacion==null){
-              console.log("no hay validacion")
-            }else{
-              console.log(snapshot.val().validacion)
-              setValidacion(snapshot.val().validacion)
-            }
-
-            if(snapshot.val().faltaEvidencia==undefined || snapshot.val().faltaEvidencia==null){
-              console.log("no hay evidencia")
-            }else{
-              setFaltaEvidencia(snapshot.val().faltaEvidencia)
-            }
-
-            if(snapshot.val().comentariosAdmin==undefined || snapshot.val().comentariosAdmin==null){
-              console.log("no hay validacion")
-            }else{
-              setComentariosAdmin(snapshot.val().comentariosAdmin)
-            }
-
-            if(snapshot.val().mensajeValidacion==undefined || snapshot.val().mensajeValidacion==null){
-              console.log("no hay validacion")
-            }else{
-              setMensajeValidaciion(snapshot.val().mensajeValidacion)
-            }
-          } else {
-            console.log("No data available");
-          }
-        }).catch((error) => {
-          console.error(error);
-        });
-      }
-      function writeIncidente(titulo) {
       
-        set(ref(db, 'posts/' + titulo), {
-          user: autor,
-          titulo: titulo,
-          descripcion : descripcion,
-          tipo:tipo,
-          lugar: lugar,
-          fecha: fecha,
-          lat:lat,
-          lng:lng,
-          descripcionCompleta: descripcionComp,
-          evidencia1:ev1,
-          evidencia2:ev2,
-          evidencia3:ev3,
-          validacion: validacion,
-          comentariosAdmin: comentariosAdmin,
-          mensajeValidacion: mensajeValidacion,
-          faltaEvidencia: faltaEvidencia
-        });
-      }
 
-      useEffect(()=>{
-        
-        if(incidenteTitle.length>0){
-          getIncidenteData(incidenteTitle)
-        }
-      },[])
+      function validar(){
+        let validado= new incidenteValidado(
+          newIncidente.user,
+          newIncidente.titulo,
+          newIncidente.descripcion,
+          newIncidente.tipo,
+          newIncidente.lugar,
+          newIncidente.fecha,
+          newIncidente.lat,
+          newIncidente.lng,
+          newIncidente.descripcionCompleta,
+          newIncidente.evidencia1,
+          newIncidente.evidencia2,
+          newIncidente.evidencia3,
+          validacion,
+          comentariosAdmin,
+          mensajeValidacion,
+          faltaEvidencia,
+        )
+        console.log(validado)
+        validarIncidente(validado)
+      }
 
 
       useEffect(()=>{
@@ -304,27 +287,27 @@ export default function IncidenteScreenAdmin(props){
                                 <p>La evidencia que coloca la municipalidad posee un check de oficial.</p>
                                 <button className="btn btn-dark mb-3 rounded-pill">Solicitar</button>
                             </div>
-                            <p style={{backgroundColor:"#eeeeee",padding:"10px",borderRadius:"20px",marginTop:"20px"}}> No hay aportes de otros usuarios..</p>
-                            {imageUrls.map((url,index) => {
-                              if (index==0){
-                                return <div className="w-100">
-                                  <img src={url} style={{height:"300px",borderRadius:"20px",marginBottom:"20px"}} />
-                                  <p style={{backgroundColor:"#eeeeee",padding:"10px",borderRadius:"20px"}}>{ev1}</p>
-                                </div>     
-                              }else if(index==1){
-                                return <div className="w-100">
-                                  <img src={url} style={{height:"300px",borderRadius:"20px",marginBottom:"20px"}} />
-                                  <p style={{backgroundColor:"#eeeeee",padding:"10px",borderRadius:"20px"}}>{ev2}</p>
-                                </div>  
-                              }else if(index==2){
-                                return <div className="w-100">
-                                  <img src={url} style={{height:"300px",borderRadius:"20px",marginBottom:"20px"}} />
-                                  <p style={{backgroundColor:"#eeeeee",padding:"10px",borderRadius:"20px"}}>{ev3}</p>
-                                </div>  
-                              }
-                              console.log(index)
-                                                      
-                            })
+                            {
+                              (imageUrls.length>0)?imageUrls.map((url,index) => {
+                                if (index==0){
+                                  return <div className="w-100 mt-2">
+                                    <img src={url} style={{height:"300px",borderRadius:"20px",marginBottom:"20px"}} />
+                                    <p style={{backgroundColor:"#eeeeee",padding:"10px",borderRadius:"20px"}}>{ev1}</p>
+                                  </div>     
+                                }else if(index==1){
+                                  return <div className="w-100">
+                                    <img src={url} style={{height:"300px",borderRadius:"20px",marginBottom:"20px"}} />
+                                    <p style={{backgroundColor:"#eeeeee",padding:"10px",borderRadius:"20px"}}>{ev2}</p>
+                                  </div>  
+                                }else if(index==2){
+                                  return <div className="w-100">
+                                    <img src={url} style={{height:"300px",borderRadius:"20px",marginBottom:"20px"}} />
+                                    <p style={{backgroundColor:"#eeeeee",padding:"10px",borderRadius:"20px"}}>{ev3}</p>
+                                  </div>  
+                                }
+                                console.log(index)
+                                                        
+                              }):(<p style={{backgroundColor:"#eeeeee",padding:"10px",borderRadius:"20px"}}> No hay aportes de evidencia encontrada..</p>)
                             }
                             <div class="form-check form-switch">
                             <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" checked={(faltaEvidencia=="true"?true:false)} onChange={()=>{
@@ -371,7 +354,7 @@ export default function IncidenteScreenAdmin(props){
                                 <a href="/dashboard"><button className="btn btn-secondary mb-5 rounded-pill" style={{marginRight:"20px"}}>Cancelar</button></a>
                                 <button className="btn btn-primary mb-5 rounded-pill" onClick={
                                   ()=>{
-                                    writeIncidente(incidente)
+                                    validar()
                                     window.location.pathname="/dashboard"
                                   }
                                 }>Publicar</button>
