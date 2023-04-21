@@ -2,7 +2,7 @@ import React from "react";
 import DateTimePicker from 'react-datetime-picker';
 import { incidente } from "../../../entities/incidente";
 
-export function AgregarIncidente(setTitulo,setTipoIncidente,setDescripcionIncidente,value,onChangeDate,newIncidente,writeIncidente) {
+export function AgregarIncidente(setTitulo,setTipoIncidente,setDescripcionIncidente,value,onChangeDate,newIncidente,writeIncidente,user) {
   console.log(newIncidente.user)
     return(
       <div className="modal fade" id="AgregarIncidente" tabindex="-1" aria-labelledby="AgregarIncidenteAria" aria-hidden="true" >
@@ -54,11 +54,13 @@ export function AgregarIncidente(setTitulo,setTipoIncidente,setDescripcionIncide
                 setTitulo("")
                 setDescripcionIncidente("")
                 }}>Cancelar</button>
-              <a href="/agregar"><button type="button" className="btn btn-primary" data-bs-dismiss="modal" onClick={()=>{
+              <a href={(user=="")?"/":"/agregar"}><button type="button" disabled={(user=="")?true:false} className="btn btn-primary" data-bs-dismiss="modal" onClick={()=>{
                 if(newIncidente.tipo!="" && newIncidente.fecha!="" && newIncidente.titulo!="" && newIncidente.descripcion!="" && newIncidente.user!="" ){
                   console.log(newIncidente)
-                  writeIncidente(newIncidente)
-                  sessionStorage.setItem("incidente",newIncidente.titulo)
+                  if(user!=""){
+                    writeIncidente(newIncidente)
+                    sessionStorage.setItem("incidente",newIncidente.titulo)
+                  }
                 }
               }}>Continuar</button></a>
             </div>

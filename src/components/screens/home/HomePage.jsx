@@ -177,7 +177,7 @@ export default function HomePage(props){
         </GoogleMapReact>
           <div id="homepage-div-div2">
             <HeaderTopMenu setUser={props.setUser}/>
-            {BottomMenu(setFilter,address)}
+            {BottomMenu(setFilter,address,user)}
             {SideMenu(showSideBar,setShowSideBar,incidentes2,sortedIncident2,incidentCard)}
           </div>
       </div>
@@ -185,7 +185,7 @@ export default function HomePage(props){
         {FilterTipo(setFilter)}
         {FilterFecha(address,value,onChangeDate,setFilter)}
         {FilterFrecuencia(setFilter)}
-        {AgregarIncidente(setTitulo,setTipoIncidente,setDescripcionIncidente,value,onChangeDate,newIncidente,writeIncidente2)}
+        {AgregarIncidente(setTitulo,setTipoIncidente,setDescripcionIncidente,value,onChangeDate,newIncidente,writeIncidente2,user)}
         {direccionInfo(address)}
       
     </div>

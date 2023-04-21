@@ -52,9 +52,12 @@ export default function HeaderAdmin(){
                             <li><a class="dropdown-item" href="/perfil">Ver Perfil</a></li>
                             <li><a class="dropdown-item" href="/">Modo user</a></li>
                             <li><hr class="dropdown-divider"/></li>
-                            <li><a class="dropdown-item" href="/login" onClick={()=>{
-                                sessionStorage.setItem("loggedUser", "");
-                            }}>Log off</a></li>
+                            {
+                                (sessionStorage.getItem("loggedUser")=="")?<p></p>:
+                                <li><a class="dropdown-item" href="/login" onClick={()=>{
+                                    sessionStorage.setItem("loggedUser", "");
+                                }}>Log off</a></li>
+                            }
                         </ul>
                         </li>
                     </ul>
