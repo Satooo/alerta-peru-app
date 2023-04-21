@@ -26,6 +26,7 @@ export default function Login(props){
     const [id,setId]=useState("")
     const [num,setNum]=useState("")
     const [startDate, setStartDate] = useState(new Date());
+    const[showPass,setShowPass]=useState(false)
 
     const [loginSuccess,setLoginSuccess]=useState(false)
 
@@ -139,9 +140,12 @@ export default function Login(props){
                                 <input type="text" className="form-control mb-3" placeholder="Usuario" aria-label="Username" aria-describedby="basic-addon1" style={{backgroundColor:"#eeeeee",borderRadius:"20px"}} onChange={(e)=>{
                                     setUser(e.target.value)
                                 }}/>
-                                <input type="text" className="form-control mb-3" placeholder="Contraseña" aria-label="Username" aria-describedby="basic-addon1" style={{backgroundColor:"#eeeeee",borderRadius:"20px"}} onChange={(e)=>{
+                                <div className="w-100 d-flex align-items-center mb-3">
+                                <input type={(showPass)?"text":"password"} className="form-control me-3" placeholder="Contraseña" aria-label="Username" aria-describedby="basic-addon1" style={{backgroundColor:"#eeeeee",borderRadius:"20px"}} onChange={(e)=>{
                                     setPass(e.target.value)
                                 }}/>
+                                <button className="btn btn-secondary rounded-pill" onClick={()=>{setShowPass(!showPass)}}>{(showPass)?"Hide":"Show"}</button>
+                                </div>
                                 <button href="#" class="btn bg-transparent" onClick={()=>{
                                     setScreen(2)
                                     setUser("")
