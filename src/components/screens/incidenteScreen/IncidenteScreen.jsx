@@ -56,6 +56,10 @@ export default function IncidenteScreen(props){
     },[titulo])
 
     useEffect(()=>{
+      console.log(imageUrls)
+    },[imageUrls])
+
+    useEffect(()=>{
       getIncidente2(setNewIncidente,incidenteTitle)
     },[])
 
@@ -86,6 +90,7 @@ export default function IncidenteScreen(props){
 
 
       useEffect(()=>{
+            console.log(newIncidente)
             setAutor(newIncidente.user)
             setTitulo(newIncidente.titulo);
             setDescripcion(newIncidente.descripcion);

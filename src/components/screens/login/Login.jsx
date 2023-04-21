@@ -77,7 +77,7 @@ export default function Login(props){
                                 
                                 </h5>
                                 <h6 className="card-subtitle mb-2 text-body-secondary">Bienvenido</h6>
-                                <p className="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                                <p className="card-text">Ingrese sus datos y haga la ciudad más segura para todos!</p>
                                 <input type="text" className="form-control mb-3" placeholder="Usuario" aria-label="Username" aria-describedby="basic-addon1" style={{backgroundColor:"#eeeeee",borderRadius:"20px"}} onChange={(e)=>{
                                     setUser(e.target.value)
                                 }}/>
@@ -136,7 +136,7 @@ export default function Login(props){
                                 
                                 </h5>
                                 <h6 className="card-subtitle mb-2 text-body-secondary">Bienvenido</h6>
-                                <p className="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                                <p className="card-text">Haciendo la seguridad ciudadana más sencilla y alcanzable.</p>
                                 <input type="text" className="form-control mb-3" placeholder="Usuario" aria-label="Username" aria-describedby="basic-addon1" style={{backgroundColor:"#eeeeee",borderRadius:"20px"}} onChange={(e)=>{
                                     setUser(e.target.value)
                                 }}/>
