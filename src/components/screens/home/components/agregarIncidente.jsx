@@ -23,8 +23,6 @@ export function AgregarIncidente(setTitulo,setTipoIncidente,setDescripcionIncide
                 <li><a className="dropdown-item" onClick={()=>{setTipoIncidente("Crimen")}}>Crimen</a></li>
                 <li><a className="dropdown-item" onClick={()=>{setTipoIncidente("Acoso")}}>Acoso</a></li>
                 <li><a className="dropdown-item" onClick={()=>{setTipoIncidente("Pérdida")}}>Pérdida</a></li>
-                <li><hr className="dropdown-divider"/></li>
-                <li><a className="dropdown-item">Otro</a></li>
                 </ul>
               </div>
               <div>
