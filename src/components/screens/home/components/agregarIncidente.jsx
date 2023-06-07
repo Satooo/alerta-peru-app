@@ -54,7 +54,8 @@ export function AgregarIncidente(setTitulo,setTipoIncidente,setDescripcionIncide
                 setTitulo("")
                 setDescripcionIncidente("")
                 }}>Cancelar</button>
-              <a href={(user=="")?"/":"/agregar"}><button type="button" disabled={(user=="")?true:false} className="btn btn-primary" data-bs-dismiss="modal" onClick={()=>{
+               <a href={(user=="" && sessionStorage.getItem("incidente_id")!="")?"/":"/agregar"}> 
+                <button type="button" disabled={(user=="")?true:false} className="btn btn-primary" data-bs-dismiss="modal" onClick={()=>{
                 if(newIncidente.tipo!="" && newIncidente.fecha!="" && newIncidente.titulo!="" && newIncidente.descripcion!="" && newIncidente.user!="" ){
                   console.log(newIncidente)
                   if(user!=""){
@@ -62,7 +63,8 @@ export function AgregarIncidente(setTitulo,setTipoIncidente,setDescripcionIncide
                     sessionStorage.setItem("incidente",newIncidente.titulo)
                   }
                 }
-              }}>Continuar</button></a>
+              }}>Continuar</button>
+               </a> 
             </div>
           </div>
         </div>

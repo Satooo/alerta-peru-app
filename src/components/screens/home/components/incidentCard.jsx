@@ -1,6 +1,6 @@
 import React from "react";
 
-export function incidentCard(titulo,fecha,descripcion){
+export function incidentCard(titulo,fecha,descripcion,id){
     let shortDescription = String(descripcion).substring(0,40)+"...";
     let fechaCorta= `${new Date(fecha).toLocaleDateString()} ${new Date(fecha).toLocaleTimeString()}`
     return(
@@ -16,7 +16,8 @@ export function incidentCard(titulo,fecha,descripcion){
                     <p id="incidentMinimized-div-p">{shortDescription}</p>
                     <div className="w-100 d-flex flex-row justify-content-end">
                       <a href="/incidente"><button className="btn btn-primary rounded-pill" onClick={()=>{
-                        sessionStorage.setItem("incidente",titulo)
+                        //sessionStorage.setItem("incidente",titulo)
+                        sessionStorage.setItem("incidente_id",id)
                       }}>Ver más</button></a>
                     </div>
                 </div>

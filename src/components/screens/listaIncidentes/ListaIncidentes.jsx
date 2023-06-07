@@ -7,11 +7,12 @@ import Button from "react-bootstrap/Button"
 
 import { getDatabase, ref, child, set, get, onValue } from "firebase/database";
 
-import { getIncidentes2 } from "../../../IncidenteVM/IncidenteVM";
+import { getIncidentes2, getIncidentesDb } from "../../../IncidenteVM/IncidenteVM";
 
 import { incidentCardListView } from "./components/incidentCard";
 
 import { TopIncidentesListView } from "./components/topIncidentes";
+import validadoFiltro from "./components/validadoFiltro";
 
 export default function ListaIncidentes(props){
     const db = props.db
@@ -19,10 +20,13 @@ export default function ListaIncidentes(props){
     let user = sessionStorage.getItem("loggedUser");
     sessionStorage.setItem("incidente","");
 
+    const [seccion,setSeccion]=useState("validado")
+
     const [incidentes,setIncidentes]=useState({});
 
     useEffect(()=>{
-        getIncidentes2(setIncidentes)
+        //getIncidentes2(setIncidentes)
+        getIncidentesDb(setIncidentes)
     },[])
 
       
@@ -40,18 +44,45 @@ export default function ListaIncidentes(props){
             console.log(sorted)
             let isNotEmpty=false
             let incidentesKeys=Object.keys(incidentes)
-            let incidentesDisplay = Array(incidentesKeys.length).fill(0).map((_,index)=>{
-                let i = sorted[index].key
-                console.log(i)
-                console.log(incidentes[i].descripcion)
-                if(incidentes[i].descripcionCompleta.length>0){
-                    isNotEmpty=true
-                    return (
-                        incidentCardListView(incidentes[i].titulo,incidentes[i].descripcion,incidentes[i].tipo,incidentes[i].user,incidentes[i].fecha,incidentes[i].descripcionCompleta)
-                    )
-                }
-                
-            })
+            let incidentesDisplay=Array(incidentes.length)
+            if(seccion=="validado"){
+                incidentesDisplay = Array(incidentesKeys.length).fill(0).map((_,index)=>{
+                    let i = sorted[index].key
+                    console.log(i)
+                    console.log(incidentes[i])
+                    console.log(incidentes[i].descripcion)
+                    if(incidentes[i].descripcionCompleta.length>0){
+                        isNotEmpty=true
+                        console.log(incidentes[i].descripcionCompleta)
+                        if(incidentes[i].validacion_status=="true"){
+                            return (
+                                incidentCardListView(incidentes[i].titulo,incidentes[i].descripcion,incidentes[i].tipo,incidentes[i].user,incidentes[i].fecha,incidentes[i].descripcionCompleta,incidentes[i].validacion_status,incidentes[i].incidente_id)
+                            )
+                        }
+                        
+                    }
+                    
+                })
+            }else{
+                incidentesDisplay = Array(incidentesKeys.length).fill(0).map((_,index)=>{
+                    let i = sorted[index].key
+                    console.log(i)
+                    console.log(incidentes[i])
+                    console.log(incidentes[i].descripcion)
+                    if(incidentes[i].descripcionCompleta.length>0){
+                        isNotEmpty=true
+                        console.log(incidentes[i].descripcionCompleta)
+                        if(incidentes[i].validacion_status!="true"){
+                            return (
+                                incidentCardListView(incidentes[i].titulo,incidentes[i].descripcion,incidentes[i].tipo,incidentes[i].user,incidentes[i].fecha,incidentes[i].descripcionCompleta,incidentes[i].validacion_status,incidentes[i].incidente_id)
+                            )
+                        }
+                        
+                    }
+                    
+                })
+            }
+            
             if(isNotEmpty){
                 return incidentesDisplay
             }else{
@@ -68,7 +99,8 @@ export default function ListaIncidentes(props){
         <div className="container-fluid d-flex flex-column no-padding" style={{height:"auto",width:"100%",minWidth:"1200px",minHeight:"100vh",backgroundColor:"#eeeeee"}}>
             <Header/>
             <div className="container bg-light d-flex flex-column align-items-center justify-content-center" style={{borderRadius:"20px",paddingTop:"20px"}}>
-                <TopIncidentesListView/>
+                {TopIncidentesListView(incidentes)}
+                {validadoFiltro(setSeccion)}
                 {showIncidentes()}
             </div>
         </div>

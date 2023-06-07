@@ -1,6 +1,8 @@
 import { incidente } from "./incidente"
 export class incidenteValidado extends incidente{
-    constructor(user,
+    constructor(
+        incidente_id,
+        user,
         titulo,
         descripcion,
         tipo,
@@ -12,12 +14,15 @@ export class incidenteValidado extends incidente{
         evidencia1,
         evidencia2,
         evidencia3,
+        user_id,
+        validacion_status,
         validacion,
         comentariosAdmin,
         mensajeValidacion,
         faltaEvidencia
         ){
         super(
+            incidente_id,
             user,
             titulo,
             descripcion,
@@ -29,7 +34,9 @@ export class incidenteValidado extends incidente{
             descripcionCompleta,
             evidencia1,
             evidencia2,
-            evidencia3
+            evidencia3,
+            user_id,
+            validacion_status
         )
         this.validacion=validacion
         this.comentariosAdmin=comentariosAdmin

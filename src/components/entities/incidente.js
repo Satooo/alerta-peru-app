@@ -1,5 +1,6 @@
 export class incidente{
     constructor(
+        incidente_id,
         user,
         titulo,
         descripcion,
@@ -11,8 +12,12 @@ export class incidente{
         descripcionCompleta,
         evidencia1,
         evidencia2,
-        evidencia3)
+        evidencia3,
+        user_id,
+        validacion_status
+        )
     {
+        this.incidente_id=incidente_id
         this.user=user;
         this.titulo=titulo;
         this.descripcion=descripcion;
@@ -25,5 +30,7 @@ export class incidente{
         this.evidencia1=evidencia1;
         this.evidencia2=evidencia2;
         this.evidencia3=evidencia3;
+        this.user_id=user_id;
+        this.validacion_status=validacion_status
     }
 }

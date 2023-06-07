@@ -10,7 +10,24 @@ import AgregarIncidente from "./screens/agregarIncidente/agregarIncidente"
 import IncidenteScreenAdmin from "./screens/incidenteScreen/IncidenteScreenAdmin"
 
 export default function Base(){
-    
+    /* const httpObtenerUsuarios = async () => {
+        const resp = await fetch(`http://localhost:5555/usuarios`)
+        const data = await resp.json()
+        console.log(data)
+      }
+      
+      const httpObtenerIncidentes = async () => {
+        const resp = await fetch(`http://localhost:5555/incidentes`)
+        const data = await resp.json()
+        console.log(data)
+      }
+
+    useEffect(()=>{
+        httpObtenerUsuarios()
+        httpObtenerIncidentes()
+    },[])
+     */
+
     return (
         <BrowserRouter>
         <Routes>

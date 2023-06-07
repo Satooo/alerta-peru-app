@@ -14,14 +14,14 @@ import {
 } from "firebase/storage";
 
 import { getImages } from "../../imageUploadVM/imageUploadVM";
-import { getIncidenteAdmin2, validarIncidente } from "../../../IncidenteVM/IncidenteVM";
+import { getIncidenteAdmin2, getIncidenteAdminDb, validarDb, validarIncidente } from "../../../IncidenteVM/IncidenteVM";
 import { incidente } from "../../entities/incidente";
 import { incidenteValidado } from "../../entities/validacion";
 
 export default function IncidenteScreenAdmin(props){
   let user = sessionStorage.getItem("loggedUser")
   let incidenteTitle = sessionStorage.getItem("incidente")
-
+  let incidenteId = sessionStorage.getItem("incidente_id")
     const [address,setAddress]=useState("");
     const [lat,setLat]=useState(-12.138500);
     const [lng,setLng]=useState(-77.016126);
@@ -60,11 +60,12 @@ export default function IncidenteScreenAdmin(props){
     const [imageUrls, setImageUrls] = useState([]);
 
     useEffect(()=>{
-      getImages(titulo,setImageUrls)
-    },[titulo])
+      getImages(incidenteId,setImageUrls)
+    },[incidenteId])
 
     useEffect(()=>{
-      getIncidenteAdmin2(setNewIncidente,incidenteTitle)
+      //getIncidenteAdmin2(setNewIncidente,incidenteTitle)
+      getIncidenteAdminDb(setNewIncidente,incidenteId)
     },[])
 
     useEffect(()=>{
@@ -113,10 +114,15 @@ export default function IncidenteScreenAdmin(props){
         maxZoom: 20,
         disableDefaultUI: true
       }
+
+      useEffect(()=>{
+        console.log(comentariosAdmin)
+      },[comentariosAdmin])
       
 
       function validar(){
         let validado= new incidenteValidado(
+          newIncidente.incidente_id,
           newIncidente.user,
           newIncidente.titulo,
           newIncidente.descripcion,
@@ -129,13 +135,16 @@ export default function IncidenteScreenAdmin(props){
           newIncidente.evidencia1,
           newIncidente.evidencia2,
           newIncidente.evidencia3,
+          newIncidente.user_id,
+          validacion,
           validacion,
           comentariosAdmin,
           mensajeValidacion,
           faltaEvidencia,
         )
         console.log(validado)
-        validarIncidente(validado)
+        //validarIncidente(validado)
+        validarDb(validado)
       }
 
 
@@ -195,7 +204,10 @@ export default function IncidenteScreenAdmin(props){
                 <div style={{position:"relative",textAlign:"center",width:"100%"}}>
                     <img src={require("../../images/loginBackground.jpg")} style={{width:"100%",maxHeight:"300px",objectFit:"cover",borderTopRightRadius:"20px",borderTopLeftRadius:"20px",filter:"brightness(0.5)"}}/>
                     <div style={{position:"absolute",top:"30%",width:"100%",color:"white"}}>
-                        <h1>{(titulo!="")?titulo:"Nombre incidente x"}</h1>
+                    <div style={{display:"flex",alignItems:"center",justifyContent:"center"}}>
+                          <h1>{(titulo!="")?titulo:"Nombre incidente x"}</h1>
+                          <img src={require("../../icons/verified.png")} style={{marginLeft:"10px",width:"30px",height:"30px",display:(newIncidente.validacion_status=="true")?"inline-block":"none",filter:"brightness(0) invert(1)"}}/>
+                        </div>
                         <div className="mt-3">
                             <p><span>Fecha de incidente: {(fechaShow!="")?fechaShow:"12/04 3:00pm"}</span></p>
                             <p><span>Tipo de incidente: <span class="badge rounded-pill bg-light text-dark" style={{marginRight:"20px"}}>{(tipo!="")?tipo:"Tipo"}</span></span></p>

@@ -14,13 +14,17 @@ import {
 } from "firebase/storage";
 
 import { getImages } from "../../imageUploadVM/imageUploadVM";
-import { getIncidente2 } from "../../../IncidenteVM/IncidenteVM";
+import { getIncidente2, getIncidenteAdminDb, getIncidenteDb } from "../../../IncidenteVM/IncidenteVM";
 import { incidente } from "../../entities/incidente";
-
+import { incidenteValidado } from "../../entities/validacion";
+import reporteCard from "./components/reporteCard";
+import { deleteIncidente } from "../../../IncidenteVM/IncidenteVM";
 
 export default function IncidenteScreen(props){
   let user = sessionStorage.getItem("loggedUser")
+  let userId=sessionStorage.getItem("user_id")
   let incidenteTitle = sessionStorage.getItem("incidente")
+  let incidenteId = sessionStorage.getItem("incidente_id")
 
     const [address,setAddress]=useState("");
     const [lat,setLat]=useState(-12.138500);
@@ -37,6 +41,7 @@ export default function IncidenteScreen(props){
     const [ev3,setEv3]=useState("")
     const [hora,setHora]=useState("")
     const [newIncidente,setNewIncidente]=useState(new incidente)
+    const [newIncidenteValidado,setNewIncidenteValidado]=useState(new incidenteValidado)
     const [defaultProps,setDefaultProps]=useState(
       {
         center: {
@@ -52,16 +57,48 @@ export default function IncidenteScreen(props){
     
 
     useEffect(()=>{
-      getImages(titulo,setImageUrls)
-    },[titulo])
+      getImages(incidenteId,setImageUrls)
+    },[incidenteId])
 
     useEffect(()=>{
       console.log(imageUrls)
     },[imageUrls])
 
     useEffect(()=>{
-      getIncidente2(setNewIncidente,incidenteTitle)
+      //getIncidente2(setNewIncidente,incidenteTitle)
+      getIncidenteDb(setNewIncidente,incidenteId)
     },[])
+
+    useEffect(()=>{
+      if(newIncidente.validacion_status=="true"){
+        getIncidenteAdminDb(setNewIncidenteValidado,incidenteId)
+      }
+    },[newIncidente])
+
+    useEffect(()=>{
+      console.log(newIncidenteValidado)
+    },[newIncidenteValidado])
+
+    useEffect(()=>{
+      console.log(newIncidente.titulo)
+    },[newIncidente])
+
+    useEffect(()=>{
+      console.log(newIncidente)
+      setAutor(newIncidente.user)
+      setTitulo(newIncidente.titulo);
+      setDescripcion(newIncidente.descripcion);
+      const fechaDisplay = `${new Date(newIncidente.fecha).toLocaleDateString()} ${new Date(newIncidente.fecha).toLocaleTimeString()}`
+      setFecha(fechaDisplay)
+      setTipo(newIncidente.tipo);
+      setDescripcionComp(newIncidente.descripcionCompleta);
+      setLugar(newIncidente.lugar);
+      setLat(newIncidente.lat);
+      setLng(newIncidente.lng)
+      setEv1(newIncidente.evidencia1);
+      setEv2(newIncidente.evidencia2);
+      setEv3(newIncidente.evidencia3);
+},[newIncidente])
 
     
       const OPTIONS = {
@@ -87,24 +124,6 @@ export default function IncidenteScreen(props){
       useEffect(()=>{
         console.log(defaultProps.center)
       },[defaultProps])
-
-
-      useEffect(()=>{
-            console.log(newIncidente)
-            setAutor(newIncidente.user)
-            setTitulo(newIncidente.titulo);
-            setDescripcion(newIncidente.descripcion);
-            const fechaDisplay = `${new Date(newIncidente.fecha).toLocaleDateString()} ${new Date(newIncidente.fecha).toLocaleTimeString()}`
-            setFecha(fechaDisplay)
-            setTipo(newIncidente.tipo);
-            setDescripcionComp(newIncidente.descripcionCompleta);
-            setLugar(newIncidente.lugar);
-            setLat(newIncidente.lat);
-            setLng(newIncidente.lng)
-            setEv1(newIncidente.evidencia1);
-            setEv2(newIncidente.evidencia2);
-            setEv3(newIncidente.evidencia3);
-      },[newIncidente])
 
     Geocode.setApiKey("AIzaSyDj9I51Cd1WrcAGKgGmi7m9y7GztW0mtcI");
     Geocode.setLanguage("en");
@@ -194,7 +213,10 @@ export default function IncidenteScreen(props){
                 <div style={{position:"relative",textAlign:"center",width:"100%"}}>
                     <img src={require("../../images/loginBackground.jpg")} style={{width:"100%",maxHeight:"300px",objectFit:"cover",borderTopRightRadius:"20px",borderTopLeftRadius:"20px",filter:"brightness(0.5)"}}/>
                     <div style={{position:"absolute",top:"30%",width:"100%",color:"white"}}>
-                        <h1>{(titulo!="")?titulo:"Nombre incidente x"}</h1>
+                        <div style={{display:"flex",alignItems:"center",justifyContent:"center"}}>
+                          <h1>{(titulo!="")?titulo:"Nombre incidente x"}</h1>
+                          <img src={require("../../icons/verified.png")} style={{marginLeft:"10px",width:"30px",height:"30px",display:(newIncidente.validacion_status=="true")?"inline-block":"none",filter:"brightness(0) invert(1)"}}/>
+                        </div>
                         <div className="mt-3">
                             <p><span>Fecha de incidente: {(fecha!="")?fecha:"12/04 3:00pm"}</span></p>
                             <p><span>Tipo de incidente: <span class="badge rounded-pill bg-light text-dark" style={{marginRight:"20px"}}>{(tipo!="")?tipo:"Tipo"}</span></span></p>
@@ -292,8 +314,26 @@ export default function IncidenteScreen(props){
                                 <button className="btn btn-dark mb-3 rounded-pill">Solicitar</button>
                             </div>
                             <p style={{backgroundColor:"#eeeeee",padding:"10px",borderRadius:"20px",marginTop:"20px"}}> No hay aportes de otros usuarios..</p>
-                            <h5 id="item-3-2">Comentarios de municipalidad</h5>
-                            <p style={{backgroundColor:"#eeeeee",padding:"10px",borderRadius:"20px"}}> No se ha valido..</p>
+                            
+                            <h5 id="item-3-2">Validación de municipalidad</h5>
+                            {(newIncidente.validacion_status=="true")?
+                              (newIncidente.user_id==userId)?
+                              reporteCard(newIncidente.fecha,newIncidente.incidente_id,user,newIncidenteValidado.mensajeValidacion,newIncidenteValidado.comentariosAdmin,newIncidenteValidado.faltaEvidencia) 
+                              :
+                              <p>Se ha validado oficialmente por la municipalidad y será procesado para una intervención policial</p>
+                            :
+                            <p style={{backgroundColor:"#eeeeee",padding:"10px",borderRadius:"20px"}}> No se ha valido..</p>}
+                            {(newIncidente.user_id==userId)?
+                              <div className="w-100  pb-5 pt-5">
+                              <b>Desea eliminar la publicación?</b>
+                              <button className="btn btn-danger rounded-pill" style={{marginLeft:"20px"}} onClick={()=>{
+                                deleteIncidente({
+                                    id:newIncidente.incidente_id
+                                })
+                                window.location.pathname="/"
+                            }}>Eliminar</button>
+                              </div>:""
+                            }
                             </div>
                         </div>
                     </div>

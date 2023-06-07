@@ -15,7 +15,7 @@ import HeaderAdmin from "../common/HeaderAdmin";
 
 import { getDatabase, ref, child, set, get, onValue } from "firebase/database";
 
-import { getIncidente2, getIncidentesAdmin2 } from "../../../IncidenteVM/IncidenteVM";
+import { getIncidente2, getIncidentesAdminDb, getIncidentesAdmin2 } from "../../../IncidenteVM/IncidenteVM";
 
 import { incidentCardAdmin } from "./components/incidentCard";
 
@@ -38,12 +38,12 @@ export default function Dashboard(props){
     const [incidentes,setIncidentes]=useState({});
 
     useEffect(()=>{
-        getIncidentesAdmin2(setIncidentes)
+        //getIncidentesAdmin2(setIncidentes)
+        getIncidentesAdminDb(setIncidentes)
     },[])
 
     useEffect(()=>{
         console.log(incidentes)
-        
     },[incidentes])
 
     
@@ -60,17 +60,37 @@ export default function Dashboard(props){
             console.log(sorted)
             let isNotEmpty=false
             let incidentesKeys=Object.keys(incidentes)
-            let incidentesDisplay = Array(incidentesKeys.length).fill(0).map((_,index)=>{
-                let i = sorted[index].key
-                console.log(incidentes[i].descripcion)
-                if(incidentes[i].descripcionCompleta.length>0){
-                    isNotEmpty=true
-                    return (
-                        incidentCardAdmin(incidentes[i].titulo,incidentes[i].descripcion,incidentes[i].tipo,incidentes[i].user,incidentes[i].fecha,incidentes[i].validacion)
-                    )
-                }
-                
-            })
+            let incidentesDisplay= Array(incidentesKeys.length)
+            if(seccion=="pendientes"){
+                incidentesDisplay = Array(incidentesKeys.length).fill(0).map((_,index)=>{
+                    let i = sorted[index].key
+                    console.log(incidentes[i].descripcion)
+                    if(incidentes[i].descripcionCompleta.length>0){
+                        isNotEmpty=true
+                        if(incidentes[i].validacion_status=="true"){
+                            return (
+                                incidentCardAdmin(incidentes[i].titulo,incidentes[i].descripcion,incidentes[i].tipo,incidentes[i].user,incidentes[i].fecha,incidentes[i].validacion,incidentes[i].incidente_id)
+                            )
+                        }
+                    }
+                    
+                })
+            }else{
+                incidentesDisplay = Array(incidentesKeys.length).fill(0).map((_,index)=>{
+                    let i = sorted[index].key
+                    console.log(incidentes[i].descripcion)
+                    if(incidentes[i].descripcionCompleta.length>0){
+                        isNotEmpty=true
+                        if(incidentes[i].validacion_status!="true"){
+                            return (
+                                incidentCardAdmin(incidentes[i].titulo,incidentes[i].descripcion,incidentes[i].tipo,incidentes[i].user,incidentes[i].fecha,incidentes[i].validacion,incidentes[i].incidente_id)
+                            )
+                        }
+                    }
+                    
+                })
+            }
+            
             if(isNotEmpty){
                 return incidentesDisplay
             }else{

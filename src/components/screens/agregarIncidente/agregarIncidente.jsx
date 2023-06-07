@@ -11,7 +11,7 @@ import { getStorage,ref as storageRef, uploadBytesResumable, getDownloadURL } fr
 
 import { uploadImage2 } from "../../imageUploadVM/imageUploadVM";
 
-import { getIncidente2, writeIncidenteCompleto2 } from "../../../IncidenteVM/IncidenteVM";
+import { getIncidente2, writeIncidenteCompleto2 , setIncidentesCompletoDb, getIncidenteDb} from "../../../IncidenteVM/IncidenteVM";
 
 import { incidente } from "../../entities/incidente";
 
@@ -24,6 +24,7 @@ import { description } from "./components/description";
 
 export default function AgregarIncidente(props){
     let incidenteTitle = sessionStorage.getItem("incidente");
+    let incidenteId=sessionStorage.getItem("incidente_id");
     const [address,setAddress]=useState("Ramón Ribeyro 998, Barranco");
     const [value, onChangeDate] = useState(new Date());
     const [images, setImages] = React.useState([]);
@@ -48,8 +49,8 @@ export default function AgregarIncidente(props){
 
 
     useEffect(()=>{
-      getIncidente2(setNewIncidente,incidenteTitle)
-      console.log(newIncidente)
+      //getIncidente2(setNewIncidente,incidenteTitle)
+      getIncidenteDb(setNewIncidente,incidenteId)
     },[])
 
     useEffect(()=>{
@@ -61,11 +62,40 @@ export default function AgregarIncidente(props){
           setLat(newIncidente.lat);
           setLng(newIncidente.lng);
           setLugar(newIncidente.lugar);
+          //newIncidente.incidente_id=sessionStorage.getItem("incidente_id")
+          console.log(newIncidente)
     },[newIncidente])
+
+
 
     useEffect(()=>{
       //onChangeDate(new Date(fecha))
     },[fecha])
+
+    useEffect(()=>{
+      setNewIncidente(
+        new incidente(
+          newIncidente.incidente_id,
+          newIncidente.user,
+          newIncidente.titulo,
+          newIncidente.descripcion,
+          newIncidente.tipo,
+          newIncidente.lugar,
+          newIncidente.fecha,
+          newIncidente.lat,
+          newIncidente.lng,
+          descripcionComp,
+          ev1,
+          ev2,
+          ev3,
+          newIncidente.user_id
+        )
+        )
+    },[descripcionComp,ev1,ev2,ev3])
+
+    useEffect(()=>{
+      console.log(newIncidente)
+    },[newIncidente])
 
     const onChangeImage = (imageList, addUpdateIndex) => {
         // data for submit
@@ -84,11 +114,15 @@ export default function AgregarIncidente(props){
                     }}>Atrás</button></a>
                       <button className="btn btn-primary rounded-pill" onClick={()=>{
                       if(descripcionComp!=""){
-                        writeIncidenteCompleto2(newIncidente,descripcionComp,ev1,ev2,ev3);
+                        //writeIncidenteCompleto2(newIncidente,descripcionComp,ev1,ev2,ev3);
+                        newIncidente.incidente_id=sessionStorage.getItem("incidente_id");
+                        
+                        console.log(newIncidente)
+                        setIncidentesCompletoDb(newIncidente);
                         sessionStorage.setItem("incidente",titulo);
                         if(images.length>0){
                           images.forEach((image,index)=>{
-                            uploadImage2(image.file,titulo,index,setUploadCompletion)
+                            uploadImage2(image.file,incidenteId,index,setUploadCompletion)
                           })
                         }else{
                           window.location.pathname="/incidente"

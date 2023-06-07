@@ -8,7 +8,7 @@ import DatePicker from "react-datepicker";
 
 import { getDatabase, ref, child, set, get, onValue } from "firebase/database";
 
-import { getLogin2, writeUserData2 } from "./viewmodel/LoginVM";
+import { getLogin2, writeUserData2, register,loginUser } from "./viewmodel/LoginVM";
 import { usuario } from "../../entities/usuario";
 
 export default function Login(props){
@@ -117,7 +117,8 @@ export default function Login(props){
                                       startDate.toLocaleDateString()
                                     )
                                     console.log(newUsuario)
-                                    writeUserData2(newUsuario)
+                                    //writeUserData2(newUsuario)
+                                    register(newUsuario)
                                 }}>Crear cuenta</button>
                         </div>
                     </div>
@@ -152,7 +153,8 @@ export default function Login(props){
                                     setPass("")
                                     }}>Sign up</button>
                                 <button href="#" class="btn btn-primary" style={{borderRadius:"20px"}} onClick={()=>{
-                                    getLogin2(user,pass,setLoginSuccess)
+                                    //getLogin2(user,pass,setLoginSuccess)
+                                    loginUser(user,pass,setLoginSuccess)
                                 }}>Log in</button>
                         </div>
                     </div>

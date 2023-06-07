@@ -19,13 +19,12 @@ import OverlayTrigger from "react-bootstrap/OverlayTrigger"
 
 import { getDatabase, ref, child, set, get, onValue } from "firebase/database";
 
-import { writeIncidente2,getIncidentes2} from "../../../IncidenteVM/IncidenteVM";
+import { writeIncidente2,getIncidentes2, getIncidentesDb, setIncidentesDb, setIncidentesCompletoDb} from "../../../IncidenteVM/IncidenteVM";
 import { incidente } from "../../entities/incidente";
 
 export default function HomePage(props){
 
     let user = sessionStorage.getItem("loggedUser");
-    sessionStorage.setItem("incidente","");
 
     const [incidentes,setIncidentes]=useState({});
     const [sortedIncident,setSortedIncident]=useState([])
@@ -50,7 +49,9 @@ export default function HomePage(props){
     const [newIncidente,setNewIncidente]=useState(new incidente)
 
     useEffect(()=>{
-      getIncidentes2(setIncidentes2)
+      //getIncidentes2(setIncidentes2)
+      getIncidentesDb(setIncidentes2)
+      console.log(sessionStorage.getItem("user_id"))
     },[])
 
     useEffect(()=>{
@@ -127,6 +128,7 @@ export default function HomePage(props){
   useEffect(()=>{
     setNewIncidente(
       new incidente(
+        "",
         user,
         titulo,
         descripcionIncidente,
@@ -138,9 +140,12 @@ export default function HomePage(props){
         "",
         "",
         "",
-        ""
+        "",
+        sessionStorage.getItem("user_id")
       )
     )
+    console.log(newIncidente)
+    sessionStorage.setItem("incidente_id","")
   },[titulo,descripcionIncidente,currentLat,currentLng,address,value,tipoIncidente])
 
   useEffect(()=>{
@@ -166,12 +171,11 @@ export default function HomePage(props){
           }
           options={OPTIONS}
         >
-          <Marker lat={-12.138500} lng={-77.016126} text="Robo" fecha="10/04 03:55 pm"/>
-          <Marker lat={-12.140500} lng={-77.015126} text="Acoso" fecha="10/04 04:55 pm"/>
-          <Marker lat={-12.138800} lng={-77.000526} text="Pérdido" fecha="10/04 04:25 pm"/>
-          <Marker lat={-12.148800} lng={-77.000526} text="Pérdido" fecha="10/04 04:25 pm"/>
-          <Marker lat={-12.138800} lng={-77.020126} text="Pérdido" fecha="10/04 04:25 pm"/>
-          <Marker lat={-12.138800} lng={-77.020126} text="Pérdido" fecha="10/04 04:25 pm"/>
+          {Array(incidentes2.length).fill(0).map((_,i)=>{
+            if(incidentes2[i].validacion_status=="true"){
+              return <Marker lat={incidentes2[i].lat} lng={incidentes2[i].lng} text={incidentes2[i].tipo} fecha={new Date(incidentes2[i].fecha).toLocaleDateString() } titulo={incidentes2[i].titulo} user={incidentes2[i].user} id={incidentes2[i].incidente_id} hora={new Date(incidentes2[i].fecha).toLocaleTimeString() }/>
+            }
+          })}
           <Marker lat={currentLat} lng={currentLng} text="Mi posición" miMark={true}/>
           
         </GoogleMapReact>
@@ -185,7 +189,7 @@ export default function HomePage(props){
         {FilterTipo(setFilter)}
         {FilterFecha(address,value,onChangeDate,setFilter)}
         {FilterFrecuencia(setFilter)}
-        {AgregarIncidente(setTitulo,setTipoIncidente,setDescripcionIncidente,value,onChangeDate,newIncidente,writeIncidente2,user)}
+        {AgregarIncidente(setTitulo,setTipoIncidente,setDescripcionIncidente,value,onChangeDate,newIncidente,setIncidentesDb,user)}
         {direccionInfo(address)}
       
     </div>

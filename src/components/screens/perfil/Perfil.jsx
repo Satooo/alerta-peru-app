@@ -4,8 +4,10 @@ import { useState } from "react";
 import Header from "../common/Header";
 import { getDatabase, ref, child, set, get, onValue } from "firebase/database";
 
-import { getPerfil2,writeUserData2 } from "../login/viewmodel/LoginVM";
+import { getPerfil2,writeUserData2, getUser , modificarUser} from "../login/viewmodel/LoginVM";
 import { usuario } from "../../entities/usuario";
+import { getIncidentes2, getIncidentesDb } from "../../../IncidenteVM/IncidenteVM";
+
 
 import { participacion } from "./components/showParticipacion";
 
@@ -27,6 +29,10 @@ export default function Perfil(props){
 
     const[showPass,setShowPass]=useState(false)
     const[editMode,setEditMode]=useState(false)
+
+    const [incidentes,setIncidentes]=useState({});
+
+    const user_id = sessionStorage.getItem("user_id")
     
 
     useEffect(()=>{
@@ -35,10 +41,13 @@ export default function Perfil(props){
     },[])
 
     useEffect(()=>{
-        getPerfil2(loggedUser,setLoggedPerfil,setStartDate)
+        //getPerfil2(loggedUser,setLoggedPerfil,setStartDate)
+        getUser(loggedUser,setLoggedPerfil,setStartDate)
+        getIncidentesDb(setIncidentes)
     },[loggedUser])
 
     useEffect(()=>{
+        console.log(loggedPerfil.user_id)
         console.log(loggedPerfil)
         setUser(loggedPerfil.user)
         setPass(loggedPerfil.pass)
@@ -68,9 +77,11 @@ export default function Perfil(props){
                                 nombres,
                                 apellidos,
                                 num,
-                                startDate.toLocaleDateString()
+                                startDate.toLocaleDateString(),
+                                loggedPerfil.user_id
                             )
-                            writeUserData2(actualizarUser)
+                            //writeUserData2(actualizarUser)
+                            modificarUser(actualizarUser)
                             }}>Save</button>
                         <button style={{display:(editMode)?"block":"none"}} className="mt-3 btn btn-danger w-100 rounded-pill mt-3" onClick={()=>{setEditMode(false)}}>Cancelar</button>
                     </div>
@@ -120,7 +131,7 @@ export default function Perfil(props){
             <Header/>
             <div className="container bg-light d-flex flex-column" style={{borderRadius:"20px",padding:"30px"}}>
                 {profileInfo()}
-                {participacion()}
+                {participacion(incidentes,user_id)} 
             </div>
         </div>
     )
