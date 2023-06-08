@@ -1,7 +1,7 @@
 import { getDatabase, ref, child, set, get, onValue } from "firebase/database";
-import { getDbData } from "../components/backend/db";
-import { incidente } from "../components/entities/incidente";
-import {incidenteValidado} from "../components/entities/validacion";
+import { getDbData } from "../backend/db";
+import { incidente } from "../entities/incidente";
+import {incidenteValidado} from "../entities/validacion";
 
 const database = getDbData();
 
