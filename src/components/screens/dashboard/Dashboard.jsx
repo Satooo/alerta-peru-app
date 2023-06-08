@@ -29,7 +29,7 @@ import { filterSection } from "./components/filterSection";
 
 export default function Dashboard(props){
     const db = props.db
-    const [seccion,setSeccion]=useState("pendientes")
+    const [seccion,setSeccion]=useState("atendidos")
     const [filter,setFilter]=useState("")
 
     sessionStorage.setItem("incidente","");
@@ -61,7 +61,7 @@ export default function Dashboard(props){
             let isNotEmpty=false
             let incidentesKeys=Object.keys(incidentes)
             let incidentesDisplay= Array(incidentesKeys.length)
-            if(seccion=="pendientes"){
+            if(seccion=="atendidos"){
                 incidentesDisplay = Array(incidentesKeys.length).fill(0).map((_,index)=>{
                     let i = sorted[index].key
                     console.log(incidentes[i].descripcion)

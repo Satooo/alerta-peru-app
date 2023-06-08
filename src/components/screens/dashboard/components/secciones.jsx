@@ -6,16 +6,16 @@ export function Secciones(setSeccion){
         <li class="nav-item" role="presentation">
             <button class="nav-link active rounded-pill" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true" onClick={
                 ()=>{
-                    setSeccion("pendientes")
+                    setSeccion("atendidos")
                 }
-            }>Pendientes</button>
+            }>Atendidos</button>
         </li>
         <li class="nav-item"  role="presentation">
             <button class="nav-link rounded-pill" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile" aria-selected="false" onClick={
                 ()=>{
-                    setSeccion("atendidos")
+                    setSeccion("pendientes")
                 }
-            }>Atendidos</button>
+            }>Pendientes</button>
         </li>
         </ul>
     )
