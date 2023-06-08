@@ -145,7 +145,7 @@ export default function HomePage(props){
       )
     )
     console.log(newIncidente)
-    sessionStorage.setItem("incidente_id","")
+    //sessionStorage.setItem("incidente_id","")
   },[titulo,descripcionIncidente,currentLat,currentLng,address,value,tipoIncidente])
 
   useEffect(()=>{
