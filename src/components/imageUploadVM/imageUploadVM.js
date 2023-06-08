@@ -9,7 +9,7 @@ import { getStorageData } from "../backend/db";
 
 const storage= getStorageData();
 
-export function uploadImage2(file, title, num,setUploadCompletion){
+export function uploadImage(file, title, num,setUploadCompletion){
     const metadata = {
         contentType: 'image/jpeg'
       };

@@ -9,7 +9,7 @@ import { getDatabase, ref, child, set, get, onValue } from "firebase/database";
 
 import { getStorage,ref as storageRef, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
-import { uploadImage2 } from "../../imageUploadVM/imageUploadVM";
+import { uploadImage } from "../../imageUploadVM/imageUploadVM";
 
 import { getIncidente2, writeIncidenteCompleto2 , setIncidentesCompletoDb, getIncidenteDb} from "../../../IncidenteVM/IncidenteVM";
 
@@ -122,7 +122,7 @@ export default function AgregarIncidente(props){
                         sessionStorage.setItem("incidente",titulo);
                         if(images.length>0){
                           images.forEach((image,index)=>{
-                            uploadImage2(image.file,incidenteId,index,setUploadCompletion)
+                            uploadImage(image.file,incidenteId,index,setUploadCompletion)
                           })
                         }else{
                           window.location.pathname="/incidente"
