@@ -1,7 +1,9 @@
 import React from "react"
 import { deleteIncidente } from "../../../../IncidenteVM/IncidenteVM"
+import userImpl from "../../../IncidenteVM/userImpl"
 export const incidentCardAdmin=(titulo,descripcion,tipo,user,fecha,validacion,id)=>{
     const fechaDisplay = `${new Date(fecha).toLocaleDateString()} ${new Date(fecha).toLocaleTimeString()}`
+    const incidenteDelete= new userImpl();
     return(
         <div className="mt-3 mb-3 d-flex flex-row w-100" style={{borderRadius:"20px"}} id="incidentCard">
                 <div>
@@ -30,9 +32,12 @@ export const incidentCardAdmin=(titulo,descripcion,tipo,user,fecha,validacion,id
                     </div>
                     <div className="d-flex flex-row justify-content-end mt-3">
                         <button className="btn btn-danger" style={{borderRadius:"0px",borderTopLeftRadius:"20px",borderBottomLeftRadius:"20px"}} onClick={()=>{
-                            deleteIncidente({
+                            //deleteIncidente({
+                            //    id:id
+                            //})
+                            incidenteDelete.deleteIncidente({
                                 id:id
-                            })
+                              })
                             window.location.pathname="/dashboard"
                         }}>Eliminar</button>
                         <button className="btn btn-warning" style={{borderRadius:"0px"}} data-bs-toggle="modal" data-bs-target="#exampleModal">Solicitar evidencia</button>

@@ -20,11 +20,19 @@ import { evidenceUpload } from "./components/evidenceUpload";
 import { datosPreloaded } from "./components/datosPreloaded";
 
 import { description } from "./components/description";
+import userManager from "../../IncidenteVM/userManager";
+import generalImpl from "../../IncidenteVM/generalImpl";
+import firebaseStorageImpl from "../../imageUploadVM/firebaseStorageImpl";
 
 
 export default function AgregarIncidente(props){
     let incidenteTitle = sessionStorage.getItem("incidente");
     let incidenteId=sessionStorage.getItem("incidente_id");
+
+    const incidentesGetter = new userManager().factoryMethod();
+    const incidentesSetter = new generalImpl();
+    const firebaseStorage = new firebaseStorageImpl();
+
     const [address,setAddress]=useState("Ramón Ribeyro 998, Barranco");
     const [value, onChangeDate] = useState(new Date());
     const [images, setImages] = React.useState([]);
@@ -50,7 +58,8 @@ export default function AgregarIncidente(props){
 
     useEffect(()=>{
       //getIncidente2(setNewIncidente,incidenteTitle)
-      getIncidenteDb(setNewIncidente,incidenteId)
+      //getIncidenteDb(setNewIncidente,incidenteId)
+      incidentesGetter.getIncidente(setNewIncidente,incidenteId)
     },[])
 
     useEffect(()=>{
@@ -118,11 +127,13 @@ export default function AgregarIncidente(props){
                         newIncidente.incidente_id=sessionStorage.getItem("incidente_id");
                         
                         console.log(newIncidente)
-                        setIncidentesCompletoDb(newIncidente);
+                        incidentesSetter.setincidentesCompletado(newIncidente)
+                        //setIncidentesCompletoDb(newIncidente);
                         sessionStorage.setItem("incidente",titulo);
                         if(images.length>0){
                           images.forEach((image,index)=>{
-                            uploadImage(image.file,incidenteId,index,setUploadCompletion)
+                            firebaseStorage.uploadImages(image.file,incidenteId,index,setUploadCompletion)
+                            //uploadImage(image.file,incidenteId,index,setUploadCompletion)
                           })
                         }else{
                           window.location.pathname="/incidente"

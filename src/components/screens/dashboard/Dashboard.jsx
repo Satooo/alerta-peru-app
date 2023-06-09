@@ -26,9 +26,12 @@ import { Secciones } from "./components/secciones";
 import { solicitarEvidencia } from "./components/solicitarEvidencia";
 
 import { filterSection } from "./components/filterSection";
+import adminManager from "../../IncidenteVM/adminManager";
 
 export default function Dashboard(props){
     const db = props.db
+    const incidentesGetter = new adminManager().factoryMethod();
+
     const [seccion,setSeccion]=useState("atendidos")
     const [filter,setFilter]=useState("")
 
@@ -39,7 +42,8 @@ export default function Dashboard(props){
 
     useEffect(()=>{
         //getIncidentesAdmin2(setIncidentes)
-        getIncidentesAdminDb(setIncidentes)
+        //getIncidentesAdminDb(setIncidentes)
+        incidentesGetter.getIncidentes(setIncidentes)
     },[])
 
     useEffect(()=>{

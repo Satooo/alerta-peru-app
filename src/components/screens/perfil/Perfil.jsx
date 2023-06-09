@@ -10,14 +10,19 @@ import { getIncidentes2, getIncidentesDb } from "../../../IncidenteVM/IncidenteV
 
 
 import { participacion } from "./components/showParticipacion";
+import loginImpl from "../login/viewmodel/loginImpl";
+import userManager from "../../IncidenteVM/userManager";
 
 export default function Perfil(props){
     sessionStorage.setItem("incidente","");
+    const loginFunctionality = new loginImpl();
+    const incidentesGetter = new userManager().factoryMethod();
     const db = props.db
 
     const [value, onChangeDate] = useState(new Date());
     const [startDate, setStartDate] = useState(new Date());
     const [loggedUser,setLoggedUser]=useState("");
+    const[misPublicaciones,setMisPublicaciones]=useState(0);
 
     const [nombres,setNombres]=useState("")
     const [apellidos,setApellidos]=useState("")
@@ -42,8 +47,10 @@ export default function Perfil(props){
 
     useEffect(()=>{
         //getPerfil2(loggedUser,setLoggedPerfil,setStartDate)
-        getUser(loggedUser,setLoggedPerfil,setStartDate)
-        getIncidentesDb(setIncidentes)
+        //getUser(loggedUser,setLoggedPerfil,setStartDate)
+        //getIncidentesDb(setIncidentes)
+        loginFunctionality.getUser(loggedUser,setLoggedPerfil,setStartDate)
+        incidentesGetter.getIncidentes(setIncidentes)
     },[loggedUser])
 
     useEffect(()=>{
@@ -57,6 +64,18 @@ export default function Perfil(props){
         setNum(loggedPerfil.celular)
     },[loggedPerfil])
 
+    useEffect(()=>{
+        let cantidad=0;
+        if(incidentes.length>0){
+            for(let index=0;index<incidentes.length;index++){
+                if(incidentes[index].user_id==user_id){
+                    cantidad++
+                }
+            }
+        }
+        setMisPublicaciones(cantidad)
+    },[incidentes])
+
     function profileInfo(){
         if(sessionStorage.getItem("loggedUser")!="" && sessionStorage.getItem("loggedUser")!=null){
             return <div className="row">
@@ -64,8 +83,7 @@ export default function Perfil(props){
                         <img src={require("../../images/fotolinkedin.png")} style={{width:"150px",borderRadius:"100px"}}/>
                         <div style={{backgroundColor:"#e3f2fd",borderRadius:"20px",padding:"20px",marginTop:"20px",width:"100%"}}>
                             <p style={{textAlign:"center",width:"100%"}}><b>@{(user!="")?user:"SatoAtoo"}</b></p>
-                            <p style={{marginTop:"10px"}}><i>0 Reportes</i></p>
-                            <p><i>0 Aportes</i></p>
+                            <p style={{marginTop:"10px"}}><i>{misPublicaciones} reportes</i></p>
                         </div>
                         <button className="mt-3 btn btn-primary w-100 rounded-pill" style={{display:(editMode)?"none":"block"}} onClick={()=>{setEditMode(true)}}>Editar perfil</button>
                         <button className="mt-3 btn btn-primary w-100 rounded-pill" style={{display:(editMode)?"block":"none"}} onClick={()=>{
@@ -81,7 +99,8 @@ export default function Perfil(props){
                                 loggedPerfil.user_id
                             )
                             //writeUserData2(actualizarUser)
-                            modificarUser(actualizarUser)
+                            //modificarUser(actualizarUser)
+                            loginFunctionality.modificarUser(actualizarUser)
                             }}>Save</button>
                         <button style={{display:(editMode)?"block":"none"}} className="mt-3 btn btn-danger w-100 rounded-pill mt-3" onClick={()=>{setEditMode(false)}}>Cancelar</button>
                     </div>
@@ -120,7 +139,10 @@ export default function Perfil(props){
         }else{
             return <div style={{backgroundColor:"#eeeeee",borderRadius:"20px",textAlign:"center",padding:"20px"}}>
                  Esta con cuenta de invitado
-                 <a href="/login"><button className="btn btn-primary p-2 rounded-pill" style={{marginLeft:"20px"}}>Inciar sesión</button></a>
+                 <a href="/login"><button className="btn btn-primary p-2 rounded-pill" style={{marginLeft:"20px"}} onClick={()=>{
+                    sessionStorage.setItem("user_id","")
+                 }}
+                 >Inciar sesión</button></a>
             </div>
         }
         

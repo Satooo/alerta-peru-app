@@ -13,9 +13,11 @@ import { incidentCardListView } from "./components/incidentCard";
 
 import { TopIncidentesListView } from "./components/topIncidentes";
 import validadoFiltro from "./components/validadoFiltro";
+import userManager from "../../IncidenteVM/userManager";
 
 export default function ListaIncidentes(props){
     const db = props.db
+    const incidenteGetter = new userManager().factoryMethod();
 
     let user = sessionStorage.getItem("loggedUser");
     sessionStorage.setItem("incidente","");
@@ -25,8 +27,7 @@ export default function ListaIncidentes(props){
     const [incidentes,setIncidentes]=useState({});
 
     useEffect(()=>{
-        //getIncidentes2(setIncidentes)
-        getIncidentesDb(setIncidentes)
+        incidenteGetter.getIncidentes(setIncidentes)
     },[])
 
       

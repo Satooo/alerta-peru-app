@@ -10,11 +10,14 @@ import { getDatabase, ref, child, set, get, onValue } from "firebase/database";
 
 import { getLogin2, writeUserData2, register,loginUser } from "./viewmodel/LoginVM";
 import { usuario } from "../../entities/usuario";
+import loginImpl from "./viewmodel/loginImpl";
 
 export default function Login(props){
     const db = props.db
 
     sessionStorage.setItem("incidente","");
+
+    const loginFunctionality = new loginImpl();
 
     const [screen,setScreen]=useState(1)
     const [cantidadUsers,setCantidadUsers]=useState(0)
@@ -118,7 +121,8 @@ export default function Login(props){
                                     )
                                     console.log(newUsuario)
                                     //writeUserData2(newUsuario)
-                                    register(newUsuario)
+                                    //register(newUsuario)
+                                    loginFunctionality.register(newUsuario)
                                 }}>Crear cuenta</button>
                         </div>
                     </div>
@@ -154,7 +158,8 @@ export default function Login(props){
                                     }}>Sign up</button>
                                 <button href="#" class="btn btn-primary" style={{borderRadius:"20px"}} onClick={()=>{
                                     //getLogin2(user,pass,setLoginSuccess)
-                                    loginUser(user,pass,setLoginSuccess)
+                                    //loginUser(user,pass,setLoginSuccess)
+                                    loginFunctionality.loginUser(user,pass,setLoginSuccess)
                                 }}>Log in</button>
                         </div>
                     </div>

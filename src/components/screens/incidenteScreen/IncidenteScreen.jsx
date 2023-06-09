@@ -19,12 +19,21 @@ import { incidente } from "../../entities/incidente";
 import { incidenteValidado } from "../../entities/validacion";
 import reporteCard from "./components/reporteCard";
 import { deleteIncidente } from "../../../IncidenteVM/IncidenteVM";
+import userManager from "../../IncidenteVM/userManager";
+import adminManager from "../../IncidenteVM/adminManager";
+import firebaseStorageImpl from "../../imageUploadVM/firebaseStorageImpl";
+import userImpl from "../../IncidenteVM/userImpl";
 
 export default function IncidenteScreen(props){
   let user = sessionStorage.getItem("loggedUser")
   let userId=sessionStorage.getItem("user_id")
   let incidenteTitle = sessionStorage.getItem("incidente")
   let incidenteId = sessionStorage.getItem("incidente_id")
+
+  const incidenteGetterUser = new userManager().factoryMethod();
+  const incidenteGetterAdmin = new adminManager().factoryMethod();
+  const incidenteDelete= new userImpl();
+  const firebaseStorage = new firebaseStorageImpl();
 
     const [address,setAddress]=useState("");
     const [lat,setLat]=useState(-12.138500);
@@ -57,7 +66,8 @@ export default function IncidenteScreen(props){
     
 
     useEffect(()=>{
-      getImages(incidenteId,setImageUrls)
+      //getImages(incidenteId,setImageUrls)
+      firebaseStorage.getImages(incidenteId,setImageUrls)
     },[incidenteId])
 
     useEffect(()=>{
@@ -66,12 +76,14 @@ export default function IncidenteScreen(props){
 
     useEffect(()=>{
       //getIncidente2(setNewIncidente,incidenteTitle)
-      getIncidenteDb(setNewIncidente,incidenteId)
+      //getIncidenteDb(setNewIncidente,incidenteId)
+      incidenteGetterUser.getIncidente(setNewIncidente,incidenteId)
     },[])
 
     useEffect(()=>{
       if(newIncidente.validacion_status=="true"){
-        getIncidenteAdminDb(setNewIncidenteValidado,incidenteId)
+        //getIncidenteAdminDb(setNewIncidenteValidado,incidenteId)
+        incidenteGetterAdmin.getIncidente(setNewIncidente,incidenteId)
       }
     },[newIncidente])
 
@@ -327,9 +339,13 @@ export default function IncidenteScreen(props){
                               <div className="w-100  pb-5 pt-5">
                               <b>Desea eliminar la publicación?</b>
                               <button className="btn btn-danger rounded-pill" style={{marginLeft:"20px"}} onClick={()=>{
-                                deleteIncidente({
-                                    id:newIncidente.incidente_id
+                                //deleteIncidente({
+                                //    id:newIncidente.incidente_id
+                                //})
+                                incidenteDelete.deleteIncidente({
+                                  id:newIncidente.incidente_id
                                 })
+                                
                                 window.location.pathname="/"
                             }}>Eliminar</button>
                               </div>:""

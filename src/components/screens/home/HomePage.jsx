@@ -21,8 +21,13 @@ import { getDatabase, ref, child, set, get, onValue } from "firebase/database";
 
 import { writeIncidente2,getIncidentes2, getIncidentesDb, setIncidentesDb, setIncidentesCompletoDb} from "../../../IncidenteVM/IncidenteVM";
 import { incidente } from "../../entities/incidente";
+import userManager from "../../IncidenteVM/userManager";
+import generalImpl from "../../IncidenteVM/generalImpl";
 
 export default function HomePage(props){
+
+  const incidentesGetter = new userManager().factoryMethod();
+  const incidentesSetter = new generalImpl();
 
     let user = sessionStorage.getItem("loggedUser");
 
@@ -50,7 +55,8 @@ export default function HomePage(props){
 
     useEffect(()=>{
       //getIncidentes2(setIncidentes2)
-      getIncidentesDb(setIncidentes2)
+      //getIncidentesDb(setIncidentes2)
+      incidentesGetter.getIncidentes(setIncidentes2)
       console.log(sessionStorage.getItem("user_id"))
     },[])
 
@@ -189,7 +195,7 @@ export default function HomePage(props){
         {FilterTipo(setFilter)}
         {FilterFecha(address,value,onChangeDate,setFilter)}
         {FilterFrecuencia(setFilter)}
-        {AgregarIncidente(setTitulo,setTipoIncidente,setDescripcionIncidente,value,onChangeDate,newIncidente,setIncidentesDb,user)}
+        {AgregarIncidente(setTitulo,setTipoIncidente,setDescripcionIncidente,value,onChangeDate,newIncidente,incidentesSetter.setIncidentes,user)}
         {direccionInfo(address)}
       
     </div>

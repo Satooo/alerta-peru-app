@@ -17,11 +17,20 @@ import { getImages } from "../../imageUploadVM/imageUploadVM";
 import { getIncidenteAdmin2, getIncidenteAdminDb, validarDb, validarIncidente } from "../../../IncidenteVM/IncidenteVM";
 import { incidente } from "../../entities/incidente";
 import { incidenteValidado } from "../../entities/validacion";
+import adminManager from "../../IncidenteVM/adminManager";
+import validacionImpl from "../../IncidenteVM/validacionImpl";
+import firebaseStorageImpl from "../../imageUploadVM/firebaseStorageImpl";
+import userImpl from "../../IncidenteVM/userImpl";
 
 export default function IncidenteScreenAdmin(props){
   let user = sessionStorage.getItem("loggedUser")
   let incidenteTitle = sessionStorage.getItem("incidente")
   let incidenteId = sessionStorage.getItem("incidente_id")
+
+  const incidenteGetterAdmin= new adminManager().factoryMethod();
+  const validacionFunctionality = new validacionImpl();
+  const firebaseStorage = new firebaseStorageImpl();
+
     const [address,setAddress]=useState("");
     const [lat,setLat]=useState(-12.138500);
     const [lng,setLng]=useState(-77.016126);
@@ -60,12 +69,14 @@ export default function IncidenteScreenAdmin(props){
     const [imageUrls, setImageUrls] = useState([]);
 
     useEffect(()=>{
-      getImages(incidenteId,setImageUrls)
+      firebaseStorage.getImages(incidenteId,setImageUrls)
+      //getImages(incidenteId,setImageUrls)
     },[incidenteId])
 
     useEffect(()=>{
       //getIncidenteAdmin2(setNewIncidente,incidenteTitle)
-      getIncidenteAdminDb(setNewIncidente,incidenteId)
+      //getIncidenteAdminDb(setNewIncidente,incidenteId)
+      incidenteGetterAdmin.getIncidente(setNewIncidente,incidenteId)
     },[])
 
     useEffect(()=>{
@@ -144,7 +155,8 @@ export default function IncidenteScreenAdmin(props){
         )
         console.log(validado)
         //validarIncidente(validado)
-        validarDb(validado)
+        //validarDb(validado)
+        validacionFunctionality.validar(validado)
       }
 
 
