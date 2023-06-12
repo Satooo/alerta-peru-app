@@ -52,7 +52,7 @@ export default function HeaderTopMenu(props){
                             <li><hr className="dropdown-divider"/></li>
                             <li><a className="dropdown-item" href="/perfil">Ver Perfil</a></li>
                             {
-                                (sessionStorage.getItem("loggedUser")=="")?<p></p>:
+                                (sessionStorage.getItem("user_id")=="" || sessionStorage.getItem("esAdmin")!="true")?<p></p>:
                                 <li><a className="dropdown-item" href="/dashboard">Modo admin</a></li>
                             }
                             <li><hr className="dropdown-divider"/></li>

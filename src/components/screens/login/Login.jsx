@@ -30,9 +30,14 @@ export default function Login(props){
     const [num,setNum]=useState("")
     const [startDate, setStartDate] = useState(new Date());
     const[showPass,setShowPass]=useState(false)
+    const[esAdmin,setEsAdmin]=useState(false)
+    const[showAdmin,setShowAdmin]=useState(false)
+    const[adminStatus,setAdminStatus]=useState(false)
+
+    const[adminValid,setAdminValid]=useState("false")
 
     const [loginSuccess,setLoginSuccess]=useState(false)
-
+    const [showStatus,setShowStatus]=useState(false)
     const navigate = useNavigate();
 
     const defaultProps = {
@@ -61,6 +66,7 @@ export default function Login(props){
             <div style={{width:"0",height:"0",borderLeft:"0px solid transparent",borderRight:"15px solid transparent",borderTop:(props.miMark)?"10px solid #1976d2":"10px solid #f44336"}}></div>
         </div>
       }
+
       useEffect(()=>{
         if(loginSuccess){
           sessionStorage.setItem("loggedUser", user);
@@ -105,11 +111,24 @@ export default function Login(props){
                                     <span className="w-100">Fecha de nacimiento</span>
                                     <DatePicker selected={startDate} onChange={(date) => setStartDate(date)} />
                                 </div>
+                                <div>
+                                    <div className="d-flex align-items-center mb-3">
+                                        <span style={{marginRight:"20px"}}>Es admin?</span>
+                                        <button onClick={()=>{setShowAdmin(!showAdmin)}} className="btn rounded-pill btn-secondary">{(showAdmin)?"No":"Sí"}</button>
+                                    </div>
+                                    <div style={{display:(showAdmin)?"flex":"none"}}>
+                                        <input type="text" className="form-control mb-3" placeholder="código de admin" aria-label="Celular" aria-describedby="basic-addon1" onChange={(e)=>{
+                                            setEsAdmin(e.target.value)
+                                            console.log(e.target.value)
+                                            }} style={{borderRadius:"10px",backgroundColor:"#eeeeee"}}/> 
+                                    </div>
+                                </div>
                                 <button href="#" class="btn bg-transparent"  onClick={()=>{
                                     setScreen(1)
                                     }}>Cancelar</button>
-                                <button href="#" class="btn btn-primary" style={{borderRadius:"20px"}} onClick={()=>{
+                                <button href="#" class="btn btn-primary" style={{borderRadius:"20px"}} data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={()=>{
                                     setScreen(1)
+                                    console.log(esAdmin)
                                     let newUsuario= new usuario(
                                       user,
                                       pass,
@@ -117,12 +136,15 @@ export default function Login(props){
                                       nombres,
                                       apellidos,
                                       num,
-                                      startDate.toLocaleDateString()
+                                      startDate.toLocaleDateString(),
+                                      "",
+                                      esAdmin
                                     )
                                     console.log(newUsuario)
                                     //writeUserData2(newUsuario)
                                     //register(newUsuario)
-                                    loginFunctionality.register(newUsuario)
+                                    loginFunctionality.register(newUsuario,setAdminStatus)
+                                    setScreen(3)
                                 }}>Crear cuenta</button>
                         </div>
                     </div>
@@ -159,12 +181,24 @@ export default function Login(props){
                                 <button href="#" class="btn btn-primary" style={{borderRadius:"20px"}} onClick={()=>{
                                     //getLogin2(user,pass,setLoginSuccess)
                                     //loginUser(user,pass,setLoginSuccess)
-                                    loginFunctionality.loginUser(user,pass,setLoginSuccess)
+                                    loginFunctionality.loginUser(user,pass,setLoginSuccess,setAdminValid)
                                 }}>Log in</button>
                         </div>
                     </div>
         )
       }
+
+    function status(){
+        return(
+        <div className="card" style={{width: "30rem",borderRadius:"20px",border:"none",overflow:"hidden",filter:"drop-shadow(2px 0px 20px gray)",display:(screen==3)?"block":"none"}} id="loginCard">
+             <div className="card-body">
+                <p><b>{(adminStatus=="true")?"Es administrador":"No es administrador"}</b></p>
+                <p>{(adminStatus=="true")?"El usuario generado tiene permisos de administrador.":"El usuario generado no tiene permisos de administrador."}</p>
+                <button className="btn btn-primary rounded-pill w-100" onClick={()=>{setScreen(1)}}>Aceptar</button>
+             </div>
+        </div>)
+        
+    }
 
     return (
         <div className="container-fluid d-flex flex-column justify-content-center align-items-center" style={{height:"100vh",width:"100%",minWidth:"1200px",minHeight:"800px",backgroundColor:"#eeeeee",overflow:"scroll",zIndex:"0"}} id="loginBackground">
@@ -188,7 +222,8 @@ export default function Login(props){
             <div style={{width:"100%",height:"100vh",backgroundColor:"transparent",zIndex:"2",position:"absolute"}} className="d-flex justify-content-center align-items-center" >
                     {signUp()}
                     {signIn()}
-                </div>
+                    {status()}
+            </div>
             
             
             

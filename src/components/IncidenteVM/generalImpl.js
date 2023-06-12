@@ -15,6 +15,7 @@ export default class generalImpl extends incidenteInterface{
             console.log(data.id)
             if(data.id.length>0){
               sessionStorage.setItem("incidente_id",data.id)
+              window.location.href="/agregar"
             }
           }catch({name,message}){
             console.log(name+" "+message)

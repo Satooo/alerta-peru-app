@@ -52,7 +52,6 @@ export function AgregarIncidente(setTitulo,setTipoIncidente,setDescripcionIncide
                 setTitulo("")
                 setDescripcionIncidente("")
                 }}>Cancelar</button>
-               <a href={(user=="" && sessionStorage.getItem("incidente_id")!="")?"/":"/agregar"}> 
                 <button type="button" disabled={(user=="")?true:false} className="btn btn-primary" data-bs-dismiss="modal" onClick={()=>{
                 if(newIncidente.tipo!="" && newIncidente.fecha!="" && newIncidente.titulo!="" && newIncidente.descripcion!="" && newIncidente.user!="" ){
                   console.log(newIncidente)
@@ -62,7 +61,6 @@ export function AgregarIncidente(setTitulo,setTipoIncidente,setDescripcionIncide
                   }
                 }
               }}>Continuar</button>
-               </a> 
             </div>
           </div>
         </div>

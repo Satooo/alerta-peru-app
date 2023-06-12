@@ -51,7 +51,7 @@ export default function Header(){
                             <li><hr class="dropdown-divider"/></li>
                             <li><a class="dropdown-item" href="/perfil">Ver Perfil</a></li>
                             {
-                                (sessionStorage.getItem("loggedUser")=="")?<p></p>:
+                                (sessionStorage.getItem("user_id")=="" || sessionStorage.getItem("esAdmin")!="true" )?<p></p>:
                                 <li><a className="dropdown-item" href="/dashboard">Modo admin</a></li>
                             }
                             <li><hr class="dropdown-divider"/></li>

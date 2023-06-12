@@ -21,6 +21,8 @@ import adminManager from "../../IncidenteVM/adminManager";
 import validacionImpl from "../../IncidenteVM/validacionImpl";
 import firebaseStorageImpl from "../../imageUploadVM/firebaseStorageImpl";
 import userImpl from "../../IncidenteVM/userImpl";
+import loginImpl from "../login/viewmodel/loginImpl";
+import { usuario } from "../../entities/usuario";
 
 export default function IncidenteScreenAdmin(props){
   let user = sessionStorage.getItem("loggedUser")
@@ -30,6 +32,10 @@ export default function IncidenteScreenAdmin(props){
   const incidenteGetterAdmin= new adminManager().factoryMethod();
   const validacionFunctionality = new validacionImpl();
   const firebaseStorage = new firebaseStorageImpl();
+  const userGetter = new loginImpl();
+
+  const [userData, setUserData]=useState(new usuario)
+  const [startDate, setStartDate]=useState(new Date)
 
     const [address,setAddress]=useState("");
     const [lat,setLat]=useState(-12.138500);
@@ -114,6 +120,8 @@ export default function IncidenteScreenAdmin(props){
       }else{
         setFaltaEvidencia(newIncidente.faltaEvidencia);
       }
+
+      userGetter.getUser("",setUserData,setStartDate)
       
     },[newIncidente])
    
@@ -233,6 +241,10 @@ export default function IncidenteScreenAdmin(props){
                                     <div className="d-flex flex-column w-100" style={{color:"black"}}>
                                         <span style={{width:"100%",padding:"5px",fontSize:"12px",textAlign:"start"}}>Publicado por</span>
                                         <b style={{width:"100%",padding:"5px",marginTop:"-5px",textAlign:"start"}}>{(autor!="")?autor:"Andrés Sato"}</b>
+                                        <span style={{width:"100%",padding:"5px",fontSize:"12px",textAlign:"start"}}>Número celular</span>
+                                        <b style={{width:"100%",padding:"5px",marginTop:"-5px",textAlign:"start"}}>{userData.celular}</b>
+                                        <span style={{width:"100%",padding:"5px",fontSize:"12px",textAlign:"start"}}>Nombre completo</span>
+                                        <b style={{width:"100%",padding:"5px",marginTop:"-5px",textAlign:"start"}}>{userData.nombres+" "+userData.apellidos}</b>
                                     </div>
                                     
                         </div>
