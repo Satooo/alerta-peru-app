@@ -21,6 +21,7 @@ import userManager from "../../IncidenteVM/userManager";
 import adminManager from "../../IncidenteVM/adminManager";
 import firebaseStorageImpl from "../../imageUploadVM/firebaseStorageImpl";
 import userImpl from "../../IncidenteVM/userImpl";
+import generalImpl from "../../IncidenteVM/generalImpl";
 
 export default function IncidenteScreen(props){
   let user = sessionStorage.getItem("loggedUser")
@@ -30,7 +31,7 @@ export default function IncidenteScreen(props){
 
   const incidenteGetterUser = new userManager().factoryMethod();
   const incidenteGetterAdmin = new adminManager().factoryMethod();
-  const incidenteDelete= new userImpl();
+  const incidenteDelete= new generalImpl();
   const firebaseStorage = new firebaseStorageImpl();
 
     const [address,setAddress]=useState("");
