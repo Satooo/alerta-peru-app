@@ -11,7 +11,6 @@ import { getStorage,ref as storageRef, uploadBytesResumable, getDownloadURL } fr
 
 import { uploadImage } from "../../imageUploadVM/imageUploadVM";
 
-import { getIncidente2, writeIncidenteCompleto2 , setIncidentesCompletoDb, getIncidenteDb} from "../../../IncidenteVM/IncidenteVM";
 
 import { incidente } from "../../entities/incidente";
 

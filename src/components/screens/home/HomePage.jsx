@@ -19,7 +19,6 @@ import OverlayTrigger from "react-bootstrap/OverlayTrigger"
 
 import { getDatabase, ref, child, set, get, onValue } from "firebase/database";
 
-import { writeIncidente2,getIncidentes2, getIncidentesDb, setIncidentesDb, setIncidentesCompletoDb} from "../../../IncidenteVM/IncidenteVM";
 import { incidente } from "../../entities/incidente";
 import userManager from "../../IncidenteVM/userManager";
 import generalImpl from "../../IncidenteVM/generalImpl";

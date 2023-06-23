@@ -15,7 +15,6 @@ import HeaderAdmin from "../common/HeaderAdmin";
 
 import { getDatabase, ref, child, set, get, onValue } from "firebase/database";
 
-import { getIncidente2, getIncidentesAdminDb, getIncidentesAdmin2 } from "../../../IncidenteVM/IncidenteVM";
 
 import { incidentCardAdmin } from "./components/incidentCard";
 

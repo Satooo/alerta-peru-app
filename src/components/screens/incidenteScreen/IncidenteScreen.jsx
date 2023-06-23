@@ -14,11 +14,9 @@ import {
 } from "firebase/storage";
 
 import { getImages } from "../../imageUploadVM/imageUploadVM";
-import { getIncidente2, getIncidenteAdminDb, getIncidenteDb } from "../../../IncidenteVM/IncidenteVM";
 import { incidente } from "../../entities/incidente";
 import { incidenteValidado } from "../../entities/validacion";
 import reporteCard from "./components/reporteCard";
-import { deleteIncidente } from "../../../IncidenteVM/IncidenteVM";
 import userManager from "../../IncidenteVM/userManager";
 import adminManager from "../../IncidenteVM/adminManager";
 import firebaseStorageImpl from "../../imageUploadVM/firebaseStorageImpl";

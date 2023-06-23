@@ -1,6 +1,7 @@
 import React from "react"
-import { deleteIncidente } from "../../../../IncidenteVM/IncidenteVM"
+import userImpl from "../../../IncidenteVM/userImpl"
 export const incidenteCard=(titulo,descripcion, fecha,tipo,validacion_status,descripcionCompleta,user,incidenteId)=>{
+    const incidenteDelete= new userImpl();
     return(
         <div className="mt-3 mb-3 d-flex flex-row w-80" style={{borderRadius:"20px"}} id="incidentCard">
                 <div>
@@ -24,9 +25,9 @@ export const incidenteCard=(titulo,descripcion, fecha,tipo,validacion_status,des
                     <p style={{textAlign:"justify"}}>{descripcion}</p>
                     <div className="w-100 d-flex flex-row justify-content-end">
                         <button className="btn btn-danger rounded-pill" style={{marginRight:"20px"}} onClick={()=>{
-                            deleteIncidente({
+                            incidenteDelete.deleteIncidente({
                                 id:incidenteId
-                            })
+                              })
                             window.location.pathname="/perfil"
                         }}>Eliminar</button>
                       <a href="/incidente" onClick={()=>{

@@ -14,7 +14,6 @@ import {
 } from "firebase/storage";
 
 import { getImages } from "../../imageUploadVM/imageUploadVM";
-import { getIncidenteAdmin2, getIncidenteAdminDb, validarDb, validarIncidente } from "../../../IncidenteVM/IncidenteVM";
 import { incidente } from "../../entities/incidente";
 import { incidenteValidado } from "../../entities/validacion";
 import adminManager from "../../IncidenteVM/adminManager";

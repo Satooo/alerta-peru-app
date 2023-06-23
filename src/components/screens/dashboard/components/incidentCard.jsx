@@ -1,5 +1,4 @@
 import React from "react"
-import { deleteIncidente } from "../../../../IncidenteVM/IncidenteVM"
 import userImpl from "../../../IncidenteVM/userImpl"
 export const incidentCardAdmin=(titulo,descripcion,tipo,user,fecha,validacion,id)=>{
     const fechaDisplay = `${new Date(fecha).toLocaleDateString()} ${new Date(fecha).toLocaleTimeString()}`

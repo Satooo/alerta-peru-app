@@ -7,7 +7,6 @@ import Button from "react-bootstrap/Button"
 
 import { getDatabase, ref, child, set, get, onValue } from "firebase/database";
 
-import { getIncidentes2, getIncidentesDb } from "../../../IncidenteVM/IncidenteVM";
 
 import { incidentCardListView } from "./components/incidentCard";
 

@@ -6,7 +6,6 @@ import { getDatabase, ref, child, set, get, onValue } from "firebase/database";
 
 import { getPerfil2,writeUserData2, getUser , modificarUser} from "../login/viewmodel/LoginVM";
 import { usuario } from "../../entities/usuario";
-import { getIncidentes2, getIncidentesDb } from "../../../IncidenteVM/IncidenteVM";
 
 
 import { participacion } from "./components/showParticipacion";
