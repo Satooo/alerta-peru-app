@@ -80,7 +80,7 @@ export default function Login(props){
                             <img src={require("../../icons/alerta-peru-logo.png")} style={{width:"40px",marginRight:"10px",filter:"brightness(0%) invert(100%) "}}/>
                             <span style={{fontSize:"30px"}}>Alerta<b>Perú</b></span>
                         </span>
-                        <img src={require("../../images/loginBackground.jpg")} class="card-img-top" alt="..." style={{height:"300px",zIndex:"0"}}/>
+                        <img src={require("../../images/loginBackground.jpg")} class="card-img-top" alt="..." style={{height:"130px",zIndex:"0",objectFit:"cover"}}/>
                         <div className="card-body">
                                 <h5 className="card-title">
                                 
