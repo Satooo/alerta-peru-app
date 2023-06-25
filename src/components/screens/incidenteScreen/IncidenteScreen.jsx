@@ -62,6 +62,7 @@ export default function IncidenteScreen(props){
     
 
     const [imageUrls, setImageUrls] = useState([]);
+    const [validacionFinal,setValidacionFinal]=useState(false);
     
 
     useEffect(()=>{
@@ -80,9 +81,10 @@ export default function IncidenteScreen(props){
     },[])
 
     useEffect(()=>{
-      if(newIncidente.validacion_status=="true"){
+      if(newIncidente.validacion_status=="true" && validacionFinal==false){
         //getIncidenteAdminDb(setNewIncidenteValidado,incidenteId)
-        incidenteGetterAdmin.getIncidente(setNewIncidente,incidenteId)
+        incidenteGetterAdmin.getIncidente(setNewIncidenteValidado,incidenteId)
+        setValidacionFinal(true)
       }
     },[newIncidente])
 

@@ -1,6 +1,7 @@
 import React, { useState,useEffect } from "react";
 
 export  default function reporteCard(fecha,id,user,mensajeValidacion,comentariosAdmin,faltaEvidencia){
+    console.log(mensajeValidacion)
     return (
         <div className="card p-3 rounded mb-3" >
         <div>
