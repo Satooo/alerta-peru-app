@@ -1,8 +1,8 @@
 import React from "react"
-import userImpl from "../../../IncidenteVM/userImpl"
+import generalImpl from "../../../IncidenteVM/generalImpl"
 export const incidentCardAdmin=(titulo,descripcion,tipo,user,fecha,validacion,id)=>{
     const fechaDisplay = `${new Date(fecha).toLocaleDateString()} ${new Date(fecha).toLocaleTimeString()}`
-    const incidenteDelete= new userImpl();
+    const incidenteDelete= new generalImpl()
     return(
         <div className="mt-3 mb-3 d-flex flex-row w-100" style={{borderRadius:"20px"}} id="incidentCard">
                 <div>
