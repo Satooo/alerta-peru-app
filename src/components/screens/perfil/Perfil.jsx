@@ -23,6 +23,7 @@ export default function Perfil(props){
     const [loggedUser,setLoggedUser]=useState("");
     const[misPublicaciones,setMisPublicaciones]=useState(0);
     const [deleteConfirmation,setDeleteConfirmation]=useState(false);
+    const [deletePub,setDeletePub]=useState("");
 
     const [nombres,setNombres]=useState("")
     const [apellidos,setApellidos]=useState("")
@@ -153,7 +154,7 @@ export default function Perfil(props){
             <Header/>
             <div className="container bg-light d-flex flex-column" style={{borderRadius:"20px",padding:"30px"}}>
                 {profileInfo()}
-                {participacion(incidentes,user_id,deleteConfirmation,setDeleteConfirmation)} 
+                {participacion(incidentes,user_id,deleteConfirmation,setDeleteConfirmation,deletePub,setDeletePub)} 
             </div>
         </div>
     )

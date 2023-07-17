@@ -1,6 +1,6 @@
 import React from "react"
 import { incidenteCard } from "./incidenteCard"
-export function participacion(incidentes,user_id,deleteConfirmation,setDeleteConfirmation){
+export function participacion(incidentes,user_id,deleteConfirmation,setDeleteConfirmation,deletePub,setDeletePub){
     let numPublicaciones=0;
     if(sessionStorage.getItem("loggedUser")!="" && sessionStorage.getItem("loggedUser")!=null){
    return <div>
@@ -11,7 +11,7 @@ export function participacion(incidentes,user_id,deleteConfirmation,setDeleteCon
                             if(incidentes[index].user_id==user_id){
                                 numPublicaciones++;
                                 return (
-                                    incidenteCard(incidentes[index].titulo,incidentes[index].descripcion, incidentes[index].fecha,incidentes[index].tipo,incidentes[index].validacion_status, incidentes[index].descripcionCompleta,incidentes[index].user,incidentes[index].incidente_id,deleteConfirmation,setDeleteConfirmation)
+                                    incidenteCard(incidentes[index].titulo,incidentes[index].descripcion, incidentes[index].fecha,incidentes[index].tipo,incidentes[index].validacion_status, incidentes[index].descripcionCompleta,incidentes[index].user,incidentes[index].incidente_id,deleteConfirmation,setDeleteConfirmation,deletePub,setDeletePub)
                                 )
                             }
                         }

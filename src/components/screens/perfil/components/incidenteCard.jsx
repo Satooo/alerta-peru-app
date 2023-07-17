@@ -1,6 +1,6 @@
 import React from "react"
 import generalImpl from "../../../IncidenteVM/generalImpl"
-export const incidenteCard=(titulo,descripcion, fecha,tipo,validacion_status,descripcionCompleta,user,incidenteId,deleteConfirmation,setDeleteConfirmation)=>{
+export const incidenteCard=(titulo,descripcion, fecha,tipo,validacion_status,descripcionCompleta,user,incidenteId,deleteConfirmation,setDeleteConfirmation,deletePub,setDeletePub)=>{
     const incidenteDelete= new generalImpl();
     return(
         <div className="mt-3 mb-3 d-flex flex-row w-80" style={{borderRadius:"20px"}} id="incidentCard">
@@ -24,10 +24,11 @@ export const incidenteCard=(titulo,descripcion, fecha,tipo,validacion_status,des
                         </div>
                     <p style={{textAlign:"justify"}}>{descripcion}</p>
                     <div className="w-100 d-flex flex-row justify-content-end">
-                        <button className="btn btn-danger rounded-pill" style={{marginRight:"20px",display:(deleteConfirmation)?"none":"flex"}} onClick={()=>{
+                        <button className="btn btn-danger rounded-pill" style={{marginRight:"20px",display:(deleteConfirmation && deletePub==incidenteId )?"none":"flex"}} onClick={()=>{
                           setDeleteConfirmation(true)
+                          setDeletePub(incidenteId)
                         }}>Eliminar</button>
-                        {(deleteConfirmation)?<div>
+                        {(deleteConfirmation && deletePub==incidenteId)?<div>
                           <button className="btn btn-secondary rounded-pill" style={{marginRight:"20px"}} onClick={()=>{
                             setDeleteConfirmation(false)
                           }}>Cancelar</button>
@@ -35,7 +36,9 @@ export const incidenteCard=(titulo,descripcion, fecha,tipo,validacion_status,des
                             incidenteDelete.deleteIncidente({
                                 id:incidenteId
                               })
-                            window.location.pathname="/perfil"}}>Confirmar</button>
+                            setDeletePub("")
+                            window.location.pathname="/perfil"
+                            }}>Confirmar</button>
                         </div>:""}
                       <a href="/incidente" onClick={()=>{
                         sessionStorage.setItem("incidente_id",incidenteId)
