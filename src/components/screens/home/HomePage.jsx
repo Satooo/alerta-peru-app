@@ -92,10 +92,10 @@ export default function HomePage(props){
 
   const OPTIONS = {
     minZoom: 16,
-    maxZoom: 20
+    maxZoom: 18
   }
 
-  Geocode.setApiKey("AIzaSyDj9I51Cd1WrcAGKgGmi7m9y7GztW0mtcI");
+  Geocode.setApiKey("AIzaSyA0NmlELithGIJDjJJaUFy4fUigC9nBRf4");
   Geocode.setLanguage("en");
   Geocode.setLocationType("ROOFTOP");
 
@@ -162,7 +162,7 @@ export default function HomePage(props){
     <div className="container-fluid d-flex flex-column justify-content-center align-items-center" id="homepage-div">
        <div id="homepage-div-div1">
         <GoogleMapReact
-          bootstrapURLKeys={{ key: "AIzaSyDj9I51Cd1WrcAGKgGmi7m9y7GztW0mtcI" }}
+          bootstrapURLKeys={{ key: "AIzaSyA0NmlELithGIJDjJJaUFy4fUigC9nBRf4" }}
           defaultCenter={defaultProps.center}
           defaultZoom={defaultProps.zoom}
           yesIWantToUseGoogleMapApiInternals
@@ -177,8 +177,16 @@ export default function HomePage(props){
           options={OPTIONS}
         >
           {Array(incidentes2.length).fill(0).map((_,i)=>{
-            if(incidentes2[i].validacion_status=="true"){
-              return <Marker lat={incidentes2[i].lat} lng={incidentes2[i].lng} text={incidentes2[i].tipo} fecha={new Date(incidentes2[i].fecha).toLocaleDateString() } titulo={incidentes2[i].titulo} user={incidentes2[i].user} id={incidentes2[i].incidente_id} hora={new Date(incidentes2[i].fecha).toLocaleTimeString() }/>
+            if(incidentes2[i].validacion_status=="true"){ 
+              if(filter!=""){
+                if(filter==incidentes2[i].tipo.toLowerCase()){
+                  return <Marker lat={incidentes2[i].lat} lng={incidentes2[i].lng} text={incidentes2[i].tipo} fecha={new Date(incidentes2[i].fecha).toLocaleDateString() } titulo={incidentes2[i].titulo} user={incidentes2[i].user} id={incidentes2[i].incidente_id} hora={new Date(incidentes2[i].fecha).toLocaleTimeString() } descripcion={incidentes2[i].descripcion}/>
+
+                }
+              }else{
+                return <Marker lat={incidentes2[i].lat} lng={incidentes2[i].lng} text={incidentes2[i].tipo} fecha={new Date(incidentes2[i].fecha).toLocaleDateString() } titulo={incidentes2[i].titulo} user={incidentes2[i].user} id={incidentes2[i].incidente_id} hora={new Date(incidentes2[i].fecha).toLocaleTimeString() } descripcion={incidentes2[i].descripcion}/>
+
+              }
             }
           })}
           <Marker lat={currentLat} lng={currentLng} text="Mi posición" miMark={true}/>
@@ -186,12 +194,12 @@ export default function HomePage(props){
         </GoogleMapReact>
           <div id="homepage-div-div2">
             <HeaderTopMenu setUser={props.setUser}/>
-            {BottomMenu(setFilter,address,user)}
+            {BottomMenu(setFilter,address,user,filter)}
             {SideMenu(showSideBar,setShowSideBar,incidentes2,sortedIncident2,incidentCard)}
           </div>
       </div>
 
-        {FilterTipo(setFilter)}
+        {FilterTipo(setFilter,filter)}
         {FilterFecha(address,value,onChangeDate,setFilter)}
         {FilterFrecuencia(setFilter)}
         {AgregarIncidente(setTitulo,setTipoIncidente,setDescripcionIncidente,value,onChangeDate,newIncidente,incidentesSetter.setIncidentes,user)}

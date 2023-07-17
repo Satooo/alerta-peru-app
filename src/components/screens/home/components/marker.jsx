@@ -6,15 +6,20 @@ export const Marker = props => {
     return (
       <OverlayTrigger trigger="hover" placement="right" overlay={(!props.miMark)?(
         <Popover id="popoverMap">
-        <p><b>{props.titulo}</b> </p>
-        <p style={{color:"gray"}}><i>Publicado por {props.user}</i></p>
-        <p>{props.fecha}</p>
+          <p style={{display:(props.varios==true)?"flex":"none"}}><b>Varios crimenes</b> </p>
+        <p style={{display:(props.varios==null)?"flex":"none", backgroundColor:"#e53935",padding:"10px",borderRadius:'20px',color:"white"}}><b>{props.titulo}</b> </p>
+        <p style={{color:"gray",display:(props.varios==null)?"flex":"none"}}><i>Publicado por {props.user}</i></p>
+        <p style={{display:(props.varios==null)?"flex":"none",marginTop:"-20px",color:"gray"}}>{props.fecha}</p>
+        <span>
+          <b>Descripción: </b>
+          <p>{props.descripcion}</p>
+        </span>
       </Popover>):(<p></p>)
       }>
     
     <div className="SuperAwesomePin d-flex flex-column" style={{minWidth:"100px",marginTop:"-60px"}}>
         <span style={{backgroundColor:(props.miMark)?"#1976d2":"#f44336",padding:"10px",color:"white",borderTopRightRadius:"10px",borderTopLeftRadius:"10px"}}>
-            <img src={require("../../../icons/location.png")} style={{width:"15px",filter:"invert(100%)",marginRight:"2px",display:(props.miMark)?"inline block":"none"}}/><b>{props.text}</b>
+            <img src={require("../../../icons/location.png")} style={{width:"15px",filter:"invert(100%)",marginRight:"2px",display:(props.miMark)?"inline block":"none"}}/><b>{(props.varios==null)?props.text:"Varios crimenes"}</b>
         </span>
         <span style={{backgroundColor:(props.miMark)?"#1976d2":"#f44336",padding:"0px 0px 10px 10px",color:"white",borderBottomRightRadius:"10px"}}>
             {props.fecha}

@@ -7,6 +7,7 @@ import Button from "react-bootstrap/Button"
 
 import { getDatabase, ref, child, set, get, onValue } from "firebase/database";
 
+import { FilterFecha,FilterTipo,FilterFrecuencia } from "../home/components/filters";
 
 import { incidentCardListView } from "./components/incidentCard";
 
@@ -25,12 +26,14 @@ export default function ListaIncidentes(props){
 
     const [incidentes,setIncidentes]=useState({});
 
+    const [filter,setFilter]=useState("");
+
     useEffect(()=>{
         incidenteGetter.getIncidentes(setIncidentes)
     },[])
 
       
-    function showIncidentes(){
+    function showIncidentes(filter){
         
         if(Object.keys(incidentes).length>0){
             const sorted= []
@@ -55,9 +58,15 @@ export default function ListaIncidentes(props){
                         isNotEmpty=true
                         console.log(incidentes[i].descripcionCompleta)
                         if(incidentes[i].validacion_status=="true"){
-                            return (
-                                incidentCardListView(incidentes[i].titulo,incidentes[i].descripcion,incidentes[i].tipo,incidentes[i].user,incidentes[i].fecha,incidentes[i].descripcionCompleta,incidentes[i].validacion_status,incidentes[i].incidente_id)
-                            )
+                            if(filter!="" && filter.toLowerCase()==incidentes[i].tipo.toLowerCase()){
+                                return (
+                                    incidentCardListView(incidentes[i].titulo,incidentes[i].descripcion,incidentes[i].tipo,incidentes[i].user,incidentes[i].fecha,incidentes[i].descripcionCompleta,incidentes[i].validacion_status,incidentes[i].incidente_id)
+                                )
+                            }else if(filter==""){
+                                return (
+                                    incidentCardListView(incidentes[i].titulo,incidentes[i].descripcion,incidentes[i].tipo,incidentes[i].user,incidentes[i].fecha,incidentes[i].descripcionCompleta,incidentes[i].validacion_status,incidentes[i].incidente_id)
+                                )
+                            }
                         }
                         
                     }
@@ -73,9 +82,15 @@ export default function ListaIncidentes(props){
                         isNotEmpty=true
                         console.log(incidentes[i].descripcionCompleta)
                         if(incidentes[i].validacion_status!="true"){
-                            return (
-                                incidentCardListView(incidentes[i].titulo,incidentes[i].descripcion,incidentes[i].tipo,incidentes[i].user,incidentes[i].fecha,incidentes[i].descripcionCompleta,incidentes[i].validacion_status,incidentes[i].incidente_id)
-                            )
+                            if(filter!="" && filter.toLowerCase()==incidentes[i].tipo){
+                                return (
+                                    incidentCardListView(incidentes[i].titulo,incidentes[i].descripcion,incidentes[i].tipo,incidentes[i].user,incidentes[i].fecha,incidentes[i].descripcionCompleta,incidentes[i].validacion_status,incidentes[i].incidente_id)
+                                )
+                            }else if(filter==""){
+                                return (
+                                    incidentCardListView(incidentes[i].titulo,incidentes[i].descripcion,incidentes[i].tipo,incidentes[i].user,incidentes[i].fecha,incidentes[i].descripcionCompleta,incidentes[i].validacion_status,incidentes[i].incidente_id)
+                                )
+                            }
                         }
                         
                     }
@@ -100,8 +115,9 @@ export default function ListaIncidentes(props){
             <Header/>
             <div className="container bg-light d-flex flex-column align-items-center justify-content-center" style={{borderRadius:"20px",paddingTop:"20px"}}>
                 {TopIncidentesListView(incidentes)}
-                {validadoFiltro(setSeccion)}
-                {showIncidentes()}
+                {validadoFiltro(setSeccion,filter)}
+                {showIncidentes(filter)}
+                {FilterTipo(setFilter,filter)}
             </div>
         </div>
     )

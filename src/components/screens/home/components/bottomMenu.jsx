@@ -1,5 +1,5 @@
 import React from "react"
-export function BottomMenu(setFilter,address,user){
+export function BottomMenu(setFilter,address,user,filter){
     return (
         <div className="d-flex flex-row justify-content-center align-items-center">
             <div className="d-flex flex-row justify-content-between" style={{position:"absolute",bottom:"0",zIndex:2,width:"80%",textAlign:"center",backgroundColor:"white",padding:"20px",borderTopLeftRadius:"20px",borderTopRightRadius:"20px",filter:"drop-shadow(1px 0px 5px gray)"}} id="bottomMenu">
@@ -18,11 +18,11 @@ export function BottomMenu(setFilter,address,user){
                 <div className="d-flex flex-row justify-content-center align-items-center w-100">
                     <img src={require("../../../icons/filter.png")} style={{width:"20px",marginRight:"20px"}}/>
                     <div className="d-flex flex-row justify-content-between" style={{backgroundColor:"#eeeeee",borderRadius:"20px",width:"100%"}}>
-                        <button style={{padding:"15px",borderTopLeftRadius:"20px",borderBottomLeftRadius:"20px",border:"none",textAlign:"center",width:"100%",borderRight:"1px solid lightgray"}} id="filter" data-bs-toggle="modal" data-bs-target="#TipoModal" onClick={()=>{setFilter("tipo")}}> Tipo </button>
-                        <button style={{border:"none",padding:"15px",textAlign:"center",width:"100%",borderRight:"1px solid lightgray"}} id="filter" data-bs-toggle="modal" data-bs-target="#FechaModal" onClick={()=>{setFilter("fecha")}}>Fecha</button>
+                        <button style={{padding:"15px",borderRadius:"20px",border:"none",textAlign:"center",width:"100%"}} id="filter" data-bs-toggle="modal" data-bs-target="#TipoModal" > {(filter!="")?`Filtro activo: ${filter.toUpperCase()}`:"Seleccionar filtro"} </button>
+                        {/* <button style={{border:"none",padding:"15px",textAlign:"center",width:"100%",borderRight:"1px solid lightgray"}} id="filter" data-bs-toggle="modal" data-bs-target="#FechaModal" onClick={()=>{setFilter("fecha")}}>Fecha</button>
                         <button style={{padding:"10px",borderTopRightRadius:"20px",borderBottomRightRadius:"20px",border:"none",textAlign:"center",width:"100%",border:"none"}} id="filter" data-bs-toggle="modal" data-bs-target="#FrecuenciaModal" onClick={()=>{
                           setFilter("frecuencia")
-                          }}>Frecuencia</button>
+                          }}>Frecuencia</button> */}
                     </div>
                 </div>
             </div>

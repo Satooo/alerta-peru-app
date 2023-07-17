@@ -67,7 +67,7 @@ export default function IncidenteScreenAdmin(props){
     const [faltaEvidencia,setFaltaEvidencia]=useState("")
 
     
-    Geocode.setApiKey("AIzaSyDj9I51Cd1WrcAGKgGmi7m9y7GztW0mtcI");
+    Geocode.setApiKey("AIzaSyA0NmlELithGIJDjJJaUFy4fUigC9nBRf4");
     Geocode.setLanguage("en");
     Geocode.setLocationType("ROOFTOP");
 
@@ -300,7 +300,7 @@ export default function IncidenteScreenAdmin(props){
                             </p>
                             <div style={{height:"300px",width:"800px"}}>
                               <GoogleMapReact
-                                bootstrapURLKeys={{ key: "AIzaSyDj9I51Cd1WrcAGKgGmi7m9y7GztW0mtcI" }}
+                                bootstrapURLKeys={{ key: "AIzaSyA0NmlELithGIJDjJJaUFy4fUigC9nBRf4" }}
                                 defaultCenter={defaultProps.center}
                                 defaultZoom={defaultProps.zoom}
                                 yesIWantToUseGoogleMapApiInternals

@@ -2,7 +2,7 @@ import React from "react";
 import DateTimePicker from 'react-datetime-picker';
 
 
-export function FilterTipo(setFilter) {
+export function FilterTipo(setFilter,filtro) {
     return(
       <div className="modal fade" id="TipoModal" tabIndex="-1" aria-labelledby="TipoModalAria" aria-hidden="true" >
         <div className="modal-dialog">
@@ -13,21 +13,37 @@ export function FilterTipo(setFilter) {
             </div>
             <div className="modal-body">
               <div className="row">
-                  {
-                    Array(10).fill(0).map((_,index)=>{
-                      return (
-                      <div className="col-lg-4 d-flex flex-row justify-content-center">
-                        <button className="btn mt-2" style={{backgroundColor:"#f5f5f5",borderRadius:"20px"}}>Robo</button>
+                  <div className="col-lg-4 d-flex flex-row justify-content-center">
+                        <button className="btn mt-2" style={{backgroundColor:(filtro=="crimen")?"#9fa8da":"#f5f5f5",borderRadius:"20px"}} onClick={()=>{
+                          setFilter("crimen")
+                        }}>Crimen</button>
                       </div>
-                      )
-                    })
-                  }
+                  <div className="col-lg-4 d-flex flex-row justify-content-center">
+                        <button className="btn mt-2" style={{backgroundColor:(filtro=="robo")?"#9fa8da":"#f5f5f5",borderRadius:"20px"}} onClick={()=>{
+                          setFilter("robo")
+                        }}>Robo</button>
+                      </div>
+                  <div className="col-lg-4 d-flex flex-row justify-content-center">
+                        <button className="btn mt-2" style={{backgroundColor:(filtro=="acoso")?"#9fa8da":"#f5f5f5",borderRadius:"20px"}} onClick={()=>{
+                          setFilter("acoso")
+                        }}>Acoso</button>
+                      </div>
+                  <div className="col-lg-4 d-flex flex-row justify-content-center">
+                        <button className="btn mt-2" style={{backgroundColor:(filtro=="perdida")?"#9fa8da":"#f5f5f5",borderRadius:"20px"}} onClick={()=>{
+                          setFilter("perdida")
+                        }}>Pérdida</button>
+                      </div>
+                  <div className="col-lg-4 d-flex flex-row justify-content-center">
+                        <button className="btn mt-2" style={{backgroundColor:"#f5f5f5",borderRadius:"20px"}} onClick={()=>{
+                          setFilter("")
+                        }}>Ningún filtro</button>
+                      </div>
               </div>
             </div>
             <div className="modal-footer">
               <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
               <button type="button" className="btn btn-primary" data-bs-dismiss="modal" onClick={()=>{
-                setFilter("fecha")
+                //setFilter("fecha")
               }}>Aceptar</button>
             </div>
           </div>
@@ -59,7 +75,7 @@ export function FilterTipo(setFilter) {
             <div className="modal-footer">
               <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
               <button type="button" className="btn btn-primary" data-bs-dismiss="modal" onClick={()=>{
-                setFilter("fecha")
+                //setFilter("fecha")
               }}>Aceptar</button>
             </div>
           </div>
@@ -94,7 +110,7 @@ export function FilterTipo(setFilter) {
             <div className="modal-footer">
               <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
               <button type="button" className="btn btn-primary" data-bs-dismiss="modal" onClick={()=>{
-                setFilter("fecha")
+                //setFilter("fecha")
               }}>Aceptar</button>
             </div>
           </div>

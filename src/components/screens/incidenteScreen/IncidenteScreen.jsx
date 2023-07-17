@@ -48,6 +48,7 @@ export default function IncidenteScreen(props){
     const [ev2,setEv2]=useState("")
     const [ev3,setEv3]=useState("")
     const [hora,setHora]=useState("")
+    const [deleteConfirmation,setDeleteConfirmation]=useState(false);
     const [newIncidente,setNewIncidente]=useState(new incidente)
     const [newIncidenteValidado,setNewIncidenteValidado]=useState(new incidenteValidado)
     const [defaultProps,setDefaultProps]=useState(
@@ -138,7 +139,7 @@ export default function IncidenteScreen(props){
         console.log(defaultProps.center)
       },[defaultProps])
 
-    Geocode.setApiKey("AIzaSyDj9I51Cd1WrcAGKgGmi7m9y7GztW0mtcI");
+    Geocode.setApiKey("AIzaSyA0NmlELithGIJDjJJaUFy4fUigC9nBRf4");
     Geocode.setLanguage("en");
     Geocode.setLocationType("ROOFTOP");
       
@@ -280,7 +281,7 @@ export default function IncidenteScreen(props){
                             </p>
                             <div style={{height:"300px",width:"800px"}}>
                                 <GoogleMapReact
-                                bootstrapURLKeys={{ key: "AIzaSyDj9I51Cd1WrcAGKgGmi7m9y7GztW0mtcI" }}
+                                bootstrapURLKeys={{ key: "AIzaSyA0NmlELithGIJDjJJaUFy4fUigC9nBRf4" }}
                                 defaultCenter={defaultProps.center}
                                 defaultZoom={defaultProps.zoom}
                                 yesIWantToUseGoogleMapApiInternals
@@ -339,18 +340,26 @@ export default function IncidenteScreen(props){
                             {(newIncidente.user_id==userId)?
                               <div className="w-100  pb-5 pt-5">
                               <b>Desea eliminar la publicación?</b>
-                              <button className="btn btn-danger rounded-pill" style={{marginLeft:"20px"}} onClick={()=>{
+                              <button className="btn btn-danger rounded-pill mt-2" style={{display:(!deleteConfirmation)?"flex":"none"}} onClick={()=>{
                                 //deleteIncidente({
                                 //    id:newIncidente.incidente_id
                                 //})
-                                incidenteDelete.deleteIncidente({
-                                  id:newIncidente.incidente_id
-                                })
+                                setDeleteConfirmation(true);
                                 
-                                window.location.pathname="/"
                             }}>Eliminar</button>
+                            <div style={{display:(deleteConfirmation)?"flex":"none"}} className="mt-3">
+                                <button className="btn btn-secondary rounded-pill" onClick={()=>{setDeleteConfirmation(false)}} style={{marginRight:"20px"}}>Cancelar</button>
+                                <button className="btn btn-danger rounded-pill" onClick={()=>{
+                                  incidenteDelete.deleteIncidente({
+                                    id:newIncidente.incidente_id
+                                  })
+                                  
+                                  window.location.pathname="/"
+                                  setDeleteConfirmation(false)}}>Confirmar</button>
+                                </div>
                               </div>:""
                             }
+                            
                             </div>
                         </div>
                     </div>

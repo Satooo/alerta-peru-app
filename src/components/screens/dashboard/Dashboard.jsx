@@ -110,9 +110,8 @@ export default function Dashboard(props){
         <div className="container-fluid d-flex flex-column no-padding" id="dashboard-div">
             <HeaderAdmin/>
             <div className="container bg-light d-flex flex-column align-items-center justify-content-center" id="dashboard-div-div">
-                <TopIncidentes/>
+                {TopIncidentes(incidentes)}
                 {Secciones(setSeccion)}
-                {filterSection()}
                 {showIncidentes()}
             </div>
             {solicitarEvidencia()}
