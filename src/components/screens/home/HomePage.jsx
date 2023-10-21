@@ -95,7 +95,7 @@ export default function HomePage(props){
     maxZoom: 18
   }
 
-  Geocode.setApiKey("AIzaSyA0NmlELithGIJDjJJaUFy4fUigC9nBRf4");
+  Geocode.setApiKey("AIzaSyDnBJVarhmeQxZPhmifLDVlpvvO63xJrIg");
   Geocode.setLanguage("en");
   Geocode.setLocationType("ROOFTOP");
 
@@ -162,7 +162,7 @@ export default function HomePage(props){
     <div className="container-fluid d-flex flex-column justify-content-center align-items-center" id="homepage-div">
        <div id="homepage-div-div1">
         <GoogleMapReact
-          bootstrapURLKeys={{ key: "AIzaSyA0NmlELithGIJDjJJaUFy4fUigC9nBRf4" }}
+          bootstrapURLKeys={{ key: "AIzaSyDnBJVarhmeQxZPhmifLDVlpvvO63xJrIg" }}
           defaultCenter={defaultProps.center}
           defaultZoom={defaultProps.zoom}
           yesIWantToUseGoogleMapApiInternals
