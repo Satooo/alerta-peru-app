@@ -33,12 +33,13 @@ export default function AgregarIncidente(props){
     const firebaseStorage = new firebaseStorageImpl();
 
     const [address,setAddress]=useState("Ramón Ribeyro 998, Barranco");
-    const [value, onChangeDate] = useState(new Date());
+    const [value, onChangeDate] = useState();
     const [images, setImages] = React.useState([]);
     const [uploadVideoCompletion,setUploadVideoCompletion]=useState(0);
     const [video,setVideo]=React.useState();
     const [file,setFile]=React.useState(null);
     const [uploadCompletion,setUploadCompletion]=useState(0);
+    const [uploadedImages,setUploadedImages]=useState(0);
     const maxNumber = 3;
 
     const [lat,setLat]=useState("");
@@ -80,24 +81,24 @@ export default function AgregarIncidente(props){
       console.log(video)
     },[video])
 
-
     useEffect(()=>{
-      //onChangeDate(new Date(fecha))
-    },[fecha])
-
-    useEffect(()=>{
-      if(video!=undefined&&video!=null){
-        if(uploadCompletion==100 &&  uploadVideoCompletion==100){
+      if(video!=null || video!=undefined){
+        if(uploadedImages==images.length && uploadVideoCompletion){
           window.location.pathname="/incidente"
         }
       }else{
-        if(images!=[]){
-          if(uploadCompletion==100){
-            window.location.pathname="/incidente"
-          }
+        if(uploadedImages==images.length && images.length>0){
+          window.location.pathname="/incidente"
         }
       }
-    },[uploadCompletion,uploadVideoCompletion])
+      
+    },[uploadedImages,uploadVideoCompletion])
+
+
+    useEffect(()=>{
+      onChangeDate(fecha)
+    },[fecha])
+
 
     useEffect(()=>{
       setNewIncidente(
@@ -148,14 +149,16 @@ export default function AgregarIncidente(props){
                         incidentesSetter.setincidentesCompletado(newIncidente)
                         //setIncidentesCompletoDb(newIncidente);
                         sessionStorage.setItem("incidente",titulo);
+                        
                         if(images.length>0){
-                          firebaseStorage.uploadVideo(incidenteId,video,setUploadVideoCompletion)
+                          console.log("imagenes")
                           images.forEach((image,index)=>{
-                            firebaseStorage.uploadImages(image.file,incidenteId,index,setUploadCompletion)
+                            firebaseStorage.uploadImages(image.file,incidenteId,index,setUploadCompletion,setUploadedImages,uploadedImages)
                             //uploadImage(image.file,incidenteId,index,setUploadCompletion
                           })
-                        }else{
-                          window.location.pathname="/incidente"
+                        }
+                        if(video!=null || video!=undefined){
+                          firebaseStorage.uploadVideo(incidenteId,video,setUploadVideoCompletion)
                         }
                       }
                     }}>Siguiente</button>

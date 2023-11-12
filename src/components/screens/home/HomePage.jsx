@@ -23,6 +23,7 @@ import { incidente } from "../../entities/incidente";
 import userManager from "../../IncidenteVM/userManager";
 import generalImpl from "../../IncidenteVM/generalImpl";
 
+
 export default function HomePage(props){
 
   const incidentesGetter = new userManager().factoryMethod();
@@ -67,6 +68,10 @@ export default function HomePage(props){
     useEffect(()=>{
       //getIncidentes3(setIncidentes)
     },[])
+
+    useEffect(()=>{
+      console.log(value)
+    },[value])
 
     useEffect(()=>{
       console.log(incidentes2)

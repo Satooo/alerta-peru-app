@@ -14,7 +14,7 @@ import { firebaseStorage } from "../backend/firebaseStorage";
 const storage = firebaseStorage.getInstance();
 
 export default class firebaseStorageImpl extends firebaseStorageInterface{
-    uploadImages(file, title, num,setUploadCompletion){
+    uploadImages(file, title, num,setUploadCompletion,setUploadedImages,uploadedImages){
         const metadata = {
             contentType: 'image/jpeg'
           };
@@ -61,6 +61,7 @@ export default class firebaseStorageImpl extends firebaseStorageInterface{
           getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
             console.log('File available at', downloadURL);
             //window.location.pathname="/incidente"
+            setUploadedImages(uploadedImages+1)
           });
         }
         );

@@ -18,7 +18,7 @@ export function datosPreloaded(value,onChangeDate,titulo,newIncidente){
           </div>
           <div className="mt-3 w-100 d-flex flex-row justify-content-between" >
             <b>Tiempo del incidente</b>
-            <DateTimePicker onChange={onChangeDate} value={value} />
+            <p>{value}</p>
           </div>
     </div>
 }
