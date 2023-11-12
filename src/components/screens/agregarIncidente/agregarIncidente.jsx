@@ -9,7 +9,7 @@ import { getDatabase, ref, child, set, get, onValue } from "firebase/database";
 
 import { getStorage,ref as storageRef, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 
-import { uploadImage } from "../../imageUploadVM/imageUploadVM";
+import { uploadImage, uploadVideo } from "../../imageUploadVM/imageUploadVM";
 
 
 import { incidente } from "../../entities/incidente";
@@ -35,6 +35,8 @@ export default function AgregarIncidente(props){
     const [address,setAddress]=useState("Ramón Ribeyro 998, Barranco");
     const [value, onChangeDate] = useState(new Date());
     const [images, setImages] = React.useState([]);
+    const [uploadVideoCompletion,setUploadVideoCompletion]=useState(0);
+    const [video,setVideo]=React.useState();
     const [file,setFile]=React.useState(null);
     const [uploadCompletion,setUploadCompletion]=useState(0);
     const maxNumber = 3;
@@ -74,11 +76,28 @@ export default function AgregarIncidente(props){
           console.log(newIncidente)
     },[newIncidente])
 
+    useEffect(()=>{
+      console.log(video)
+    },[video])
 
 
     useEffect(()=>{
       //onChangeDate(new Date(fecha))
     },[fecha])
+
+    useEffect(()=>{
+      if(video!=undefined&&video!=null){
+        if(uploadCompletion==100 &&  uploadVideoCompletion==100){
+          window.location.pathname="/incidente"
+        }
+      }else{
+        if(images!=[]){
+          if(uploadCompletion==100){
+            window.location.pathname="/incidente"
+          }
+        }
+      }
+    },[uploadCompletion,uploadVideoCompletion])
 
     useEffect(()=>{
       setNewIncidente(
@@ -130,9 +149,10 @@ export default function AgregarIncidente(props){
                         //setIncidentesCompletoDb(newIncidente);
                         sessionStorage.setItem("incidente",titulo);
                         if(images.length>0){
+                          firebaseStorage.uploadVideo(incidenteId,video,setUploadVideoCompletion)
                           images.forEach((image,index)=>{
                             firebaseStorage.uploadImages(image.file,incidenteId,index,setUploadCompletion)
-                            //uploadImage(image.file,incidenteId,index,setUploadCompletion)
+                            //uploadImage(image.file,incidenteId,index,setUploadCompletion
                           })
                         }else{
                           window.location.pathname="/incidente"
@@ -142,7 +162,7 @@ export default function AgregarIncidente(props){
                 </div>
                 {datosPreloaded(value,onChangeDate,titulo,newIncidente)}
                 {description(setDescripcionComp)}
-                {evidenceUpload(images,onChangeImage,maxNumber,setEv1,setEv2,setEv3)}
+                {evidenceUpload(images,onChangeImage,maxNumber,setEv1,setEv2,setEv3,setVideo,video)}
                 <p style={{display:(uploadCompletion>0)?"block":"none"}}>Subiendo {uploadCompletion}%</p>
             </div>
         </div>

@@ -63,12 +63,14 @@ export default function IncidenteScreen(props){
     
 
     const [imageUrls, setImageUrls] = useState([]);
+    const [videoUrl,setVideoUrl]=useState("");
     const [validacionFinal,setValidacionFinal]=useState(false);
     
 
     useEffect(()=>{
       //getImages(incidenteId,setImageUrls)
       firebaseStorage.getImages(incidenteId,setImageUrls)
+      firebaseStorage.getVideo(incidenteId,setVideoUrl)
     },[incidenteId])
 
     useEffect(()=>{
@@ -318,6 +320,11 @@ export default function IncidenteScreen(props){
                                                         
                               }):(<p style={{backgroundColor:"#eeeeee",padding:"10px",borderRadius:"20px"}}> No hay aportes de evidencia encontrada..</p>)
                             }
+                            </div>
+                            <div>
+                              {(videoUrl!="")?<video width="750" height="500" controls >
+                                  <source src={videoUrl} type="video/mp4"/>
+                                  </video>:"No hay video de evidencia"}
                             </div>
                             <h4 id="item-3">Validación</h4>
                             <p style={{backgroundColor:"#eeeeee",padding:"10px",borderRadius:"20px"}}> Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>

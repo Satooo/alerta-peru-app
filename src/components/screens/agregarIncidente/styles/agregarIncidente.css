@@ -19,3 +19,12 @@
     text-align:left;
     border:none;
 }
+
+.videoButton{
+    background-color:black;
+    color:white;
+    border-radius: 10px;
+    border: none;
+    padding: 10px;
+    margin-bottom: 20px;
+}

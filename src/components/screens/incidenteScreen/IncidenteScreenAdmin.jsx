@@ -72,9 +72,11 @@ export default function IncidenteScreenAdmin(props){
     Geocode.setLocationType("ROOFTOP");
 
     const [imageUrls, setImageUrls] = useState([]);
+    const [videoUrl,setVideoUrl]=useState("");
 
     useEffect(()=>{
       firebaseStorage.getImages(incidenteId,setImageUrls)
+      firebaseStorage.getVideo(incidenteId,setVideoUrl)
       //getImages(incidenteId,setImageUrls)
     },[incidenteId])
 
@@ -344,6 +346,11 @@ export default function IncidenteScreenAdmin(props){
                                                         
                               }):(<p style={{backgroundColor:"#eeeeee",padding:"10px",borderRadius:"20px"}}> No hay aportes de evidencia encontrada..</p>)
                             }
+                            <div>
+                              {(videoUrl!="")?<video width="750" height="500" controls >
+                                  <source src={videoUrl} type="video/mp4"/>
+                                  </video>:"No hay video de evidencia"}
+                            </div>
                             <div class="form-check form-switch">
                             <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" checked={(faltaEvidencia=="true"?true:false)} onChange={()=>{
                               if(faltaEvidencia==""){
