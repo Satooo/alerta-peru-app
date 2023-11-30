@@ -33,12 +33,14 @@ export default function Login(props){
     const[esAdmin,setEsAdmin]=useState(false)
     const[showAdmin,setShowAdmin]=useState(false)
     const[adminStatus,setAdminStatus]=useState(false)
+    const [passValid,setPassValid]=useState();
 
     const[adminValid,setAdminValid]=useState("false")
 
     const [loginSuccess,setLoginSuccess]=useState(false)
     const [showStatus,setShowStatus]=useState(false)
     const navigate = useNavigate();
+    const [passModal,setPassModal] = useState();
 
     const defaultProps = {
         center: {
@@ -72,6 +74,36 @@ export default function Login(props){
           sessionStorage.setItem("loggedUser", user);
         }
       },[loginSuccess])
+
+      function passwordValid(newUsuario,setAdminStatus){
+        const patternPassword = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]*$/;
+        if(pass>=8 && pass<=20 || !patternPassword.test(pass)){
+            setPassValid(false);
+            setPassModal(true);
+            setScreen(4);
+        }else{
+            setPassValid(true);
+            loginFunctionality.register(newUsuario,setAdminStatus)
+            setScreen(3)
+        }
+      }
+
+      useEffect(()=>{
+        console.log(passValid)
+      },[passValid])
+
+      function passError(){
+        return (
+
+            <div className="card" style={{width: "30rem",borderRadius:"20px",border:"none",overflow:"hidden",filter:"drop-shadow(2px 0px 20px gray)",display:(screen==4)?"block":"none"}} id="loginCard">
+            <div className="card-body">
+               <p><b>Contraseña incorrecta</b></p>
+               <p>Vuelva a ingresar su contraseña, debe tener entre 8 a 20 caracteres y tener por lo menos una letra y número.</p>
+               <button className="btn btn-primary rounded-pill w-100" onClick={()=>{setScreen(2)}}>Aceptar</button>
+            </div>
+       </div>
+          )
+      }
 
       function signUp(){
         return(
@@ -127,7 +159,7 @@ export default function Login(props){
                                     setScreen(1)
                                     }}>Cancelar</button>
                                 <button href="#" class="btn btn-primary" style={{borderRadius:"20px"}} data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={()=>{
-                                    setScreen(1)
+                                    
                                     console.log(esAdmin)
                                     let newUsuario= new usuario(
                                       user,
@@ -143,8 +175,8 @@ export default function Login(props){
                                     console.log(newUsuario)
                                     //writeUserData2(newUsuario)
                                     //register(newUsuario)
-                                    loginFunctionality.register(newUsuario,setAdminStatus)
-                                    setScreen(3)
+                                    passwordValid(newUsuario,setAdminStatus)
+                                    
                                 }}>Crear cuenta</button>
                         </div>
                     </div>
@@ -173,7 +205,7 @@ export default function Login(props){
                                 }}/>
                                 <button className="btn btn-secondary rounded-pill" onClick={()=>{setShowPass(!showPass)}}>{(showPass)?"Hide":"Show"}</button>
                                 </div>
-                                <button href="#" class="btn bg-transparent" onClick={()=>{
+                                <button id="signupbutton" href="#" class="btn bg-transparent" onClick={()=>{
                                     setScreen(2)
                                     setUser("")
                                     setPass("")
@@ -203,6 +235,7 @@ export default function Login(props){
     return (
         <div className="container-fluid d-flex flex-column justify-content-center align-items-center" style={{height:"100vh",width:"100%",minWidth:"1200px",minHeight:"800px",backgroundColor:"#eeeeee",overflow:"scroll",zIndex:"0"}} id="loginBackground">
             <div style={{height:"100vh",width:"100%",zIndex:"1",position:"absolute"}}>
+                
                 <GoogleMapReact
                     bootstrapURLKeys={{ key: "AIzaSyDnBJVarhmeQxZPhmifLDVlpvvO63xJrIg" }}
                     defaultCenter={defaultProps.center}
@@ -220,6 +253,7 @@ export default function Login(props){
                 </GoogleMapReact>
             </div>
             <div style={{width:"100%",height:"100vh",backgroundColor:"transparent",zIndex:"2",position:"absolute"}} className="d-flex justify-content-center align-items-center" >
+                    {passError()}
                     {signUp()}
                     {signIn()}
                     {status()}
