@@ -143,6 +143,9 @@ export default function AgregarIncidente(props){
                       <button className="btn btn-primary rounded-pill" onClick={()=>{
                       if(descripcionComp!=""){
                         //writeIncidenteCompleto2(newIncidente,descripcionComp,ev1,ev2,ev3);
+                        if(video==undefined || video==null && images.length==0 ){
+                          window.location.pathname="/incidente"
+                        }
                         newIncidente.incidente_id=sessionStorage.getItem("incidente_id");
                         
                         console.log(newIncidente)
